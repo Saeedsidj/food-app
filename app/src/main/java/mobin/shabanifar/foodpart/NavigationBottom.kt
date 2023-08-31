@@ -18,6 +18,6 @@ val items = listOf(
     NavigationBottom.profile,
     NavigationBottom.Search,
     NavigationBottom.Cook,
-    NavigationBottom.Category
+    NavigationBottom.Category,
 )
 val mainRoute =items.map { it.route }
