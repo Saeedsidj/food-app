@@ -29,6 +29,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import mobin.shabanifar.foodpart.screens.Category
+import mobin.shabanifar.foodpart.screens.Category
 import mobin.shabanifar.foodpart.screens.Profile
 import mobin.shabanifar.foodpart.screens.Search
 import mobin.shabanifar.foodpart.screens.WhatToCook
