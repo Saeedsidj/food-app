@@ -4,6 +4,6 @@
         <item name="windowSplashScreenBackground">#17171A</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/logo_dark_1</item>
         <item name="windowSplashScreenAnimationDuration">30000</item>
-        <item name="postSplashScreenTheme">@style/Theme.SplashScreen</item>
+        <item name="postSplashScreenTheme">@style/Theme.FoodPart</item>
     </style>
 </resources>
