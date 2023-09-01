@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">FoodPart</string>
+    <string name="app_name_fa">فود پارت</string>
     <string name="title_activity_splash_screen">SplashScreen</string>
     <string name="search">جستجو</string>
+    <string name="food_time">"زمان : " + %s + " دقیقه"</string>
     <string name="account">حساب کاربری</string>
     <string name="grouping">دسته بندی</string>
     <string name="what_should_i_cook">چی بپزم؟</string>
