@@ -10,7 +10,8 @@ private val darkColorPalette = darkColors(
     onBackground = onBackground,
     surface = surface,
     onSurface = onSurface,
-    secondary = secondary
+    secondary = secondary,
+    primaryVariant = blue
 )
 
 @Composable

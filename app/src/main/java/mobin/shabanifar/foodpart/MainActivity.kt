@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,9 +13,10 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -24,17 +24,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import mobin.shabanifar.foodpart.screens.Category
-import mobin.shabanifar.foodpart.screens.Profile
+import mobin.shabanifar.foodpart.screens.LoginScreen
+import mobin.shabanifar.foodpart.screens.ProfileScreen
 import mobin.shabanifar.foodpart.screens.Search
 import mobin.shabanifar.foodpart.screens.WhatToCook
-import mobin.shabanifar.foodpart.screens.signUp
+import mobin.shabanifar.foodpart.screens.signUpScreen
 import mobin.shabanifar.foodpart.ui.theme.FoodPartTheme
-import mobin.shabanifar.foodpart.ui.theme.background
 
 
 class MainActivity : ComponentActivity() {
@@ -46,10 +47,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             FoodPartTheme {
-                val scaffoldState = rememberScaffoldState()
                 val navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
+                var userName by rememberSaveable { mutableStateOf("مهمان") }
+                var isLogin by rememberSaveable { mutableStateOf(false) }
                 Scaffold(
 
                     bottomBar = {
@@ -64,29 +66,38 @@ class MainActivity : ComponentActivity() {
                                     )
                                     .height(80.dp)
                             ) {
-                                items.forEach { B ->
+                                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                                val currentDestination = navBackStackEntry?.destination
+
+                                items.forEach { screen ->
+
                                     BottomNavigationItem(
                                         modifier = Modifier.padding(8.dp),
                                         label = {
                                             Text(
-                                                text = getString(B.name),
+                                                text = getString(screen.name),
                                                 style = MaterialTheme.typography.subtitle1,
                                             )
                                         },
                                         selected = currentDestination?.hierarchy?.any {
-                                            it.route == B.route
+                                            it.route == screen.route
                                         } == true,
                                         onClick = {
-                                            navController.navigate(B.route) {
-                                                launchSingleTop = true
-                                                popUpTo(NavigationBottom.Category.route) {
-                                                    saveState = true
+                                            val currentRoute = currentDestination?.route
+                                            if (currentRoute != screen.route) {
+                                                navController.navigate(screen.route) {
+                                                    popUpTo(navController.graph.findStartDestination().id) {
+                                                        saveState = true
+                                                    }
+                                                    launchSingleTop = true
+                                                    restoreState = true
                                                 }
                                             }
+
                                         },
                                         icon = {
                                             Icon(
-                                                painterResource(id = B.icon),
+                                                painterResource(id = screen.icon),
                                                 contentDescription = "",
                                                 //  tint = MaterialTheme.colors.onBackground
                                             )
@@ -114,11 +125,46 @@ class MainActivity : ComponentActivity() {
                         composable(NavigationBottom.Search.route) {
                             Search()
                         }
-                        composable(NavigationBottom.profile.route) {
-                            Profile(navController)
+                        composable(NavigationBottom.Profile.route) {
+                            ProfileScreen(
+                                usernameSave = userName,
+                                isLogin = isLogin,
+                                navigateToProfileSignIn = {
+                                    navController.navigate("sign_up") {
+                                        popUpTo(NavigationBottom.Profile.route) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            )
                         }
                         composable("sign_up") {
-                            signUp()
+                            signUpScreen(
+                                navigateToProfileLogin = {
+                                    navController.navigate("login") {
+                                        popUpTo(NavigationBottom.Profile.route)
+                                    }
+                                },
+                                navigateToProfile = {
+                                    navController.navigate(NavigationBottom.Profile.route) {
+                                        popUpTo(NavigationBottom.Profile.route) {
+                                            inclusive = true
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                    }
+                                },
+                                saveUserName = { username ->
+                                    userName = username
+                                },
+                                isLogin = { result ->
+                                    isLogin = result
+                                }
+                            )
+                        }
+                        composable("login"){
+                            LoginScreen()
                         }
                     }
                 }
@@ -126,4 +172,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
