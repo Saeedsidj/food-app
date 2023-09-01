@@ -1,5 +1,6 @@
 package mobin.shabanifar.foodpart.screens
 
+<<<<<<< app/src/main/java/mobin/shabanifar/foodpart/screens/category.kt
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -123,7 +124,6 @@ fun CategoryItems(lambIsFood: (Boolean) -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .padding(start = 8.dp, end = 8.dp)
-                    //.border(1.dp, Color.Red,MaterialTheme.shapes.medium)
                     .clip(MaterialTheme.shapes.medium)
                     .clickable {
                         if (it.name == "غذا نیست") {
@@ -131,9 +131,6 @@ fun CategoryItems(lambIsFood: (Boolean) -> Unit) {
                         } else {
                             lambIsFood(true)
                         }
-                        //indexCategoryClicked = 0
-                        /*categoryListItems[index] =
-                            categoryListItems[index].copy(isClicked = !it.isClicked)*/
                         indexCategoryClicked = index
                     }
             ) {
@@ -223,7 +220,7 @@ fun SubCategory() {
     ) {
         itemsIndexed(subCategoryList) { index, it ->
             Chip(
-                modifier = Modifier//.border(1.dp,MaterialTheme.colors.primary,MaterialTheme.shapes.medium)
+                modifier = Modifier
                     .padding(start = 4.dp),
 
                 shape = MaterialTheme.shapes.medium,
@@ -232,9 +229,6 @@ fun SubCategory() {
                     contentColor = MaterialTheme.colors.onBackground,
                 ),
                 onClick = {
-                    //indexSubCategoryClicked = 0
-                    /*subCategoryList[index] =
-                        subCategoryList[index].copy(isCategoryItem = !it.isClicked)*/
                     indexSubCategoryClicked = index
                 }
             ) {
@@ -281,14 +275,11 @@ fun FoodItems() {
                     .padding(bottom = 24.dp)
                     .clip(MaterialTheme.shapes.medium)
                     .clickable { /*TODO*/ }
-
-                //.padding(end = 10.dp,start = 10.dp, bottom = 0.dp)
             ) {
                 Image(
                     painter = painterResource(id = it.image),
                     contentDescription = "",
                     contentScale = ContentScale.Crop,
-                    //contentScale=ContentScale.FillBounds,
                     modifier = Modifier
                         //.border(1.dp, Color.Black)
                         .clip(MaterialTheme.shapes.medium)
@@ -349,4 +340,3 @@ fun NoFood() {
         }
     }
 }
-

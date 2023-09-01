@@ -33,6 +33,7 @@ import mobin.shabanifar.foodpart.screens.Category
 import mobin.shabanifar.foodpart.screens.Profile
 import mobin.shabanifar.foodpart.screens.Search
 import mobin.shabanifar.foodpart.screens.WhatToCook
+import mobin.shabanifar.foodpart.screens.signUp
 import mobin.shabanifar.foodpart.ui.theme.FoodPartTheme
 import mobin.shabanifar.foodpart.ui.theme.background
 
@@ -53,9 +54,10 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
 
                     bottomBar = {
-                        if (currentDestination?.route in mainRoute){
+                        if (currentDestination?.route in mainRoute) {
                             BottomNavigation(
-                                backgroundColor = MaterialTheme.colors.secondary, modifier = Modifier
+                                backgroundColor = MaterialTheme.colors.secondary,
+                                modifier = Modifier
                                     .clip(
                                         shape = RoundedCornerShape(
                                             topStart = 28.dp, topEnd = 28.dp
@@ -78,8 +80,8 @@ class MainActivity : ComponentActivity() {
                                         onClick = {
                                             navController.navigate(B.route) {
                                                 launchSingleTop = true
-                                                popUpTo(NavigationBottom.Category.route){
-                                                    saveState=true
+                                                popUpTo(NavigationBottom.Category.route) {
+                                                    saveState = true
                                                 }
                                             }
                                         },
@@ -114,7 +116,10 @@ class MainActivity : ComponentActivity() {
                             Search()
                         }
                         composable(NavigationBottom.profile.route) {
-                            Profile()
+                            Profile(navController)
+                        }
+                        composable("sign_up") {
+                            signUp()
                         }
                     }
                 }
