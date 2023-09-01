@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
@@ -21,18 +20,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.navArgument
 import mobin.shabanifar.foodpart.R
-import mobin.shabanifar.foodpart.ui.theme.FoodPartTheme
-import mobin.shabanifar.foodpart.ui.theme.background
 
 @Composable
-fun Profile(navControlLer:NavController) {
+fun ProfileScreen(
+    navigateToProfileSignIn: () -> Unit,
+    usernameSave: String,
+    isLogin: Boolean,
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -47,6 +45,8 @@ fun Profile(navControlLer:NavController) {
             )
         }
     ) {
+
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -72,7 +72,9 @@ fun Profile(navControlLer:NavController) {
                 )
                 Spacer(modifier = Modifier.size(16.dp))
                 Text(
-                    text = stringResource(id = R.string.guest),
+                    text = if (usernameSave.isNullOrEmpty()
+                            .not()
+                    ) usernameSave else stringResource(id = R.string.guest),
                     style = MaterialTheme.typography.body2,
                     color = MaterialTheme.colors.onBackground
                 )
@@ -81,10 +83,12 @@ fun Profile(navControlLer:NavController) {
             Spacer(modifier = Modifier.size(16.dp))
 
             Button(onClick = {
-                 navControlLer.navigate("sign_up")
-            }, modifier = Modifier.fillMaxWidth()) {
+                navigateToProfileSignIn()
+            }, modifier = Modifier.fillMaxWidth(), enabled = !isLogin) {
                 Text(
-                    text = stringResource(id = R.string.enter_to),
+                    text = if (!isLogin) stringResource(id = R.string.enter_to) else stringResource(
+                        id = R.string.confirm
+                    ),
                     style = MaterialTheme.typography.button,
                     color = MaterialTheme.colors.onBackground
                 )
