@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,9 +13,11 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -141,7 +142,33 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable("sign_up") {
-                            signUp()
+                            signUpScreen(
+                                isLogin = { result ->
+                                    isLogin = result
+                                },
+                                saveUserName = { username ->
+                                    userName = username
+                                },
+                                navigateToProfile = {
+                                    navController.navigate(NavigationBottom.Profile.route) {
+                                        popUpTo(NavigationBottom.Profile.route) {
+                                            inclusive = true
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                    }
+
+                                },
+                                navigateToProfileLogin = {
+                                    navController.navigate("login") {
+                                        popUpTo(NavigationBottom.Profile.route)
+                                    }
+                                }
+
+                            )
+                        }
+                        composable("login"){
+                            LoginScreen()
                         }
                     }
                 }

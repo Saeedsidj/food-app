@@ -1,6 +1,5 @@
 package mobin.shabanifar.foodpart.screens
 
-<<<<<<< app/src/main/java/mobin/shabanifar/foodpart/screens/category.kt
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
