@@ -27,8 +27,6 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -61,7 +59,9 @@ fun Search() {
     Scaffold(
         topBar = {
             TopAppBar(
+                modifier = Modifier.fillMaxWidth(),
                 backgroundColor = MaterialTheme.colors.background,
+                contentColor = MaterialTheme.colors.onBackground,
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 elevation = 0.dp
             ) {
@@ -72,7 +72,7 @@ fun Search() {
                     onClick = { /*TODO*/ }
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.KeyboardArrowRight,
+                        painter = painterResource(R.drawable.ic_back),
                         contentDescription = "KeyboardArrowRight",
                         tint = MaterialTheme.colors.onBackground
                     )
@@ -135,6 +135,7 @@ fun Search() {
                     }
                 }
             )
+            if (isWrite)
             Text(
                 modifier = Modifier.padding(start = 16.dp),
                 text = "نتایج جستجو با ${textField.text}",
