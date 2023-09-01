@@ -167,8 +167,29 @@ class MainActivity : ComponentActivity() {
 
                             )
                         }
-                        composable("login"){
-                            LoginScreen()
+                        composable("login") {
+                            LoginScreen(
+                                navigateToProfileSignIn = {
+                                    navController.navigate("sign_up") {
+                                        popUpTo(NavigationBottom.Profile.route)
+                                    }
+                                },
+                                navigateToProfile = {
+                                    navController.navigate(NavigationBottom.Profile.route) {
+                                        popUpTo(NavigationBottom.Profile.route) {
+                                            inclusive = true
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                    }
+                                },
+                                saveUserName = { username ->
+                                    userName = username
+                                },
+                                isLogin = { result ->
+                                    isLogin = result
+                                }
+                            )
                         }
                     }
                 }
