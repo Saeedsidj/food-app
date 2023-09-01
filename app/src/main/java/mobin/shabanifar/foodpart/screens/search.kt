@@ -7,12 +7,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -24,6 +22,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -32,10 +31,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -59,32 +58,15 @@ fun Search() {
     Scaffold(
         topBar = {
             TopAppBar(
-                modifier = Modifier.fillMaxWidth(),
-                backgroundColor = MaterialTheme.colors.background,
-                contentColor = MaterialTheme.colors.onBackground,
-                contentPadding = PaddingValues(horizontal = 16.dp),
-                elevation = 0.dp
-            ) {
-                IconButton(
-                    modifier = Modifier
-                        .align(CenterVertically)
-                        .size(24.dp),
-                    onClick = { /*TODO*/ }
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_back),
-                        contentDescription = "KeyboardArrowRight",
-                        tint = MaterialTheme.colors.onBackground
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.what_are_you_looking_for),
+                        color = MaterialTheme.colors.onBackground,
+                        style = MaterialTheme.typography.h2
                     )
-                }
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = stringResource(id = R.string.what_are_you_looking_for),
-                    color = MaterialTheme.colors.onBackground,
-                    style = MaterialTheme.typography.h2
-                )
-
-            }
+                },
+                backgroundColor = MaterialTheme.colors.background
+            )
         }
     ) {
         Column(
@@ -95,8 +77,8 @@ fun Search() {
             TextField(
                 modifier = Modifier
                     .padding(16.dp)
-                    .fillMaxWidth()
                     .clip(MaterialTheme.shapes.medium)
+                    .fillMaxWidth()
                     .background(MaterialTheme.colors.surface)
                     .border(
                         1.dp,
@@ -108,9 +90,15 @@ fun Search() {
                 textStyle = MaterialTheme.typography.body1,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(
-                    onSearch = {
+                    onDone = {
                         keyboardController?.hide()
                     }
+                ),
+                singleLine = true,
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
                 ),
                 placeholder = {
                     Text(
@@ -164,36 +152,36 @@ fun SearchedItems(searchValue: String) {
             items.name == searchValue
         }
         items(foundItems) {
-                Column(
+            Column(
+                modifier = Modifier
+                    .padding(bottom = 24.dp)
+                    .clip(MaterialTheme.shapes.medium)
+                    .clickable { /*TODO*/ }
+            ) {
+                Image(
+                    painter = painterResource(id = it.image),
+                    contentDescription = "",
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .padding(bottom = 24.dp)
                         .clip(MaterialTheme.shapes.medium)
-                        .clickable { /*TODO*/ }
-                ) {
-                    Image(
-                        painter = painterResource(id = it.image),
-                        contentDescription = "",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .clip(MaterialTheme.shapes.medium)
-                            .size(width = 240.dp, height = 85.dp)
-                    )
+                        .size(width = 240.dp, height = 85.dp)
+                )
 
-                    Text(
-                        text = it.name,
-                        style = MaterialTheme.typography.body1,
-                        color = MaterialTheme.colors.onSurface,
-                        modifier = Modifier
-                            .padding(start = 8.dp, bottom = 4.dp)
-                    )
-                    Text(
-                        text = "زمان : " + "${it.time}" + " دقیقه",
-                        style = MaterialTheme.typography.subtitle1,
-                        color = MaterialTheme.colors.onSurface,
-                        modifier = Modifier
-                            .padding(start = 8.dp)
-                    )
-                }
+                Text(
+                    text = it.name,
+                    style = MaterialTheme.typography.body1,
+                    color = MaterialTheme.colors.onSurface,
+                    modifier = Modifier
+                        .padding(start = 8.dp, bottom = 4.dp)
+                )
+                Text(
+                    text = "زمان : " + "${it.time}" + " دقیقه",
+                    style = MaterialTheme.typography.subtitle1,
+                    color = MaterialTheme.colors.onSurface,
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                )
+            }
         }
     }
 
