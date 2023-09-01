@@ -135,13 +135,14 @@ fun Search() {
                     }
                 }
             )
-            if (isWrite)
-            Text(
-                modifier = Modifier.padding(start = 16.dp),
-                text = "نتایج جستجو با ${textField.text}",
-                style = MaterialTheme.typography.body1,
-                color = MaterialTheme.colors.onBackground
-            )
+            if (isWrite) {
+                Text(
+                    modifier = Modifier.padding(start = 16.dp),
+                    text = "نتایج جستجو با ${textField.text}",
+                    style = MaterialTheme.typography.body1,
+                    color = MaterialTheme.colors.onBackground
+                )
+            }
             SearchedItems(textField.text)
         }
     }
