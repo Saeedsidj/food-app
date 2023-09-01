@@ -5,10 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Arrangement.Center
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,26 +21,22 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -50,7 +44,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import mobin.shabanifar.foodpart.FakeFoods
 import mobin.shabanifar.foodpart.R
 import mobin.shabanifar.foodpart.fakeFoodItems
 
@@ -63,8 +56,6 @@ fun Search() {
     val borderSurface = MaterialTheme.colors.surface
     val borderOnBack = MaterialTheme.colors.onBackground
     var isWrite by remember { mutableStateOf(false) }
-    var searched by remember { mutableStateOf("") }
-        //var foundItems by rememberSaveable { mutableStateOf(emptyList<FakeFoods>()) }
 
     Scaffold(
         topBar = {
@@ -87,7 +78,6 @@ fun Search() {
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    //modifier = Modifier.align(CenterVertically),
                     text = stringResource(id = R.string.what_are_you_looking_for),
                     color = MaterialTheme.colors.onBackground,
                     style = MaterialTheme.typography.h2
@@ -99,12 +89,10 @@ fun Search() {
         Column(
             modifier = Modifier
                 .padding(it)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxSize()
         ) {
             TextField(
                 modifier = Modifier
-                    //.padding(start = 16.dp, end = 16.dp, top = 16.dp)
                     .padding(16.dp)
                     .fillMaxWidth()
                     .clip(MaterialTheme.shapes.medium)
@@ -120,10 +108,6 @@ fun Search() {
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(
                     onSearch = {
-                        /*searched = textField.text
-                        foundItems = fakeFoodItems.filter() {
-                            it.name == searched
-                        }*/
                         keyboardController?.hide()
                     }
                 ),
@@ -150,32 +134,20 @@ fun Search() {
                     }
                 }
             )
-            Text(text = textField.text)//searched"سیب زمینی"
-
-            //SearchedItems(foundItems)
+            Text(
+                modifier = Modifier.padding(start = 16.dp),
+                text = "نتایج جستجو با ${textField.text}",
+                style = MaterialTheme.typography.body1,
+                color = MaterialTheme.colors.onBackground
+            )
             SearchedItems(textField.text)
-
-
         }
     }
 }
 
 
 @Composable
-fun SearchedItems(searchValue: String/*foundItems:List<FakeFoods>*/) {
-
- /*   val foundItems by rememberSaveable {
-        mutableStateOf(
-            fakeFoodItems.filter() {
-                it.name == searchValue
-            }
-        )
-    }*/
-    /*    val foundItems = rememberSaveable {
-            fakeFoodItems.filter(){
-                it.name == searchValue
-            }
-        }*/
+fun SearchedItems(searchValue: String) {
 
     LazyVerticalGrid(
         modifier = Modifier
@@ -188,38 +160,37 @@ fun SearchedItems(searchValue: String/*foundItems:List<FakeFoods>*/) {
     ) {
 
         items(fakeFoodItems) {
-            if(it.name == searchValue)
-            Column(
-                modifier = Modifier
-                    .padding(bottom = 24.dp)
-                    .clip(MaterialTheme.shapes.medium)
-                    .clickable { /*TODO*/ }
-            ) {
-                Image(
-                    painter = painterResource(id = it.image),
-                    contentDescription = "",
-                    contentScale = ContentScale.Crop,
+            if (it.name == searchValue)
+                Column(
                     modifier = Modifier
-                        //.border(1.dp, Color.Black)
+                        .padding(bottom = 24.dp)
                         .clip(MaterialTheme.shapes.medium)
-                        .size(width = 240.dp, height = 85.dp)
-                )
+                        .clickable { /*TODO*/ }
+                ) {
+                    Image(
+                        painter = painterResource(id = it.image),
+                        contentDescription = "",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .clip(MaterialTheme.shapes.medium)
+                            .size(width = 240.dp, height = 85.dp)
+                    )
 
-                Text(
-                    text = it.name,
-                    style = MaterialTheme.typography.body1,
-                    color = MaterialTheme.colors.onSurface,
-                    modifier = Modifier
-                        .padding(start = 8.dp, bottom = 4.dp)
-                )
-                Text(
-                    text = "زمان : " + "${it.time}" + " دقیقه",
-                    style = MaterialTheme.typography.subtitle1,
-                    color = MaterialTheme.colors.onSurface,
-                    modifier = Modifier
-                        .padding(start = 8.dp)
-                )
-            }
+                    Text(
+                        text = it.name,
+                        style = MaterialTheme.typography.body1,
+                        color = MaterialTheme.colors.onSurface,
+                        modifier = Modifier
+                            .padding(start = 8.dp, bottom = 4.dp)
+                    )
+                    Text(
+                        text = "زمان : " + "${it.time}" + " دقیقه",
+                        style = MaterialTheme.typography.subtitle1,
+                        color = MaterialTheme.colors.onSurface,
+                        modifier = Modifier
+                            .padding(start = 8.dp)
+                    )
+                }
         }
     }
 
