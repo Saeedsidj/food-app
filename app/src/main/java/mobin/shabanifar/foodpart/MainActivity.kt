@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,7 +14,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -29,15 +28,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import mobin.shabanifar.foodpart.screens.Category
+import mobin.shabanifar.foodpart.screens.FoodDetail
 import mobin.shabanifar.foodpart.screens.Profile
 import mobin.shabanifar.foodpart.screens.Search
 import mobin.shabanifar.foodpart.screens.WhatToCook
 import mobin.shabanifar.foodpart.ui.theme.FoodPartTheme
-import mobin.shabanifar.foodpart.ui.theme.background
 
 
 class MainActivity : ComponentActivity() {
 
+    @OptIn(ExperimentalFoundationApi::class)
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -64,7 +64,7 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 items.forEach { B ->
                                     BottomNavigationItem(
-                                        modifier = Modifier.padding(8.dp),
+                                        modifier = Modifier.padding(bottom = 8.dp),
                                         label = {
                                             Text(
                                                 text = getString(B.name),
@@ -100,7 +100,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     NavHost(
                         navController = navController,
-                        startDestination = NavigationBottom.Category.route,
+                        startDestination = "foodDetail",
                         Modifier.padding(it)
                     ) {
                         composable(NavigationBottom.Category.route) {
@@ -114,6 +114,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(NavigationBottom.profile.route) {
                             Profile()
+                        }
+                        composable("foodDetail"){
+                            FoodDetail(navController)
                         }
                     }
                 }
