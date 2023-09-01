@@ -157,12 +157,12 @@ fun SearchedItems(searchValue: String) {
             .padding(start = 40.dp, end = 40.dp),
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(24.dp),
-        //verticalArrangement = Center,
         contentPadding = PaddingValues(vertical = 16.dp)
     ) {
-
-        items(fakeFoodItems) {
-            if (it.name == searchValue)
+        val foundItems = fakeFoodItems.filter { items ->
+            items.name == searchValue
+        }
+        items(foundItems) {
                 Column(
                     modifier = Modifier
                         .padding(bottom = 24.dp)
