@@ -112,14 +112,17 @@ fun Search() {
                     isWrite = textField != TextFieldValue("")
                 },
                 trailingIcon = {
-                    IconButton(onClick = {
-                        textField = TextFieldValue("")
-                        isWrite = false
-                    }) {
-                        Icon(
-                            imageVector = Icons.Filled.Clear,
-                            contentDescription = ""
-                        )
+                    if (isWrite) {
+                        IconButton(onClick = {
+                            textField = TextFieldValue("")
+                            isWrite = false
+                        }) {
+                            Icon(
+                                imageVector = Icons.Filled.Clear,
+                                contentDescription = "",
+                                tint = MaterialTheme.colors.onBackground,
+                            )
+                        }
                     }
                 }
             )
