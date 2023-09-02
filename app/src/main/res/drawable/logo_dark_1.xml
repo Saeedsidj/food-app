@@ -3,7 +3,11 @@
     android:height="64dp"
     android:viewportWidth="64"
     android:viewportHeight="64">
-  <group>
+  <group
+      android:pivotX="32"
+      android:pivotY="32"
+      android:scaleX="0.7"
+      android:scaleY="0.7">
     <clip-path
         android:pathData="M0,0h64v64h-64z"/>
     <path
