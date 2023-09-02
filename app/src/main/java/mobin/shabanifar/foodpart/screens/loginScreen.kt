@@ -61,7 +61,7 @@ fun LoginScreen(
                     navigateToProfile()
 
                 }) {
-                    Icon(painter = painterResource(R.drawable.back), contentDescription = "")
+                    Icon(painter = painterResource(R.drawable.ic_back), contentDescription = "")
                 }
                 Text(
                     text = stringResource(id = R.string.login),

@@ -21,7 +21,6 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
@@ -64,7 +63,7 @@ fun signUpScreen(
                     navigateToProfile()
 
                 }) {
-                    Icon(painter = painterResource(R.drawable.back), contentDescription = "")
+                    Icon(painter = painterResource(R.drawable.ic_back), contentDescription = "")
                 }
                 Text(
                     text = stringResource(id = R.string.register),
