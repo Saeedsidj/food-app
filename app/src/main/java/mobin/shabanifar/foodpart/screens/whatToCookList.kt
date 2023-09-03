@@ -1,12 +1,8 @@
 package mobin.shabanifar.foodpart.screens
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 
 @Composable
-fun WhatToCook() {
-    Column {
-
-    }
+fun WhatToCookListScreen(whatDoYouHave: String, howMuchTimeHave: String, level: String) {
 
 }
