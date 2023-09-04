@@ -290,13 +290,11 @@ fun FoodItems() {
 
     LazyVerticalGrid(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(start = 40.dp, end = 40.dp) // پدینگ آیتم ها با حاشیه
-                 ,
+            .fillMaxSize(),
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(24.dp),
         verticalArrangement = Arrangement.Center,
-        contentPadding = PaddingValues(vertical = 16.dp/*, horizontal = 40.dp*/) // پدینگ آیتم ها با حاشیه = horizontal
+        contentPadding = PaddingValues(vertical = 16.dp, horizontal = 40.dp) // پدینگ آیتم ها با حاشیه = horizontal
     ) {
         items(fakeFoods) {
             Column(
