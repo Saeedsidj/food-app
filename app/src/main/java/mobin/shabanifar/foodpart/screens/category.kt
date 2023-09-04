@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import mobin.shabanifar.foodpart.R
 import mobin.shabanifar.foodpart.categoryItems
 import mobin.shabanifar.foodpart.fakeFoods
+import mobin.shabanifar.foodpart.subCategoryList
 
 @Composable
 fun Category() {
@@ -65,7 +66,8 @@ fun Category() {
                         style = MaterialTheme.typography.h1,
                     )
                 },
-                backgroundColor = MaterialTheme.colors.background
+                backgroundColor = MaterialTheme.colors.background,
+                elevation = 0.dp
             )
         }
     ) {
@@ -216,29 +218,6 @@ fun SubCategory() {
     // ذخیره ایندکسی که کلیک شده برای رنگی کردن آن
     var indexSubCategoryClicked by rememberSaveable { mutableStateOf<Int>(0) }
 
-    // لیست ساب کتگوری ها - لیست استرینگی ساده
-    val subCategoryList =
-        listOf<String>(
-            "آبگوشت",
-            "همبرگر",
-            "اشکنه",
-            "آش رشته",
-            "آبگوشت",
-            "همبرگر",
-            "اشکنه",
-            "آش رشته",
-            "آبگوشت",
-            "همبرگر",
-            "اشکنه",
-            "آش رشته",
-            "آبگوشت",
-            "همبرگر",
-            "اشکنه",
-            "آش رشته",
-
-            )
-
-
     LazyRow(
         contentPadding = PaddingValues(horizontal = 12.dp)
     ) {
@@ -293,8 +272,10 @@ fun FoodItems() {
             .fillMaxSize(),
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(24.dp),
-        verticalArrangement = Arrangement.Center,
-        contentPadding = PaddingValues(vertical = 16.dp, horizontal = 40.dp) // پدینگ آیتم ها با حاشیه = horizontal
+        contentPadding = PaddingValues(
+            vertical = 16.dp,
+            horizontal = 40.dp
+        ) // پدینگ آیتم ها با حاشیه = horizontal
     ) {
         items(fakeFoods) {
             Column(

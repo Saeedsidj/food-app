@@ -30,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,6 +42,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import mobin.shabanifar.foodpart.FakeFoods
 import mobin.shabanifar.foodpart.R
 import mobin.shabanifar.foodpart.fakeFoods
 
@@ -50,9 +52,8 @@ import mobin.shabanifar.foodpart.fakeFoods
 fun Search() {
     val keyboardController = LocalSoftwareKeyboardController.current
     var textField by remember { mutableStateOf(TextFieldValue("")) }
-    val borderSurface = MaterialTheme.colors.surface
-    val borderOnBack = MaterialTheme.colors.onBackground
-    var isWrite by remember { mutableStateOf(false) }
+    var searchText by remember { mutableStateOf("") }
+    var isSearchSuccessful: Boolean? by remember { mutableStateOf(null) }
 
     Scaffold(
         topBar = {
@@ -64,7 +65,8 @@ fun Search() {
                         style = MaterialTheme.typography.h2
                     )
                 },
-                backgroundColor = MaterialTheme.colors.background
+                backgroundColor = MaterialTheme.colors.background,
+                elevation = 0.dp
             )
         }
     ) {
@@ -76,21 +78,24 @@ fun Search() {
             TextField(
                 modifier = Modifier
                     .padding(16.dp)
-                    //.clip(MaterialTheme.shapes.medium)
                     .fillMaxWidth()
-                    //.background(MaterialTheme.colors.surface)
                     .border(
                         1.dp,
-                        if (isWrite) borderOnBack else borderSurface,
+                        when (isSearchSuccessful) {
+                            true -> MaterialTheme.colors.onBackground
+                            false -> MaterialTheme.colors.primary
+                            null -> MaterialTheme.colors.surface
+                        },
                         MaterialTheme.shapes.medium
                     ),
                 value = textField,
                 shape = MaterialTheme.shapes.medium,
                 textStyle = MaterialTheme.typography.body1,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(
-                    onDone = {
+                    onSearch = {
                         keyboardController?.hide()
+                        searchText = textField.text
                     }
                 ),
                 singleLine = true,
@@ -100,9 +105,8 @@ fun Search() {
                     focusedIndicatorColor = Color.Transparent,// خط زیر تکست فیلد وقتی روش کلیک بشه
                     unfocusedIndicatorColor = Color.Transparent, // خط زیر تکست فیلد وقتی روش کلیک نشده هنوز
                     backgroundColor = MaterialTheme.colors.surface,
-                    cursorColor= Color.Yellow, // رنگ کرسر
-
-
+                    cursorColor = Color.Yellow, // رنگ کرسر
+                    textColor = if (isSearchSuccessful == true || isSearchSuccessful == null) MaterialTheme.colors.onBackground else MaterialTheme.colors.primary,
                 ),
                 placeholder = {
                     Text(
@@ -111,53 +115,68 @@ fun Search() {
                         color = MaterialTheme.colors.onBackground
                     )
                 },
-                onValueChange = {
-                    textField = it
-                    isWrite = textField != TextFieldValue("")
+                onValueChange = { newTextValue ->
+                    textField = newTextValue
+                    // این شرط باعث میشه وقتی متن تکست فیلد خالی بشه خودکار سرچ ریست بشه و تکست فیلد برگرده به حالت اول
+                    if (newTextValue.text == "") {
+                        searchText = ""
+                        isSearchSuccessful = null
+                    }
                 },
                 trailingIcon = {
-                    if (isWrite) {
-                        IconButton(onClick = {
-                            textField = TextFieldValue("")
-                            isWrite = false
-                        }) {
+                    if (isSearchSuccessful != null) {
+                        IconButton(
+                            onClick = {
+                                textField = TextFieldValue("")
+                                searchText = ""
+                                isSearchSuccessful = null
+                            })
+                        {
                             Icon(
                                 imageVector = Icons.Filled.Clear,
                                 contentDescription = "",
-                                tint = MaterialTheme.colors.onBackground,
+                                tint = if (isSearchSuccessful == true) MaterialTheme.colors.onBackground else MaterialTheme.colors.primary,
                             )
                         }
                     }
                 }
             )
-            if (isWrite) {
+            val foundItems = fakeFoods.filter { items ->
+                items.name == searchText
+            }
+            if (foundItems.isNotEmpty()) {
+                isSearchSuccessful = true
                 Text(
                     modifier = Modifier.padding(start = 16.dp),
-                    text = stringResource(R.string.search_result, textField.text),
+                    text = stringResource(R.string.search_result, searchText),
                     style = MaterialTheme.typography.body1,
                     color = MaterialTheme.colors.onBackground
                 )
+
+                SearchedItems(foundItems)
+            } else if (searchText != "") {
+                isSearchSuccessful = false
+                SearchedFailed()
             }
-            SearchedItems(textField.text)
+
         }
     }
 }
 
 
 @Composable
-fun SearchedItems(searchValue: String) {
+fun SearchedItems(foundItems: List<FakeFoods>) {
 
     LazyVerticalGrid(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(start = 40.dp, end = 40.dp),
+            .fillMaxSize(),
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(24.dp),
-        contentPadding = PaddingValues(vertical = 16.dp)
+        contentPadding = PaddingValues(
+            vertical = 16.dp,
+            horizontal = 40.dp
+        ) // پدینگ آیتم ها با حاشیه = horizontal
     ) {
-        val foundItems = fakeFoods.filter { items ->
-            items.name == searchValue
-        }
         items(foundItems) {
             Column(
                 modifier = Modifier
@@ -182,7 +201,6 @@ fun SearchedItems(searchValue: String) {
                         .padding(start = 8.dp, bottom = 4.dp)
                 )
                 Text(
-                    //text = "زمان : " + "${it.time}" + " دقیقه",
                     text = stringResource(id = R.string.food_time, it.time),
                     style = MaterialTheme.typography.subtitle1,
                     color = MaterialTheme.colors.onSurface,
@@ -193,4 +211,20 @@ fun SearchedItems(searchValue: String) {
         }
     }
 
+}
+
+
+@Composable
+fun SearchedFailed() {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Text(
+            text = stringResource(id = R.string.oops_no_results),
+            style = MaterialTheme.typography.body1,
+            color = MaterialTheme.colors.onBackground
+        )
+    }
 }

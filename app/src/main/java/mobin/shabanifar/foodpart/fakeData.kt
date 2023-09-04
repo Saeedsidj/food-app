@@ -87,7 +87,6 @@ val fakeFoods = listOf<FakeFoods>(
     FakeFoods(image = itemImage, name = "asd", time = 15),
 )
 
-
 // فیک دیتا کتگوری
 val categoryItems = listOf<CategoryItems>(
     CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
@@ -109,15 +108,24 @@ val categoryItems = listOf<CategoryItems>(
     CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
 )
 
+// لیست ساب کتگوری ها - لیست استرینگی ساده
+val subCategoryList =
+    listOf<String>(
+        "آبگوشت",
+        "همبرگر",
+        "اشکنه",
+        "آش رشته",
+        "آبگوشت",
+        "همبرگر",
+        "اشکنه",
+        "آش رشته",
+        "آبگوشت",
+        "همبرگر",
+        "اشکنه",
+        "آش رشته",
+        "آبگوشت",
+        "همبرگر",
+        "اشکنه",
+        "آش رشته",
 
-
-
-
-
-
-
-
-
-
-
-
+        )
