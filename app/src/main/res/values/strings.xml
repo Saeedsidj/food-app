@@ -3,7 +3,7 @@
     <string name="app_name_fa">فود پارت</string>
     <string name="title_activity_splash_screen">SplashScreen</string>
     <string name="search">جستجو</string>
-    <string name="food_time">"زمان : " + %s + " دقیقه"</string>
+    <string name="food_time">زمان :  %s  دقیقه</string>
     <string name="account">حساب کاربری</string>
     <string name="grouping">دسته بندی</string>
     <string name="what_should_i_cook">چی بپزم؟</string>
@@ -59,4 +59,5 @@
     <string name="what_are_you_looking_for">دنبال چی میگردی؟</string>
     <string name="write_here">اینجا بنویس...</string>
     <string name="oops_no_results">اوپس... چیزی پیدا نشد!</string>
+    <string name="search_result">نتایج جستجو با %1$s</string>
 </resources>
