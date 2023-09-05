@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,7 +13,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,12 +31,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import mobin.shabanifar.foodpart.screens.Category
-import mobin.shabanifar.foodpart.screens.Profile
+import mobin.shabanifar.foodpart.screens.foodDetail.FoodDetail
+import mobin.shabanifar.foodpart.screens.LoginScreen
+import mobin.shabanifar.foodpart.screens.ProfileScreen
 import mobin.shabanifar.foodpart.screens.Search
+import mobin.shabanifar.foodpart.screens.foodDetail.ShowPhoto
 import mobin.shabanifar.foodpart.screens.WhatToCook
 import mobin.shabanifar.foodpart.screens.signUpScreen
 import mobin.shabanifar.foodpart.ui.theme.FoodPartTheme
-import mobin.shabanifar.foodpart.ui.theme.background
 
 
 class MainActivity : ComponentActivity() {
@@ -57,7 +57,6 @@ class MainActivity : ComponentActivity() {
                 var userName by rememberSaveable { mutableStateOf("مهمان") }
                 var isLogin by rememberSaveable { mutableStateOf(false) }
                 Scaffold(
-
                     bottomBar = {
                         if (currentDestination?.route in mainRoute) {
                             BottomNavigation(
@@ -74,7 +73,6 @@ class MainActivity : ComponentActivity() {
                                 val currentDestination = navBackStackEntry?.destination
 
                                 items.forEach { screen ->
-
                                     BottomNavigationItem(
                                         modifier = Modifier.padding(8.dp),
                                         label = {
@@ -120,8 +118,14 @@ class MainActivity : ComponentActivity() {
                         startDestination = NavigationBottom.Category.route,
                         Modifier.padding(it)
                     ) {
+                        composable("photoScreen"){
+                            ShowPhoto(navController = navController)
+                        }
+                        composable("foodDetail"){
+                            FoodDetail(navController,isLogin)
+                        }
                         composable(NavigationBottom.Category.route) {
-                            Category()
+                            Category(navController)
                         }
                         composable(NavigationBottom.Cook.route) {
                             WhatToCook()
@@ -192,9 +196,6 @@ class MainActivity : ComponentActivity() {
                                     isLogin = result
                                 }
                             )
-                        }
-                        composable("foodDetail"){
-                            FoodDetail(navController)
                         }
                     }
                 }
