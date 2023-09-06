@@ -101,7 +101,6 @@ fun Search() {
                 singleLine = true,
 
                 colors = TextFieldDefaults.textFieldColors(
-                    disabledIndicatorColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,// خط زیر تکست فیلد وقتی روش کلیک بشه
                     unfocusedIndicatorColor = Color.Transparent, // خط زیر تکست فیلد وقتی روش کلیک نشده هنوز
                     backgroundColor = MaterialTheme.colors.surface,
@@ -124,7 +123,7 @@ fun Search() {
                     }
                 },
                 trailingIcon = {
-                    if (isSearchSuccessful != null) {
+                    if (/*isSearchSuccessful != null*/textField.text.isNotEmpty()) {
                         IconButton(
                             onClick = {
                                 textField = TextFieldValue("")
@@ -135,7 +134,7 @@ fun Search() {
                             Icon(
                                 imageVector = Icons.Filled.Clear,
                                 contentDescription = "",
-                                tint = if (isSearchSuccessful == true) MaterialTheme.colors.onBackground else MaterialTheme.colors.primary,
+                                tint = if (textField.text.isNotEmpty() && isSearchSuccessful != false) MaterialTheme.colors.onBackground else MaterialTheme.colors.primary,
                             )
                         }
                     }
