@@ -1,5 +1,6 @@
 package mobin.shabanifar.foodpart.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -85,7 +86,8 @@ fun Category() {
             //خط جدا کننده اول
             Divider(
                 modifier = Modifier
-                    .padding(start = 16.dp, end = 16.dp),
+                    .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+                    .height(0.5.dp),
                 //startIndent = 16.dp,
                 thickness = 1.dp,
                 color = MaterialTheme.colors.onSurface
@@ -97,7 +99,9 @@ fun Category() {
 
                 // جدا کننده دوم
                 Divider(
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp, top = 8.dp)
+                        .height(0.5.dp),
                     thickness = 1.dp,
                     color = MaterialTheme.colors.onSurface
                 )
@@ -219,20 +223,17 @@ fun SubCategory() {
     var indexSubCategoryClicked by rememberSaveable { mutableStateOf<Int>(0) }
 
     LazyRow(
-        contentPadding = PaddingValues(horizontal = 12.dp)
+        contentPadding = PaddingValues(horizontal = 16.dp), // پدینگ ساب کتگوری از کنار صفحه
+        horizontalArrangement = Arrangement.spacedBy(8.dp) // پدینگ بین ساب کتگوری ها
     ) {
         itemsIndexed(subCategoryList) { index, it ->
             Chip(
-                modifier = Modifier
-                    .padding(start = 4.dp, end = 4.dp, top = 8.dp, bottom = 8.dp)
-                    .border(
-                        if (indexSubCategoryClicked == index) 1.dp else (-1).dp,
-                        MaterialTheme.colors.primary,
-                        MaterialTheme.shapes.medium
-                    )
-                    .height(32.dp)
-                //.widthIn(min = 50.dp)
-                ,
+                border = if (indexSubCategoryClicked == index) {
+                    BorderStroke(1.dp, MaterialTheme.colors.primary)
+                } else {
+                    BorderStroke(0.dp, MaterialTheme.colors.surface)
+                },
+                modifier = Modifier.height(32.dp),
                 shape = MaterialTheme.shapes.medium,
                 colors = chipColors(
                     backgroundColor = if (indexSubCategoryClicked == index) Color(0x1AFF6262) else MaterialTheme.colors.surface,
