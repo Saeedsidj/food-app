@@ -42,12 +42,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import mobin.shabanifar.foodpart.R
 import mobin.shabanifar.foodpart.categoryItems
 import mobin.shabanifar.foodpart.fakeFoods
 
 @Composable
-fun Category() {
+fun Category(navController: NavHostController) {
     // برای نشون دادن صفحه غذایی یافت نشد
     var isFood by remember { mutableStateOf<Boolean>(true) }
     val lambIsFood = { it: Boolean -> isFood = it }
@@ -106,7 +107,7 @@ fun Category() {
             }
             // برای نمایش لیست غذا ها یا صفحه غذایی نیست
             if (isFood) {
-                FoodItems()
+                FoodItems(navController)
 
             } else {
                 NoFood()
@@ -286,7 +287,7 @@ fun SubCategory() {
 
 
 @Composable
-fun FoodItems() {
+fun FoodItems(navController: NavHostController) {
 
     LazyVerticalGrid(
         modifier = Modifier
@@ -301,7 +302,9 @@ fun FoodItems() {
                 modifier = Modifier
                     .padding(bottom = 24.dp)
                     .clip(MaterialTheme.shapes.medium)
-                    .clickable { /*TODO*/ }
+                    .clickable {
+                        navController.navigate("foodDetail")
+                    }
             ) {
                 Image(
                     painter = painterResource(id = it.image),

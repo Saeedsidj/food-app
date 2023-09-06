@@ -32,9 +32,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import mobin.shabanifar.foodpart.screens.Category
+import mobin.shabanifar.foodpart.screens.foodDetail.FoodDetail
 import mobin.shabanifar.foodpart.screens.LoginScreen
 import mobin.shabanifar.foodpart.screens.ProfileScreen
 import mobin.shabanifar.foodpart.screens.Search
+import mobin.shabanifar.foodpart.screens.foodDetail.ShowPhoto
 import mobin.shabanifar.foodpart.screens.WhatToCook
 import mobin.shabanifar.foodpart.screens.WhatToCookListScreen
 import mobin.shabanifar.foodpart.screens.signUpScreen
@@ -59,7 +61,6 @@ class MainActivity : ComponentActivity() {
                 var userName by rememberSaveable { mutableStateOf("مهمان") }
                 var isLogin by rememberSaveable { mutableStateOf(false) }
                 Scaffold(
-
                     bottomBar = {
                         if (currentDestination?.route in mainRoute) {
                             BottomNavigation(
@@ -120,8 +121,14 @@ class MainActivity : ComponentActivity() {
                         startDestination = NavigationBottom.Category.route,
                         Modifier.padding(it)
                     ) {
+                        composable("photoScreen"){
+                            ShowPhoto(navController = navController)
+                        }
+                        composable("foodDetail"){
+                            FoodDetail(navController,isLogin)
+                        }
                         composable(NavigationBottom.Category.route) {
-                            Category()
+                            Category(navController)
                         }
                         composable(NavigationBottom.Cook.route) {
                             WhatToCook(
