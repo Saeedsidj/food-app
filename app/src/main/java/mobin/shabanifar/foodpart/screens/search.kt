@@ -1,7 +1,6 @@
 package mobin.shabanifar.foodpart.screens
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -43,7 +42,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import mobin.shabanifar.foodpart.R
-import mobin.shabanifar.foodpart.fakeFoodItems
+import mobin.shabanifar.foodpart.fakeFoods
 
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -77,9 +76,9 @@ fun Search() {
             TextField(
                 modifier = Modifier
                     .padding(16.dp)
-                    .clip(MaterialTheme.shapes.medium)
+                    //.clip(MaterialTheme.shapes.medium)
                     .fillMaxWidth()
-                    .background(MaterialTheme.colors.surface)
+                    //.background(MaterialTheme.colors.surface)
                     .border(
                         1.dp,
                         if (isWrite) borderOnBack else borderSurface,
@@ -95,10 +94,15 @@ fun Search() {
                     }
                 ),
                 singleLine = true,
+
                 colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
+                    focusedIndicatorColor = Color.Transparent,// خط زیر تکست فیلد وقتی روش کلیک بشه
+                    unfocusedIndicatorColor = Color.Transparent, // خط زیر تکست فیلد وقتی روش کلیک نشده هنوز
+                    backgroundColor = MaterialTheme.colors.surface,
+                    cursorColor= Color.Yellow, // رنگ کرسر
+
+
                 ),
                 placeholder = {
                     Text(
@@ -129,7 +133,7 @@ fun Search() {
             if (isWrite) {
                 Text(
                     modifier = Modifier.padding(start = 16.dp),
-                    text = "نتایج جستجو با ${textField.text}",
+                    text = stringResource(R.string.search_result, textField.text),
                     style = MaterialTheme.typography.body1,
                     color = MaterialTheme.colors.onBackground
                 )
@@ -151,7 +155,7 @@ fun SearchedItems(searchValue: String) {
         horizontalArrangement = Arrangement.spacedBy(24.dp),
         contentPadding = PaddingValues(vertical = 16.dp)
     ) {
-        val foundItems = fakeFoodItems.filter { items ->
+        val foundItems = fakeFoods.filter { items ->
             items.name == searchValue
         }
         items(foundItems) {
@@ -178,7 +182,8 @@ fun SearchedItems(searchValue: String) {
                         .padding(start = 8.dp, bottom = 4.dp)
                 )
                 Text(
-                    text = "زمان : " + "${it.time}" + " دقیقه",
+                    //text = "زمان : " + "${it.time}" + " دقیقه",
+                    text = stringResource(id = R.string.food_time, it.time),
                     style = MaterialTheme.typography.subtitle1,
                     color = MaterialTheme.colors.onSurface,
                     modifier = Modifier
