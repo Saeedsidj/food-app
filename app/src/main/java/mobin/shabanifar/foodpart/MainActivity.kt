@@ -126,7 +126,13 @@ class MainActivity : ComponentActivity() {
                         composable(NavigationBottom.Cook.route) {
                             WhatToCook(
                                 navigateToWTCList = { whatDoYouHave, howMuchTimeHave, level ->
-                                    navController.navigate("whatToCookList?whatDoYouHave=$whatDoYouHave&howMuchTimeHave=$howMuchTimeHave&level=$level")
+                                    navController.navigate("whatToCookList?whatDoYouHave=$whatDoYouHave&howMuchTimeHave=$howMuchTimeHave&level=$level") {
+                                        popUpTo(NavigationBottom.Cook.route) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                    }
+
                                 }
                             )
                         }
@@ -218,9 +224,18 @@ class MainActivity : ComponentActivity() {
                             val howMuchTimeHave = getData.arguments?.getString(HOW_MUCH_TIME_HAVE)
                             val level = getData.arguments?.getString(LEVEL)
                             WhatToCookListScreen(
-                                whatDoYouHave.toString(),
-                                howMuchTimeHave.toString(),
-                                level.toString()
+                                whatDoYouHave,
+                                howMuchTimeHave,
+                                level,
+                                navigateToWTCForm = {
+                                    navController.navigate(NavigationBottom.Cook.route) {
+                                        popUpTo(NavigationBottom.Cook.route) {
+                                            inclusive = true
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                    }
+                                }
                             )
                         }
                     }

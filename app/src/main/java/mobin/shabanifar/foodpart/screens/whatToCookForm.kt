@@ -283,7 +283,7 @@ fun WhatToCook(
                         navigateToWTCList(
                             valueTextWhatDoYouHave,
                             valueTextHowMuchTimeDoYouHave,
-                            selectedLevel.toString()
+                            selectedLevel
                         )
                     }
                 }, modifier = Modifier
