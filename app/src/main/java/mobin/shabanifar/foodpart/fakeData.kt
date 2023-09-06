@@ -1,7 +1,7 @@
 package mobin.shabanifar.foodpart
 
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
+// فیک دیتا آیتم های غذا
+val itemImage = R.drawable.food_itemj
 
 // کلاس فیک دیتا برای آیتم های غذا
 data class FakeFoods(
@@ -13,9 +13,14 @@ data class FakeFoods(
     var dinner: Boolean = true
 )
 
-// فیک دیتا آیتم های غذا
-val itemImage = R.drawable.food_itemj
-val fakeFoodItems = listOf<FakeFoods>(
+// کلاس فیک دیتا برای آیتم های کتگوری
+data class CategoryItems(
+    val name: String,
+    val image: Int,
+    var isClicked: Boolean = false
+)
+
+val fakeFoods = listOf<FakeFoods>(
     FakeFoods(image = itemImage, name = "سیب زمینی", time = 15),
     FakeFoods(image = itemImage, name = "کوکو", time = 15),
     FakeFoods(image = itemImage, name = "آش", time = 15),
@@ -83,41 +88,36 @@ val fakeFoodItems = listOf<FakeFoods>(
 )
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-// کلاس فیک دیتا برای آیتم های کتگوری
-data class CategoryItems(
-    val name: String,
-    val image: Int,
-    var isClicked: Boolean = false
-)
 // فیک دیتا کتگوری
-val categoryListItems = listOf<CategoryItems>(
-        CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
-        CategoryItems(name = "غذا نیست", image = R.drawable.abgoosht),
-        CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
-        CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
-        CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
-        CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
-        CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
-        CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
-        CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
-        CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
-        CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
-        CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
-        CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
-        CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
-        CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
-        CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
-        CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
-    )
+val categoryItems = listOf<CategoryItems>(
+    CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
+    CategoryItems(name = "بی ساب", image = R.drawable.abgoosht),
+    CategoryItems(name = "غذا نیست", image = R.drawable.abgoosht),
+    CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
+    CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
+    CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
+    CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
+    CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
+    CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
+    CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
+    CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
+    CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
+    CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
+    CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
+    CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
+    CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
+    CategoryItems(name = "آبگوشت", image = R.drawable.abgoosht),
+)
+
+
+
+
+
+
+
+
+
+
+
+
+

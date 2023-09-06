@@ -1,6 +1,5 @@
 package mobin.shabanifar.foodpart.screens
 
-import android.graphics.drawable.VectorDrawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,7 +21,6 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
@@ -37,10 +35,8 @@ import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -67,7 +63,7 @@ fun signUpScreen(
                     navigateToProfile()
 
                 }) {
-                    Icon(imageVector = ImageVector.vectorResource(R.drawable.ic_back) , contentDescription = "")
+                    Icon(painter = painterResource(R.drawable.ic_back), contentDescription = "")
                 }
                 Text(
                     text = stringResource(id = R.string.register),

@@ -13,7 +13,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -26,10 +25,12 @@ import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import mobin.shabanifar.foodpart.screens.Category
 import mobin.shabanifar.foodpart.screens.foodDetail.FoodDetail
 import mobin.shabanifar.foodpart.screens.LoginScreen
@@ -37,8 +38,12 @@ import mobin.shabanifar.foodpart.screens.ProfileScreen
 import mobin.shabanifar.foodpart.screens.Search
 import mobin.shabanifar.foodpart.screens.foodDetail.ShowPhoto
 import mobin.shabanifar.foodpart.screens.WhatToCook
+import mobin.shabanifar.foodpart.screens.WhatToCookListScreen
 import mobin.shabanifar.foodpart.screens.signUpScreen
 import mobin.shabanifar.foodpart.ui.theme.FoodPartTheme
+import mobin.shabanifar.foodpart.utils.HOW_MUCH_TIME_HAVE
+import mobin.shabanifar.foodpart.utils.LEVEL
+import mobin.shabanifar.foodpart.utils.WHAT_DO_YOU_HAVE
 
 
 class MainActivity : ComponentActivity() {
@@ -50,7 +55,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             FoodPartTheme {
-                val scaffoldState = rememberScaffoldState()
                 val navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
@@ -100,8 +104,7 @@ class MainActivity : ComponentActivity() {
                                         icon = {
                                             Icon(
                                                 painterResource(id = screen.icon),
-                                                contentDescription = "",
-                                                //  tint = MaterialTheme.colors.onBackground
+                                                contentDescription = ""
                                             )
                                         },
                                         selectedContentColor = Color.Red,
@@ -128,7 +131,11 @@ class MainActivity : ComponentActivity() {
                             Category(navController)
                         }
                         composable(NavigationBottom.Cook.route) {
-                            WhatToCook()
+                            WhatToCook(
+                                navigateToWTCList = { whatDoYouHave, howMuchTimeHave, level ->
+                                    navController.navigate("whatToCookList?whatDoYouHave=$whatDoYouHave&howMuchTimeHave=$howMuchTimeHave&level=$level")
+                                }
+                            )
                         }
                         composable(NavigationBottom.Search.route) {
                             Search()
@@ -195,6 +202,32 @@ class MainActivity : ComponentActivity() {
                                 isLogin = { result ->
                                     isLogin = result
                                 }
+                            )
+                        }
+                        composable(
+                            route = "whatToCookList?whatDoYouHave={whatDoYouHave}&howMuchTimeHave={howMuchTimeHave}&level={level}",
+                            arguments = listOf(
+                                navArgument(WHAT_DO_YOU_HAVE) {
+                                    type = NavType.StringType
+                                    nullable = true
+                                },
+                                navArgument(HOW_MUCH_TIME_HAVE) {
+                                    type = NavType.StringType
+                                    nullable = true
+                                },
+                                navArgument(LEVEL) {
+                                    type = NavType.StringType
+                                    nullable = true
+                                }
+                            )
+                        ) { getData ->
+                            val whatDoYouHave = getData.arguments?.getString(WHAT_DO_YOU_HAVE)
+                            val howMuchTimeHave = getData.arguments?.getString(HOW_MUCH_TIME_HAVE)
+                            val level = getData.arguments?.getString(LEVEL)
+                            WhatToCookListScreen(
+                                whatDoYouHave.toString(),
+                                howMuchTimeHave.toString(),
+                                level.toString()
                             )
                         }
                     }
