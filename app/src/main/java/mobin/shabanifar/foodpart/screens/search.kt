@@ -42,14 +42,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import mobin.shabanifar.foodpart.FakeFoods
+import mobin.shabanifar.foodpart.NavigationBottom
 import mobin.shabanifar.foodpart.R
 import mobin.shabanifar.foodpart.fakeFoods
 
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun Search() {
+fun Search(
+    navController:NavController
+) {
     val keyboardController = LocalSoftwareKeyboardController.current
     var textField by remember { mutableStateOf(TextFieldValue("")) }
     var searchText by remember { mutableStateOf("") }
@@ -152,7 +156,7 @@ fun Search() {
                     color = MaterialTheme.colors.onBackground
                 )
 
-                SearchedItems(foundItems)
+                SearchedItems(foundItems,navController)
             } else if (searchText != "") {
                 isSearchSuccessful = false
                 SearchedFailed()
@@ -164,7 +168,7 @@ fun Search() {
 
 
 @Composable
-fun SearchedItems(foundItems: List<FakeFoods>) {
+fun SearchedItems(foundItems: List<FakeFoods>, navController: NavController) {
 
     LazyVerticalGrid(
         modifier = Modifier
@@ -181,7 +185,9 @@ fun SearchedItems(foundItems: List<FakeFoods>) {
                 modifier = Modifier
                     .padding(bottom = 24.dp)
                     .clip(MaterialTheme.shapes.medium)
-                    .clickable { /*TODO*/ }
+                    .clickable {
+                        navController.navigate(NavigationBottom.FoodDetail.route)
+                    }
             ) {
                 Image(
                     painter = painterResource(id = it.image),

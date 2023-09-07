@@ -209,7 +209,7 @@ private fun TabRowDescription(
     TabRow(
         modifier = Modifier
             .height(40.dp)
-            .width(250.dp),
+            .fillMaxWidth(0.7f),
         backgroundColor = MaterialTheme.colors.background,
         selectedTabIndex = tabIndex,
         indicator = {
@@ -218,7 +218,6 @@ private fun TabRowDescription(
                     .tabIndicatorOffset(it[pagerState.currentPage])
                     .height(2.dp)
                     .background(MaterialTheme.colors.primary)
-                    .width(it[tabIndex].width * 0.6f)
             )
         }, divider = {}
     ) {

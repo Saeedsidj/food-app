@@ -137,7 +137,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(NavigationBottom.Search.route) {
-                            Search()
+                            Search(navController)
                         }
                         composable(NavigationBottom.Profile.route) {
                             ProfileScreen(
