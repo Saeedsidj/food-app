@@ -14,6 +14,7 @@ sealed class NavigationBottom(
     object WhatToCook:NavigationBottom(R.string.what_should_i_cook,"whatToCookList?whatDoYouHave={whatDoYouHave}&howMuchTimeHave={howMuchTimeHave}&level={level}",null)
     object SignUp:NavigationBottom(R.string.register,"sign_up",null)
     object Login:NavigationBottom(R.string.login,"login",null)
+    object ShowFoodByAttributes:NavigationBottom(R.string.show_food_by_attribute,"showFoodByAttributes/{title}",null)
 
 }
 val items = listOf(

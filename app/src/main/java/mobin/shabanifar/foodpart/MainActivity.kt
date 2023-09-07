@@ -35,6 +35,7 @@ import mobin.shabanifar.foodpart.screens.Category
 import mobin.shabanifar.foodpart.screens.LoginScreen
 import mobin.shabanifar.foodpart.screens.ProfileScreen
 import mobin.shabanifar.foodpart.screens.Search
+import mobin.shabanifar.foodpart.screens.ShowFoodByAttributes
 import mobin.shabanifar.foodpart.screens.WhatToCook
 import mobin.shabanifar.foodpart.screens.WhatToCookListScreen
 import mobin.shabanifar.foodpart.screens.foodDetail.FoodDetail
@@ -52,7 +53,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
-
         setContent {
             FoodPartTheme {
                 val navController = rememberNavController()
@@ -103,7 +103,7 @@ class MainActivity : ComponentActivity() {
                                         },
                                         icon = {
                                             Icon(
-                                                painterResource(id = screen.icon ?: 1),
+                                                painterResource(id = screen.icon!!),
                                                 contentDescription = ""
                                             )
                                         },
@@ -121,11 +121,16 @@ class MainActivity : ComponentActivity() {
                         startDestination = NavigationBottom.Category.route,
                         Modifier.padding(it)
                     ) {
-                        composable("photoScreen") {
+                        composable(NavigationBottom.FoodPhoto.route){
                             ShowPhoto(navController = navController)
                         }
-                        composable("foodDetail") {
-                            FoodDetail(navController, isLogin)
+                        composable(NavigationBottom.FoodDetail.route) {
+                            FoodDetail(
+                                navController,
+                                isLogin,
+                                toAttributesScreen = { title: String ->
+                                    navController.navigate("showFoodByAttributes/$title")
+                                })
                         }
                         composable(NavigationBottom.Category.route) {
                             Category(navController)
@@ -138,14 +143,14 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(NavigationBottom.Search.route) {
-                            Search()
+                            Search(navController)
                         }
                         composable(NavigationBottom.Profile.route) {
                             ProfileScreen(
                                 usernameSave = userName,
                                 isLogin = isLogin,
                                 navigateToProfileSignIn = {
-                                    navController.navigate("sign_up") {
+                                    navController.navigate(NavigationBottom.SignUp.route) {
                                         popUpTo(NavigationBottom.Profile.route) {
                                             saveState = true
                                         }
@@ -157,7 +162,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
-                        composable("sign_up") {
+                        composable(NavigationBottom.SignUp.route) {
                             signUpScreen(
                                 isLogin = { result ->
                                     isLogin = result
@@ -176,17 +181,17 @@ class MainActivity : ComponentActivity() {
 
                                 },
                                 navigateToProfileLogin = {
-                                    navController.navigate("login") {
+                                    navController.navigate(NavigationBottom.Login.route) {
                                         popUpTo(NavigationBottom.Profile.route)
                                     }
                                 }
 
                             )
                         }
-                        composable("login") {
+                        composable(NavigationBottom.Login.route) {
                             LoginScreen(
                                 navigateToProfileSignIn = {
-                                    navController.navigate("sign_up") {
+                                    navController.navigate(NavigationBottom.SignUp.route) {
                                         popUpTo(NavigationBottom.Profile.route)
                                     }
                                 },
@@ -208,7 +213,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(
-                            route = "whatToCookList?whatDoYouHave={whatDoYouHave}&howMuchTimeHave={howMuchTimeHave}&level={level}",
+                            route = NavigationBottom.WhatToCook.route,
                             arguments = listOf(
                                 navArgument(WHAT_DO_YOU_HAVE) {
                                     type = NavType.StringType
@@ -244,6 +249,17 @@ class MainActivity : ComponentActivity() {
                                     navController.popBackStack()
                                 }
                             )
+                        }
+                        composable(
+                            route = NavigationBottom.ShowFoodByAttributes.route,
+                            arguments = listOf(
+                                navArgument("title") {
+                                    type = NavType.StringType
+                                }
+                            )
+                        ) { entry ->
+                            val topTitle = entry.arguments?.getString("title")!!
+                            ShowFoodByAttributes(topTitle,navController)
                         }
                     }
                 }

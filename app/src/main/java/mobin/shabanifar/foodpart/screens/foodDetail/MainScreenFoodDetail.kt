@@ -23,8 +23,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Tab
@@ -53,6 +51,7 @@ import mobin.shabanifar.foodpart.ui.theme.green
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainScreen(
+    toAttributesScreen: (String) -> Unit,
     it: PaddingValues,
     scrollState: ScrollState,
     navController: NavHostController,
@@ -70,7 +69,7 @@ fun MainScreen(
         horizontalAlignment = Alignment.Start
     ) {
         ImageFood(navController)
-        AttributeRow()
+        AttributeRow(navController, toAttributesScreen = toAttributesScreen)
         TabRowDescription(tabIndex, pagerState, tabData, coroutineScope)
         LazyRowForMoreFood()
     }
@@ -93,7 +92,7 @@ private fun ImageFood(navController: NavHostController) {
 }
 
 @Composable
-private fun AttributeRow() {
+private fun AttributeRow(navController: NavHostController, toAttributesScreen: (String) -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -124,7 +123,7 @@ private fun AttributeRow() {
                     color = Color(0x1AFF6262),
                 )
                 .clickable {
-
+                    toAttributesScreen("30 دقیقه")
                 }
         ) {
             Image(painterResource(R.drawable.time), contentDescription = "")
@@ -145,7 +144,6 @@ private fun AttributeRow() {
                     color = Color(0xFF222228)
                 )
                 .clickable {
-
                 }
                 .padding(5.dp),
             style = MaterialTheme.typography.caption)
@@ -159,7 +157,6 @@ private fun AttributeRow() {
                     color = Color(0xFF222228),
                 )
                 .clickable {
-
                 }
                 .padding(5.dp),
             style = MaterialTheme.typography.caption
@@ -184,7 +181,6 @@ private fun AttributeRow() {
                     color = Color(0x1A00FF67),
                 )
                 .clickable {
-
                 }
                 .padding(5.dp)
         ) {
