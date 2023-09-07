@@ -241,15 +241,9 @@ class MainActivity : ComponentActivity() {
                                     }
                                 },
                                 navigateToWTCForm = {
-                                    navController.navigate(NavigationBottom.WhatToCook.route) {
-                                        popUpTo(NavigationBottom.Profile.route) {
-                                            inclusive = true
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                    }
-                                })
-
+                                    navController.popBackStack()
+                                }
+                            )
                         }
                     }
                 }
