@@ -71,7 +71,7 @@ fun MainScreen(
         ImageFood(navController)
         AttributeRow(navController, toAttributesScreen = toAttributesScreen)
         TabRowDescription(tabIndex, pagerState, tabData, coroutineScope)
-        LazyRowForMoreFood()
+        LazyRowForMoreFood(navController,toAttributesScreen = toAttributesScreen)
     }
 }
 
@@ -263,7 +263,10 @@ private fun TabRowDescription(
 }
 
 @Composable
-private fun LazyRowForMoreFood() {
+private fun LazyRowForMoreFood(
+    navController: NavHostController,
+    toAttributesScreen: (String) -> Unit
+) {
     Text(
         text = "بیشتر از این دسته بندی",
         style = MaterialTheme.typography.h3,
@@ -280,7 +283,9 @@ private fun LazyRowForMoreFood() {
                         .width(136.dp)
                         .height(136.dp)
                         .clickable {
-
+                            navController.navigate(NavigationBottom.FoodDetail.route){
+                                launchSingleTop=true
+                            }
                         }
                 ) {
                     Image(
@@ -326,7 +331,7 @@ private fun LazyRowForMoreFood() {
                                 color = Color(0x4D747474),
                             )
                             .clickable {
-
+                                toAttributesScreen("بیشتر از این دسته")
                             }
                     ) {
                         Text(text = "بیشتر", style = MaterialTheme.typography.body1)

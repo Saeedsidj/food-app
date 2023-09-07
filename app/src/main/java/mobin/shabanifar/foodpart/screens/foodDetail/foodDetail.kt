@@ -8,14 +8,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
-import androidx.compose.material.ButtonColors
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
@@ -39,18 +37,16 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
-import mobin.shabanifar.foodpart.NavigationBottom
 import mobin.shabanifar.foodpart.R
 import mobin.shabanifar.foodpart.tabData
 import mobin.shabanifar.foodpart.ui.theme.FoodPartTheme
@@ -82,7 +78,12 @@ fun FoodDetail(
     ModalBottomSheetLayout(
         sheetBackgroundColor = MaterialTheme.colors.secondary,
         sheetState = modalSheetState,
-        sheetShape = RoundedCornerShape(bottomEnd = 0.dp, bottomStart = 0.dp, topStart = 16.dp, topEnd = 16.dp),
+        sheetShape = RoundedCornerShape(
+            bottomEnd = 0.dp,
+            bottomStart = 0.dp,
+            topStart = 16.dp,
+            topEnd = 16.dp
+        ),
         scrimColor = Color.Transparent,
         sheetContent = {
             Column(
@@ -168,7 +169,8 @@ fun FoodDetail(
                         elevation = 0.dp
                     ) {
                         IconButton(onClick = {
-                            navController.navigateUp()}) {
+                            navController.navigateUp()
+                        }) {
                             Icon(
                                 painterResource(R.drawable.ic_back),
                                 contentDescription = "",
