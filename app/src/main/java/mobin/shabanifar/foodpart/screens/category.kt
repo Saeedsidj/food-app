@@ -44,6 +44,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import kotlinx.coroutines.coroutineScope
+import mobin.shabanifar.foodpart.NavigationBottom
 import mobin.shabanifar.foodpart.R
 import mobin.shabanifar.foodpart.categoryItems
 import mobin.shabanifar.foodpart.fakeFoods
@@ -108,7 +110,7 @@ fun Category(navController: NavHostController) {
                 )
             } else {
                 if (isFood) {
-                    FoodItems()
+                    FoodItems(navController)
                 }
             }
             // برای نمایش لیست غذا ها یا صفحه غذایی نیست
@@ -285,7 +287,9 @@ fun FoodItems(navController: NavHostController) {
                     .padding(bottom = 24.dp)
                     .clip(MaterialTheme.shapes.medium)
                     .clickable {
-                        navController.navigate("foodDetail")
+                        navController.navigate(NavigationBottom.FoodDetail.route){
+                            launchSingleTop = true
+                        }
                     }
             ) {
                 Image(

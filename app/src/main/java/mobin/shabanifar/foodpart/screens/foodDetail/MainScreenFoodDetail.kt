@@ -23,6 +23,8 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Tab
@@ -42,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import mobin.shabanifar.foodpart.NavigationBottom
 import mobin.shabanifar.foodpart.R
 import mobin.shabanifar.foodpart.detailList
 import mobin.shabanifar.foodpart.ui.theme.green
@@ -60,7 +63,7 @@ fun MainScreen(
 ) {
     Column(
         Modifier
-            .padding(it)
+            .padding(start = 13.dp, end = 13.dp)
             .fillMaxSize()
             .verticalScroll(state = scrollState),
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -83,7 +86,7 @@ private fun ImageFood(navController: NavHostController) {
             .width(380.dp)
             .clip(shape = RoundedCornerShape(16.dp))
             .clickable {
-                navController.navigate("photoScreen")
+                navController.navigate(NavigationBottom.FoodPhoto.route)
             },
         contentScale = ContentScale.Crop
     )
@@ -325,7 +328,7 @@ private fun LazyRowForMoreFood() {
                             .width(136.dp)
                             .height(80.dp)
                             .background(
-                                color = MaterialTheme.colors.secondary,
+                                color = Color(0x4D747474),
                             )
                             .clickable {
 
