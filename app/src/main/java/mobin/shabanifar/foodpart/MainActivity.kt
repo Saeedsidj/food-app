@@ -32,13 +32,13 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import mobin.shabanifar.foodpart.screens.Category
-import mobin.shabanifar.foodpart.screens.foodDetail.FoodDetail
 import mobin.shabanifar.foodpart.screens.LoginScreen
 import mobin.shabanifar.foodpart.screens.ProfileScreen
 import mobin.shabanifar.foodpart.screens.Search
-import mobin.shabanifar.foodpart.screens.foodDetail.ShowPhoto
 import mobin.shabanifar.foodpart.screens.WhatToCook
 import mobin.shabanifar.foodpart.screens.WhatToCookListScreen
+import mobin.shabanifar.foodpart.screens.foodDetail.FoodDetail
+import mobin.shabanifar.foodpart.screens.foodDetail.ShowPhoto
 import mobin.shabanifar.foodpart.screens.signUpScreen
 import mobin.shabanifar.foodpart.ui.theme.FoodPartTheme
 import mobin.shabanifar.foodpart.utils.HOW_MUCH_TIME_HAVE
@@ -52,6 +52,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
+
         setContent {
             FoodPartTheme {
                 val navController = rememberNavController()
@@ -102,7 +103,7 @@ class MainActivity : ComponentActivity() {
                                         },
                                         icon = {
                                             Icon(
-                                                painterResource(id = screen.icon ?: R.drawable.food_itemj),
+                                                painterResource(id = screen.icon ?: 1),
                                                 contentDescription = ""
                                             )
                                         },
@@ -120,11 +121,11 @@ class MainActivity : ComponentActivity() {
                         startDestination = NavigationBottom.Category.route,
                         Modifier.padding(it)
                     ) {
-                        composable(NavigationBottom.FoodPhoto.route){
+                        composable("photoScreen") {
                             ShowPhoto(navController = navController)
                         }
-                        composable(NavigationBottom.FoodDetail.route){
-                            FoodDetail(navController,isLogin)
+                        composable("foodDetail") {
+                            FoodDetail(navController, isLogin)
                         }
                         composable(NavigationBottom.Category.route) {
                             Category(navController)
@@ -144,7 +145,7 @@ class MainActivity : ComponentActivity() {
                                 usernameSave = userName,
                                 isLogin = isLogin,
                                 navigateToProfileSignIn = {
-                                    navController.navigate(NavigationBottom.SignUp.route) {
+                                    navController.navigate("sign_up") {
                                         popUpTo(NavigationBottom.Profile.route) {
                                             saveState = true
                                         }
@@ -156,7 +157,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
-                        composable(NavigationBottom.SignUp.route) {
+                        composable("sign_up") {
                             signUpScreen(
                                 isLogin = { result ->
                                     isLogin = result
@@ -175,17 +176,17 @@ class MainActivity : ComponentActivity() {
 
                                 },
                                 navigateToProfileLogin = {
-                                    navController.navigate(NavigationBottom.Login.route) {
+                                    navController.navigate("login") {
                                         popUpTo(NavigationBottom.Profile.route)
                                     }
                                 }
 
                             )
                         }
-                        composable(NavigationBottom.Login.route) {
+                        composable("login") {
                             LoginScreen(
                                 navigateToProfileSignIn = {
-                                    navController.navigate(NavigationBottom.SignUp.route) {
+                                    navController.navigate("sign_up") {
                                         popUpTo(NavigationBottom.Profile.route)
                                     }
                                 },
@@ -207,7 +208,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(
-                            route = NavigationBottom.WhatToCook.route,
+                            route = "whatToCookList?whatDoYouHave={whatDoYouHave}&howMuchTimeHave={howMuchTimeHave}&level={level}",
                             arguments = listOf(
                                 navArgument(WHAT_DO_YOU_HAVE) {
                                     type = NavType.StringType
@@ -229,8 +230,26 @@ class MainActivity : ComponentActivity() {
                             WhatToCookListScreen(
                                 whatDoYouHave.toString(),
                                 howMuchTimeHave.toString(),
-                                level.toString()
-                            )
+                                level.toString(),
+                                navigateToDetailScreen = {
+                                    navController.navigate(NavigationBottom.FoodDetail.route) {
+                                        popUpTo(NavigationBottom.Profile.route) {
+                                            inclusive = true
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                    }
+                                },
+                                navigateToWTCForm = {
+                                    navController.navigate(NavigationBottom.WhatToCook.route) {
+                                        popUpTo(NavigationBottom.Profile.route) {
+                                            inclusive = true
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                    }
+                                })
+
                         }
                     }
                 }
