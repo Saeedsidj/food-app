@@ -5,7 +5,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,7 +25,6 @@ import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
@@ -42,7 +40,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -62,7 +59,11 @@ import mobin.shabanifar.foodpart.ui.theme.shapes
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun FoodDetail(navController: NavHostController, isLogin: Boolean) {
+fun FoodDetail(
+    navController: NavHostController,
+    isLogin: Boolean,
+    toAttributesScreen: (String) -> Unit
+) {
 
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
@@ -180,7 +181,6 @@ fun FoodDetail(navController: NavHostController, isLogin: Boolean) {
                             color = MaterialTheme.colors.onBackground
                         )
                         Spacer(modifier = Modifier.weight(1f))
-
                         IconButton(
                             onClick = { showMenu = !showMenu }) {
                             Icon(
@@ -202,6 +202,7 @@ fun FoodDetail(navController: NavHostController, isLogin: Boolean) {
                 }
             ) {
                 MainScreen(
+                    toAttributesScreen = toAttributesScreen,
                     it,
                     scrollState,
                     navController,

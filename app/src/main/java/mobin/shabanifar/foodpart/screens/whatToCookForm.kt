@@ -40,6 +40,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import mobin.shabanifar.foodpart.R
 import mobin.shabanifar.foodpart.data.LevelRadioBtnState
+import mobin.shabanifar.foodpart.ui.theme.green
 
 @Composable
 fun WhatToCook(
@@ -77,15 +78,14 @@ fun WhatToCook(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
-                .padding(horizontal = 16.dp),
+                .padding(it),
             verticalArrangement = Arrangement.Top
         ) {
             if (isShowVisible) {
                 Column(
                     modifier = Modifier
                         .padding(it)
-                        .padding(bottom = 16.dp)
+                        .padding(bottom = 16.dp, start = 16.dp, end = 16.dp)
                         .fillMaxWidth()
                         .clip(MaterialTheme.shapes.medium)
                         .background(MaterialTheme.colors.surface)
@@ -127,7 +127,7 @@ fun WhatToCook(
                 },
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
-                    .padding(bottom = 8.dp)
+                    .padding(bottom = 8.dp, start = 16.dp, end = 16.dp)
                     .background(
                         shape = MaterialTheme.shapes.medium,
                         color = MaterialTheme.colors.surface
@@ -148,8 +148,9 @@ fun WhatToCook(
                 },
                 colors = TextFieldDefaults.textFieldColors(
                     focusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
+                    unfocusedIndicatorColor = Color.Transparent,
+                    backgroundColor = MaterialTheme.colors.surface,
+                    textColor = MaterialTheme.colors.onBackground
                 ),
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next,
@@ -157,12 +158,12 @@ fun WhatToCook(
                 )
             )
             Text(
-                modifier = Modifier.padding(bottom = 8.dp),
+                modifier = Modifier.padding(bottom = 8.dp, start = 16.dp, end = 16.dp),
                 text = stringResource(id = R.string.separate_with_comma),
                 style = MaterialTheme.typography.body1,
                 color = MaterialTheme.colors.onBackground
             )
-            Box(modifier = Modifier.padding(bottom = 8.dp)) {
+            Box(modifier = Modifier.padding(bottom = 8.dp, start = 16.dp, end = 16.dp)) {
                 TextField(
                     value = valueTextHowMuchTimeDoYouHave,
                     onValueChange = { value ->
@@ -190,8 +191,9 @@ fun WhatToCook(
                     },
                     colors = TextFieldDefaults.textFieldColors(
                         focusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
+                        unfocusedIndicatorColor = Color.Transparent,
+                        backgroundColor = MaterialTheme.colors.surface,
+                        textColor = MaterialTheme.colors.onBackground
                     ),
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Done,
@@ -209,13 +211,15 @@ fun WhatToCook(
                     )
             }
             Text(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
                 text = stringResource(id = R.string.recipe_difficulty),
                 style = MaterialTheme.typography.body1,
                 color = MaterialTheme.colors.onSurface
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
             ) {
                 IconToggleButton(checked = selectedLevel == LevelRadioBtnState.NO_MATTER,
                     onCheckedChange = { selectedLevel = LevelRadioBtnState.NO_MATTER })
@@ -223,7 +227,7 @@ fun WhatToCook(
                     Icon(
                         painter = painterResource(if (selectedLevel == LevelRadioBtnState.NO_MATTER) R.drawable.check_circle_outline else R.drawable.uncheck_circle_outline),
                         contentDescription = "Radio button icon",
-                        tint = (if (selectedLevel == LevelRadioBtnState.NO_MATTER) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onBackground)
+                        tint = (if (selectedLevel == LevelRadioBtnState.NO_MATTER) green else MaterialTheme.colors.onBackground)
                     )
                 }
                 Text(
@@ -237,7 +241,7 @@ fun WhatToCook(
                     Icon(
                         painter = painterResource(if (selectedLevel == LevelRadioBtnState.EASY) R.drawable.check_circle_outline else R.drawable.uncheck_circle_outline),
                         contentDescription = "Radio button icon",
-                        tint = (if (selectedLevel == LevelRadioBtnState.EASY) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onBackground)
+                        tint = (if (selectedLevel == LevelRadioBtnState.EASY) green else MaterialTheme.colors.onBackground)
                     )
                 }
                 Text(
@@ -251,7 +255,7 @@ fun WhatToCook(
                     Icon(
                         painter = painterResource(if (selectedLevel == LevelRadioBtnState.MEDIUM) R.drawable.check_circle_outline else R.drawable.uncheck_circle_outline),
                         contentDescription = "Radio button icon",
-                        tint = (if (selectedLevel == LevelRadioBtnState.MEDIUM) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onBackground)
+                        tint = (if (selectedLevel == LevelRadioBtnState.MEDIUM) green else MaterialTheme.colors.onBackground)
 
 
                     )
@@ -267,7 +271,7 @@ fun WhatToCook(
                     Icon(
                         painter = painterResource(if (selectedLevel == LevelRadioBtnState.HARD) R.drawable.check_circle_outline else R.drawable.uncheck_circle_outline),
                         contentDescription = "Radio button icon",
-                        tint = (if (selectedLevel == LevelRadioBtnState.HARD) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onBackground)
+                        tint = (if (selectedLevel == LevelRadioBtnState.HARD) green else MaterialTheme.colors.onBackground)
                     )
                 }
                 Text(
@@ -278,16 +282,15 @@ fun WhatToCook(
             }
             Spacer(modifier = Modifier.weight(1f))
             Button(
+                enabled = valueTextWhatDoYouHave.isNotBlank(),
                 onClick = {
-                    if (valueTextWhatDoYouHave.isNullOrEmpty().not()) {
-                        navigateToWTCList(
-                            valueTextWhatDoYouHave,
-                            valueTextHowMuchTimeDoYouHave,
-                            selectedLevel.toString()
-                        )
-                    }
+                    navigateToWTCList(
+                        valueTextWhatDoYouHave,
+                        valueTextHowMuchTimeDoYouHave,
+                        selectedLevel
+                    )
                 }, modifier = Modifier
-                    .padding(bottom = 8.dp)
+                    .padding(bottom = 8.dp, start = 16.dp,end = 16.dp)
                     .clip(MaterialTheme.shapes.medium)
                     .fillMaxWidth()
                     .height(48.dp)
