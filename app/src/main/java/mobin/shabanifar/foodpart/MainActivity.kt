@@ -151,6 +151,9 @@ class MainActivity : ComponentActivity() {
                                         }
                                         launchSingleTop = true
                                     }
+                                },
+                                changeLoginState = {
+                                    isLogin = !isLogin
                                 }
                             )
                         }
