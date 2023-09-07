@@ -1,5 +1,6 @@
 package mobin.shabanifar.foodpart.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -43,9 +44,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import kotlinx.coroutines.coroutineScope
+import mobin.shabanifar.foodpart.NavigationBottom
 import mobin.shabanifar.foodpart.R
 import mobin.shabanifar.foodpart.categoryItems
 import mobin.shabanifar.foodpart.fakeFoods
+import mobin.shabanifar.foodpart.subCategoryList
 
 @Composable
 fun Category(navController: NavHostController) {
@@ -66,7 +70,8 @@ fun Category(navController: NavHostController) {
                         style = MaterialTheme.typography.h1,
                     )
                 },
-                backgroundColor = MaterialTheme.colors.background
+                backgroundColor = MaterialTheme.colors.background,
+                elevation = 0.dp
             )
         }
     ) {
@@ -84,7 +89,8 @@ fun Category(navController: NavHostController) {
             //خط جدا کننده اول
             Divider(
                 modifier = Modifier
-                    .padding(start = 16.dp, end = 16.dp),
+                    .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+                    .height(0.5.dp),
                 //startIndent = 16.dp,
                 thickness = 1.dp,
                 color = MaterialTheme.colors.onSurface
@@ -96,7 +102,9 @@ fun Category(navController: NavHostController) {
 
                 // جدا کننده دوم
                 Divider(
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp, top = 8.dp)
+                        .height(0.5.dp),
                     thickness = 1.dp,
                     color = MaterialTheme.colors.onSurface
                 )
@@ -217,44 +225,18 @@ fun SubCategory() {
     // ذخیره ایندکسی که کلیک شده برای رنگی کردن آن
     var indexSubCategoryClicked by rememberSaveable { mutableStateOf<Int>(0) }
 
-    // لیست ساب کتگوری ها - لیست استرینگی ساده
-    val subCategoryList =
-        listOf<String>(
-            "آبگوشت",
-            "همبرگر",
-            "اشکنه",
-            "آش رشته",
-            "آبگوشت",
-            "همبرگر",
-            "اشکنه",
-            "آش رشته",
-            "آبگوشت",
-            "همبرگر",
-            "اشکنه",
-            "آش رشته",
-            "آبگوشت",
-            "همبرگر",
-            "اشکنه",
-            "آش رشته",
-
-            )
-
-
     LazyRow(
-        contentPadding = PaddingValues(horizontal = 12.dp)
+        contentPadding = PaddingValues(horizontal = 16.dp), // پدینگ ساب کتگوری از کنار صفحه
+        horizontalArrangement = Arrangement.spacedBy(8.dp) // پدینگ بین ساب کتگوری ها
     ) {
         itemsIndexed(subCategoryList) { index, it ->
             Chip(
-                modifier = Modifier
-                    .padding(start = 4.dp, end = 4.dp, top = 8.dp, bottom = 8.dp)
-                    .border(
-                        if (indexSubCategoryClicked == index) 1.dp else (-1).dp,
-                        MaterialTheme.colors.primary,
-                        MaterialTheme.shapes.medium
-                    )
-                    .height(32.dp)
-                //.widthIn(min = 50.dp)
-                ,
+                border = if (indexSubCategoryClicked == index) {
+                    BorderStroke(1.dp, MaterialTheme.colors.primary)
+                } else {
+                    BorderStroke(0.dp, MaterialTheme.colors.surface)
+                },
+                modifier = Modifier.height(32.dp),
                 shape = MaterialTheme.shapes.medium,
                 colors = chipColors(
                     backgroundColor = if (indexSubCategoryClicked == index) Color(0x1AFF6262) else MaterialTheme.colors.surface,
@@ -294,8 +276,10 @@ fun FoodItems(navController: NavHostController) {
             .fillMaxSize(),
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(24.dp),
-        verticalArrangement = Arrangement.Center,
-        contentPadding = PaddingValues(vertical = 16.dp, horizontal = 40.dp) // پدینگ آیتم ها با حاشیه = horizontal
+        contentPadding = PaddingValues(
+            vertical = 16.dp,
+            horizontal = 40.dp
+        ) // پدینگ آیتم ها با حاشیه = horizontal
     ) {
         items(fakeFoods) {
             Column(
@@ -303,7 +287,9 @@ fun FoodItems(navController: NavHostController) {
                     .padding(bottom = 24.dp)
                     .clip(MaterialTheme.shapes.medium)
                     .clickable {
-                        navController.navigate("foodDetail")
+                        navController.navigate(NavigationBottom.FoodDetail.route){
+                            launchSingleTop = true
+                        }
                     }
             ) {
                 Image(

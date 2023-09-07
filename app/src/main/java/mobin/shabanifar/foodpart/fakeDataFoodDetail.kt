@@ -8,3 +8,9 @@ data class foodDetail(
 val detailList= listOf<foodDetail>(
     foodDetail("نون و اب مواد بیشتر","نون را با اب قاطی کنید و بگذارید تا خنک شود","نیست")
 )
+
+val tabData = listOf(
+    "مواد اولیه",
+    "طرز تهیه",
+    "اطلاعات بیشتر"
+)

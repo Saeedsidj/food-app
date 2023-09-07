@@ -121,11 +121,11 @@ class MainActivity : ComponentActivity() {
                         startDestination = NavigationBottom.Category.route,
                         Modifier.padding(it)
                     ) {
-                        composable("photoScreen") {
+                        composable("photoScreen"){
                             ShowPhoto(navController = navController)
                         }
-                        composable("foodDetail") {
-                            FoodDetail(navController, isLogin)
+                        composable("foodDetail"){
+                            FoodDetail(navController,isLogin)
                         }
                         composable(NavigationBottom.Category.route) {
                             Category(navController)
@@ -133,13 +133,7 @@ class MainActivity : ComponentActivity() {
                         composable(NavigationBottom.Cook.route) {
                             WhatToCook(
                                 navigateToWTCList = { whatDoYouHave, howMuchTimeHave, level ->
-                                    navController.navigate("whatToCookList?whatDoYouHave=$whatDoYouHave&howMuchTimeHave=$howMuchTimeHave&level=$level") {
-                                        popUpTo(NavigationBottom.Cook.route) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                    }
-
+                                    navController.navigate("whatToCookList?whatDoYouHave=$whatDoYouHave&howMuchTimeHave=$howMuchTimeHave&level=$level")
                                 }
                             )
                         }
@@ -231,26 +225,9 @@ class MainActivity : ComponentActivity() {
                             val howMuchTimeHave = getData.arguments?.getString(HOW_MUCH_TIME_HAVE)
                             val level = getData.arguments?.getString(LEVEL)
                             WhatToCookListScreen(
-                                whatDoYouHave,
-                                howMuchTimeHave,
-                                level,
-                                navigateToWTCForm = {
-                                    navController.navigate(NavigationBottom.Cook.route) {
-                                        popUpTo(NavigationBottom.Cook.route) {
-                                            inclusive = true
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                    }
-                                },
-                                navigateToDetailScreen = {
-                                    navController.navigate("foodDetail") {
-                                        popUpTo("whatToCookList?whatDoYouHave={whatDoYouHave}&howMuchTimeHave={howMuchTimeHave}&level={level}") {
-                                            inclusive = false
-                                            saveState = true
-                                        }
-                                    }
-                                }
+                                whatDoYouHave.toString(),
+                                howMuchTimeHave.toString(),
+                                level.toString()
                             )
                         }
                     }
