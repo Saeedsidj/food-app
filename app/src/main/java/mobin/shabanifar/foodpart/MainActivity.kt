@@ -103,7 +103,7 @@ class MainActivity : ComponentActivity() {
                                         },
                                         icon = {
                                             Icon(
-                                                painterResource(id = screen.icon),
+                                                painterResource(id = screen.icon ?: 1),
                                                 contentDescription = ""
                                             )
                                         },
@@ -121,11 +121,11 @@ class MainActivity : ComponentActivity() {
                         startDestination = NavigationBottom.Category.route,
                         Modifier.padding(it)
                     ) {
-                        composable("photoScreen"){
+                        composable("photoScreen") {
                             ShowPhoto(navController = navController)
                         }
-                        composable("foodDetail"){
-                            FoodDetail(navController,isLogin)
+                        composable("foodDetail") {
+                            FoodDetail(navController, isLogin)
                         }
                         composable(NavigationBottom.Category.route) {
                             Category(navController)
@@ -151,6 +151,9 @@ class MainActivity : ComponentActivity() {
                                         }
                                         launchSingleTop = true
                                     }
+                                },
+                                changeLoginState = {
+                                    isLogin = !isLogin
                                 }
                             )
                         }
@@ -227,8 +230,26 @@ class MainActivity : ComponentActivity() {
                             WhatToCookListScreen(
                                 whatDoYouHave.toString(),
                                 howMuchTimeHave.toString(),
-                                level.toString()
-                            )
+                                level.toString(),
+                                navigateToDetailScreen = {
+                                    navController.navigate(NavigationBottom.FoodDetail.route) {
+                                        popUpTo(NavigationBottom.Profile.route) {
+                                            inclusive = true
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                    }
+                                },
+                                navigateToWTCForm = {
+                                    navController.navigate(NavigationBottom.WhatToCook.route) {
+                                        popUpTo(NavigationBottom.Profile.route) {
+                                            inclusive = true
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                    }
+                                })
+
                         }
                     }
                 }

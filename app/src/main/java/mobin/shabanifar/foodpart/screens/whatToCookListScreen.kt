@@ -38,7 +38,10 @@ import mobin.shabanifar.foodpart.fakeFoods
 
 @Composable
 fun WhatToCookListScreen(
-    whatDoYouHave: String?, howMuchTimeHave: String?, level: String?, navigateToWTCForm: () -> Unit,
+    whatDoYouHave: String?,
+    howMuchTimeHave: String?,
+    level: String?,
+    navigateToWTCForm: () -> Unit,
     navigateToDetailScreen: () -> Unit
 
 ) {
@@ -46,44 +49,40 @@ fun WhatToCookListScreen(
     val scope = rememberCoroutineScope()
     val isTop by remember { derivedStateOf { lazyState.firstVisibleItemIndex != 0 } }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                modifier = Modifier.fillMaxWidth(),
-                backgroundColor = MaterialTheme.colors.background,
-                contentColor = MaterialTheme.colors.onBackground,
-                elevation = 0.dp,
+    Scaffold(topBar = {
+        TopAppBar(
+            modifier = Modifier.fillMaxWidth(),
+            backgroundColor = MaterialTheme.colors.background,
+            contentColor = MaterialTheme.colors.onBackground,
+            elevation = 0.dp,
+        ) {
+            IconButton(onClick = {
+                navigateToWTCForm()
+            }) {
+                Icon(painter = painterResource(R.drawable.ic_back), contentDescription = "")
+            }
+            Text(
+                text = stringResource(id = R.string.what_should_i_cook),
+                style = MaterialTheme.typography.h2,
+                color = MaterialTheme.colors.onBackground
+            )
+        }
+    }, floatingActionButton = {
+        if (isTop) {
+            FloatingActionButton(
+                onClick = {
+                    scope.launch {
+                        lazyState.animateScrollToItem(0)
+                    }
+                }, backgroundColor = MaterialTheme.colors.primary
             ) {
-                IconButton(onClick = {
-                    navigateToWTCForm()
-                }) {
-                    Icon(painter = painterResource(R.drawable.ic_back), contentDescription = "")
-                }
-                Text(
-                    text = stringResource(id = R.string.what_should_i_cook),
-                    style = MaterialTheme.typography.h2,
-                    color = MaterialTheme.colors.onBackground
+                Image(
+                    painter = painterResource(id = R.drawable.arrow_forward),
+                    contentDescription = ""
                 )
             }
-        },
-        floatingActionButton = {
-            if (isTop) {
-                FloatingActionButton(
-                    onClick = {
-                        scope.launch {
-                            lazyState.animateScrollToItem(0)
-                        }
-                    },
-                    backgroundColor = MaterialTheme.colors.primary
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.arrow_forward),
-                        contentDescription = ""
-                    )
-                }
-            }
         }
-    ) {
+    }) {
         Column(
             modifier = Modifier
                 .padding(it)
@@ -94,26 +93,22 @@ fun WhatToCookListScreen(
             Text(
                 modifier = Modifier.padding(start = 16.dp),
                 text = setString(
-                    whatDoYouHave = whatDoYouHave,
-                    howMuchTimeHave = howMuchTimeHave,
-                    level = level
+                    whatDoYouHave = whatDoYouHave, howMuchTimeHave = howMuchTimeHave, level = level
                 ),
                 style = MaterialTheme.typography.subtitle1,
                 color = MaterialTheme.colors.onBackground
             )
-            SearchedItems(lazyState,navigateToDetailScreen)
+            SearchedItems(lazyState, navigateToDetailScreen)
         }
     }
 }
 
 @Composable
 fun SearchedItems(
-    state: LazyGridState,
-    navigateToDetailScreen: () -> Unit
+    state: LazyGridState, navigateToDetailScreen: () -> Unit
 ) {
     LazyVerticalGrid(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         columns = GridCells.Fixed(2),
         state = state,
         horizontalArrangement = Arrangement.spacedBy(24.dp),
@@ -123,14 +118,12 @@ fun SearchedItems(
             true
         }
         items(foundItems) {
-            Column(
-                modifier = Modifier
-                    .padding(bottom = 24.dp)
-                    .clip(MaterialTheme.shapes.medium)
-                    .clickable {
-                        navigateToDetailScreen()
-                    }
-            ) {
+            Column(modifier = Modifier
+                .padding(bottom = 24.dp)
+                .clip(MaterialTheme.shapes.medium)
+                .clickable {
+                    navigateToDetailScreen()
+                }) {
                 Image(
                     painter = painterResource(id = it.image),
                     contentDescription = "",
@@ -144,15 +137,13 @@ fun SearchedItems(
                     text = it.name,
                     style = MaterialTheme.typography.body1,
                     color = MaterialTheme.colors.onSurface,
-                    modifier = Modifier
-                        .padding(start = 8.dp, bottom = 4.dp)
+                    modifier = Modifier.padding(start = 8.dp, bottom = 4.dp)
                 )
                 Text(
                     text = "زمان : " + "${it.time}" + " دقیقه",
                     style = MaterialTheme.typography.subtitle1,
                     color = MaterialTheme.colors.onSurface,
-                    modifier = Modifier
-                        .padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp)
                 )
             }
         }
