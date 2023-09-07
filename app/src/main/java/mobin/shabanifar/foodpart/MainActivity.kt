@@ -32,13 +32,13 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import mobin.shabanifar.foodpart.screens.Category
-import mobin.shabanifar.foodpart.screens.foodDetail.FoodDetail
 import mobin.shabanifar.foodpart.screens.LoginScreen
 import mobin.shabanifar.foodpart.screens.ProfileScreen
 import mobin.shabanifar.foodpart.screens.Search
-import mobin.shabanifar.foodpart.screens.foodDetail.ShowPhoto
 import mobin.shabanifar.foodpart.screens.WhatToCook
 import mobin.shabanifar.foodpart.screens.WhatToCookListScreen
+import mobin.shabanifar.foodpart.screens.foodDetail.FoodDetail
+import mobin.shabanifar.foodpart.screens.foodDetail.ShowPhoto
 import mobin.shabanifar.foodpart.screens.signUpScreen
 import mobin.shabanifar.foodpart.ui.theme.FoodPartTheme
 import mobin.shabanifar.foodpart.utils.HOW_MUCH_TIME_HAVE
@@ -121,11 +121,11 @@ class MainActivity : ComponentActivity() {
                         startDestination = NavigationBottom.Category.route,
                         Modifier.padding(it)
                     ) {
-                        composable("photoScreen"){
+                        composable("photoScreen") {
                             ShowPhoto(navController = navController)
                         }
-                        composable("foodDetail"){
-                            FoodDetail(navController,isLogin)
+                        composable("foodDetail") {
+                            FoodDetail(navController, isLogin)
                         }
                         composable(NavigationBottom.Category.route) {
                             Category(navController)
@@ -241,6 +241,14 @@ class MainActivity : ComponentActivity() {
                                             saveState = true
                                         }
                                         launchSingleTop = true
+                                    }
+                                },
+                                navigateToDetailScreen = {
+                                    navController.navigate("foodDetail") {
+                                        popUpTo("whatToCookList?whatDoYouHave={whatDoYouHave}&howMuchTimeHave={howMuchTimeHave}&level={level}") {
+                                            inclusive = false
+                                            saveState = true
+                                        }
                                     }
                                 }
                             )

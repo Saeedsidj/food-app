@@ -24,11 +24,8 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -37,11 +34,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import mobin.shabanifar.foodpart.R
-import mobin.shabanifar.foodpart.fakeFoodItems
+import mobin.shabanifar.foodpart.fakeFoods
 
 @Composable
 fun WhatToCookListScreen(
-    whatDoYouHave: String?, howMuchTimeHave: String?, level: String?, navigateToWTCForm: () -> Unit
+    whatDoYouHave: String?, howMuchTimeHave: String?, level: String?, navigateToWTCForm: () -> Unit,
+    navigateToDetailScreen: () -> Unit
+
 ) {
     val lazyState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
@@ -102,13 +101,16 @@ fun WhatToCookListScreen(
                 style = MaterialTheme.typography.subtitle1,
                 color = MaterialTheme.colors.onBackground
             )
-            SearchedItems(lazyState)
+            SearchedItems(lazyState,navigateToDetailScreen)
         }
     }
 }
 
 @Composable
-fun SearchedItems(state: LazyGridState) {
+fun SearchedItems(
+    state: LazyGridState,
+    navigateToDetailScreen: () -> Unit
+) {
     LazyVerticalGrid(
         modifier = Modifier
             .fillMaxSize(),
@@ -117,7 +119,7 @@ fun SearchedItems(state: LazyGridState) {
         horizontalArrangement = Arrangement.spacedBy(24.dp),
         contentPadding = PaddingValues(vertical = 16.dp, horizontal = 40.dp)
     ) {
-        val foundItems = fakeFoodItems.filter { items ->
+        val foundItems = fakeFoods.filter { items ->
             true
         }
         items(foundItems) {
@@ -125,7 +127,9 @@ fun SearchedItems(state: LazyGridState) {
                 modifier = Modifier
                     .padding(bottom = 24.dp)
                     .clip(MaterialTheme.shapes.medium)
-                    .clickable { /*TODO*/ }
+                    .clickable {
+                        navigateToDetailScreen()
+                    }
             ) {
                 Image(
                     painter = painterResource(id = it.image),

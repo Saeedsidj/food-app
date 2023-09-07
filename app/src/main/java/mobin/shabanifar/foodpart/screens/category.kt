@@ -102,7 +102,7 @@ fun Category(navController: NavHostController) {
                 )
             } else {
                 if (isFood) {
-                    FoodItems()
+                    FoodItems(navController)
                 }
             }
             // برای نمایش لیست غذا ها یا صفحه غذایی نیست
