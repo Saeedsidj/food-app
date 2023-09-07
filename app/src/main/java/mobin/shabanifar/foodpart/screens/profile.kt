@@ -115,68 +115,66 @@ fun ProfileScreen(
                 )
             }
             if (showDialogState) {
-                MaterialTheme {
-                    Dialog(
-                        onDismissRequest = {
-                            showDialogState = false
-                        }
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier
-                                .background(
-                                    color = MaterialTheme.colors.surface,
-                                    shape = MaterialTheme.shapes.medium
-                                )
-                                .fillMaxWidth(),
-                        ) {
-                            Text(
-                                modifier = Modifier.padding(
-                                    top = 36.dp, bottom = 24.dp
-                                ),
-                                text = stringResource(R.string.confirm_exit),
-                                style = MaterialTheme.typography.body1,
-                                color = MaterialTheme.colors.onBackground
+                Dialog(
+                    onDismissRequest = {
+                        showDialogState = false
+                    }
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .background(
+                                color = MaterialTheme.colors.surface,
+                                shape = MaterialTheme.shapes.medium
                             )
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.fillMaxWidth(),
+                            .fillMaxWidth(),
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(
+                                top = 36.dp, bottom = 24.dp
+                            ),
+                            text = stringResource(R.string.confirm_exit),
+                            style = MaterialTheme.typography.body1,
+                            color = MaterialTheme.colors.onBackground
+                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Button(
+                                onClick = {
+                                    showDialogState = false
+                                    changeLoginState()
+                                },
+                                Modifier
+                                    .weight(1f)
+                                    .clip(shape = MaterialTheme.shapes.medium)
+                                    .padding(16.dp),
+                                shape = MaterialTheme.shapes.medium,
                             ) {
-                                Button(
-                                    onClick = {
-                                        showDialogState = false
-                                        changeLoginState()
-                                    },
-                                    Modifier
-                                        .weight(1f)
-                                        .clip(shape = MaterialTheme.shapes.medium)
-                                        .padding(16.dp),
-                                    shape = MaterialTheme.shapes.medium,
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.exit),
-                                        style = MaterialTheme.typography.button,
-                                        color = MaterialTheme.colors.onBackground
-                                    )
-                                }
-                                Button(
-                                    onClick = {
-                                        showDialogState = false
-                                    },
-                                    colors = ButtonDefaults.buttonColors(
-                                        backgroundColor = MaterialTheme.colors.surface,
-                                        contentColor = MaterialTheme.colors.onBackground,
-                                    ),
-                                    modifier = Modifier.padding(end = 16.dp),
-                                    shape = MaterialTheme.shapes.medium,
-                                    border = BorderStroke(1.dp, MaterialTheme.colors.primary)
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.cancel),
-                                        style = MaterialTheme.typography.button,
-                                        color = MaterialTheme.colors.onBackground
-                                    )
-                                }
+                                Text(
+                                    text = stringResource(R.string.exit),
+                                    style = MaterialTheme.typography.button,
+                                    color = MaterialTheme.colors.onBackground
+                                )
+                            }
+                            Button(
+                                onClick = {
+                                    showDialogState = false
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = MaterialTheme.colors.surface,
+                                    contentColor = MaterialTheme.colors.onBackground,
+                                ),
+                                modifier = Modifier.padding(end = 16.dp),
+                                shape = MaterialTheme.shapes.medium,
+                                border = BorderStroke(1.dp, MaterialTheme.colors.primary)
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.cancel),
+                                    style = MaterialTheme.typography.button,
+                                    color = MaterialTheme.colors.onBackground
+                                )
                             }
                         }
                     }

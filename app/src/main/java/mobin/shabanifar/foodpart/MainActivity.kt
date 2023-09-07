@@ -103,9 +103,7 @@ class MainActivity : ComponentActivity() {
                                         },
                                         icon = {
                                             Icon(
-                                                painterResource(
-                                                    id = screen.icon ?: R.drawable.food_itemj
-                                                ),
+                                                painterResource(id = screen.icon!!),
                                                 contentDescription = ""
                                             )
                                         },
@@ -123,7 +121,7 @@ class MainActivity : ComponentActivity() {
                         startDestination = NavigationBottom.Category.route,
                         Modifier.padding(it)
                     ) {
-                        composable(NavigationBottom.FoodPhoto.route) {
+                        composable(NavigationBottom.FoodPhoto.route){
                             ShowPhoto(navController = navController)
                         }
                         composable(NavigationBottom.FoodDetail.route) {
@@ -230,7 +228,6 @@ class MainActivity : ComponentActivity() {
                                     nullable = true
                                 }
                             )
-
                         ) { getData ->
                             val whatDoYouHave = getData.arguments?.getString(WHAT_DO_YOU_HAVE)
                             val howMuchTimeHave = getData.arguments?.getString(HOW_MUCH_TIME_HAVE)
@@ -238,7 +235,19 @@ class MainActivity : ComponentActivity() {
                             WhatToCookListScreen(
                                 whatDoYouHave.toString(),
                                 howMuchTimeHave.toString(),
-                                level.toString()
+                                level.toString(),
+                                navigateToDetailScreen = {
+                                    navController.navigate(NavigationBottom.FoodDetail.route) {
+                                        popUpTo(NavigationBottom.Profile.route) {
+                                            inclusive = true
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                    }
+                                },
+                                navigateToWTCForm = {
+                                    navController.popBackStack()
+                                }
                             )
                         }
                         composable(
