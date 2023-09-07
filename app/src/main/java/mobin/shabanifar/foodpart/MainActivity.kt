@@ -52,7 +52,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
-
         setContent {
             FoodPartTheme {
                 val navController = rememberNavController()
@@ -103,7 +102,7 @@ class MainActivity : ComponentActivity() {
                                         },
                                         icon = {
                                             Icon(
-                                                painterResource(id = screen.icon),
+                                                painterResource(id = screen.icon ?: R.drawable.food_itemj),
                                                 contentDescription = ""
                                             )
                                         },
@@ -121,10 +120,10 @@ class MainActivity : ComponentActivity() {
                         startDestination = NavigationBottom.Category.route,
                         Modifier.padding(it)
                     ) {
-                        composable("photoScreen"){
+                        composable(NavigationBottom.FoodPhoto.route){
                             ShowPhoto(navController = navController)
                         }
-                        composable("foodDetail"){
+                        composable(NavigationBottom.FoodDetail.route){
                             FoodDetail(navController,isLogin)
                         }
                         composable(NavigationBottom.Category.route) {
@@ -145,7 +144,7 @@ class MainActivity : ComponentActivity() {
                                 usernameSave = userName,
                                 isLogin = isLogin,
                                 navigateToProfileSignIn = {
-                                    navController.navigate("sign_up") {
+                                    navController.navigate(NavigationBottom.SignUp.route) {
                                         popUpTo(NavigationBottom.Profile.route) {
                                             saveState = true
                                         }
@@ -157,7 +156,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
-                        composable("sign_up") {
+                        composable(NavigationBottom.SignUp.route) {
                             signUpScreen(
                                 isLogin = { result ->
                                     isLogin = result
@@ -176,17 +175,17 @@ class MainActivity : ComponentActivity() {
 
                                 },
                                 navigateToProfileLogin = {
-                                    navController.navigate("login") {
+                                    navController.navigate(NavigationBottom.Login.route) {
                                         popUpTo(NavigationBottom.Profile.route)
                                     }
                                 }
 
                             )
                         }
-                        composable("login") {
+                        composable(NavigationBottom.Login.route) {
                             LoginScreen(
                                 navigateToProfileSignIn = {
-                                    navController.navigate("sign_up") {
+                                    navController.navigate(NavigationBottom.SignUp.route) {
                                         popUpTo(NavigationBottom.Profile.route)
                                     }
                                 },
@@ -208,7 +207,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(
-                            route = "whatToCookList?whatDoYouHave={whatDoYouHave}&howMuchTimeHave={howMuchTimeHave}&level={level}",
+                            route = NavigationBottom.WhatToCook.route,
                             arguments = listOf(
                                 navArgument(WHAT_DO_YOU_HAVE) {
                                     type = NavType.StringType
