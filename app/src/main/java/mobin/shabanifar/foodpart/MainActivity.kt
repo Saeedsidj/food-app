@@ -32,13 +32,14 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import mobin.shabanifar.foodpart.screens.Category
-import mobin.shabanifar.foodpart.screens.foodDetail.FoodDetail
 import mobin.shabanifar.foodpart.screens.LoginScreen
 import mobin.shabanifar.foodpart.screens.ProfileScreen
 import mobin.shabanifar.foodpart.screens.Search
-import mobin.shabanifar.foodpart.screens.foodDetail.ShowPhoto
+import mobin.shabanifar.foodpart.screens.ShowFoodByAttributes
 import mobin.shabanifar.foodpart.screens.WhatToCook
 import mobin.shabanifar.foodpart.screens.WhatToCookListScreen
+import mobin.shabanifar.foodpart.screens.foodDetail.FoodDetail
+import mobin.shabanifar.foodpart.screens.foodDetail.ShowPhoto
 import mobin.shabanifar.foodpart.screens.signUpScreen
 import mobin.shabanifar.foodpart.ui.theme.FoodPartTheme
 import mobin.shabanifar.foodpart.utils.HOW_MUCH_TIME_HAVE
@@ -102,7 +103,9 @@ class MainActivity : ComponentActivity() {
                                         },
                                         icon = {
                                             Icon(
-                                                painterResource(id = screen.icon ?: R.drawable.food_itemj),
+                                                painterResource(
+                                                    id = screen.icon ?: R.drawable.food_itemj
+                                                ),
                                                 contentDescription = ""
                                             )
                                         },
@@ -120,11 +123,16 @@ class MainActivity : ComponentActivity() {
                         startDestination = NavigationBottom.Category.route,
                         Modifier.padding(it)
                     ) {
-                        composable(NavigationBottom.FoodPhoto.route){
+                        composable(NavigationBottom.FoodPhoto.route) {
                             ShowPhoto(navController = navController)
                         }
-                        composable(NavigationBottom.FoodDetail.route){
-                            FoodDetail(navController,isLogin)
+                        composable(NavigationBottom.FoodDetail.route) {
+                            FoodDetail(
+                                navController,
+                                isLogin,
+                                toAttributesScreen = { title: String ->
+                                    navController.navigate("showFoodByAttributes/$title")
+                                })
                         }
                         composable(NavigationBottom.Category.route) {
                             Category(navController)
@@ -137,7 +145,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(NavigationBottom.Search.route) {
-                            Search()
+                            Search(navController)
                         }
                         composable(NavigationBottom.Profile.route) {
                             ProfileScreen(
@@ -222,6 +230,7 @@ class MainActivity : ComponentActivity() {
                                     nullable = true
                                 }
                             )
+
                         ) { getData ->
                             val whatDoYouHave = getData.arguments?.getString(WHAT_DO_YOU_HAVE)
                             val howMuchTimeHave = getData.arguments?.getString(HOW_MUCH_TIME_HAVE)
@@ -231,6 +240,17 @@ class MainActivity : ComponentActivity() {
                                 howMuchTimeHave.toString(),
                                 level.toString()
                             )
+                        }
+                        composable(
+                            route = NavigationBottom.ShowFoodByAttributes.route,
+                            arguments = listOf(
+                                navArgument("title") {
+                                    type = NavType.StringType
+                                }
+                            )
+                        ) { entry ->
+                            val topTitle = entry.arguments?.getString("title")!!
+                            ShowFoodByAttributes(topTitle,navController)
                         }
                     }
                 }

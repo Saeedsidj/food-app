@@ -5,7 +5,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,7 +21,6 @@ import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
-import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -55,7 +53,11 @@ import mobin.shabanifar.foodpart.ui.theme.shapes
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun FoodDetail(navController: NavHostController, isLogin: Boolean) {
+fun FoodDetail(
+    navController: NavHostController,
+    isLogin: Boolean,
+    toAttributesScreen: (String) -> Unit
+) {
 
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
@@ -144,7 +146,8 @@ fun FoodDetail(navController: NavHostController, isLogin: Boolean) {
                         IconButton(onClick = {
                             navController.navigate(NavigationBottom.Category.route) {
                                 launchSingleTop = true
-                            }}) {
+                            }
+                        }) {
                             Icon(
                                 painterResource(R.drawable.ic_back),
                                 contentDescription = "",
@@ -179,6 +182,7 @@ fun FoodDetail(navController: NavHostController, isLogin: Boolean) {
                 }
             ) {
                 MainScreen(
+                    toAttributesScreen = toAttributesScreen,
                     it,
                     scrollState,
                     navController,
