@@ -9,7 +9,7 @@ sealed class NavigationBottom(
     object Search:NavigationBottom(R.string.search,"search",R.drawable.search)
     object Cook:NavigationBottom(R.string.what_should_i_cook,"cook",R.drawable.restaurant_menu)
     object Category:NavigationBottom(R.string.grouping,"category",R.drawable.restaurant)
-    object FoodDetail:NavigationBottom(R.string.food_info,"foodDetail",null)
+    object FoodDetail:NavigationBottom(R.string.food_info,"foodDetail/{degree}/{name}/{time}/{image}",null)
     object FoodPhoto:NavigationBottom(R.string.photo,"photo",null)
     object WhatToCook:NavigationBottom(R.string.what_should_i_cook,"whatToCookList?whatDoYouHave={whatDoYouHave}&howMuchTimeHave={howMuchTimeHave}&level={level}",null)
     object SignUp:NavigationBottom(R.string.register,"sign_up",null)
