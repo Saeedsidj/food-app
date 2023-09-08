@@ -23,8 +23,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Tab
@@ -53,6 +51,7 @@ import mobin.shabanifar.foodpart.ui.theme.green
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainScreen(
+    toAttributesScreen: (String) -> Unit,
     it: PaddingValues,
     scrollState: ScrollState,
     navController: NavHostController,
@@ -70,9 +69,9 @@ fun MainScreen(
         horizontalAlignment = Alignment.Start
     ) {
         ImageFood(navController)
-        AttributeRow()
+        AttributeRow(navController, toAttributesScreen = toAttributesScreen)
         TabRowDescription(tabIndex, pagerState, tabData, coroutineScope)
-        LazyRowForMoreFood()
+        LazyRowForMoreFood(navController,toAttributesScreen = toAttributesScreen)
     }
 }
 
@@ -93,7 +92,7 @@ private fun ImageFood(navController: NavHostController) {
 }
 
 @Composable
-private fun AttributeRow() {
+private fun AttributeRow(navController: NavHostController, toAttributesScreen: (String) -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -124,7 +123,7 @@ private fun AttributeRow() {
                     color = Color(0x1AFF6262),
                 )
                 .clickable {
-
+                    toAttributesScreen("30 دقیقه")
                 }
         ) {
             Image(painterResource(R.drawable.time), contentDescription = "")
@@ -145,7 +144,6 @@ private fun AttributeRow() {
                     color = Color(0xFF222228)
                 )
                 .clickable {
-
                 }
                 .padding(5.dp),
             style = MaterialTheme.typography.caption)
@@ -159,7 +157,6 @@ private fun AttributeRow() {
                     color = Color(0xFF222228),
                 )
                 .clickable {
-
                 }
                 .padding(5.dp),
             style = MaterialTheme.typography.caption
@@ -184,7 +181,6 @@ private fun AttributeRow() {
                     color = Color(0x1A00FF67),
                 )
                 .clickable {
-
                 }
                 .padding(5.dp)
         ) {
@@ -209,7 +205,7 @@ private fun TabRowDescription(
     TabRow(
         modifier = Modifier
             .height(40.dp)
-            .width(250.dp),
+            .fillMaxWidth(0.7f),
         backgroundColor = MaterialTheme.colors.background,
         selectedTabIndex = tabIndex,
         indicator = {
@@ -218,7 +214,6 @@ private fun TabRowDescription(
                     .tabIndicatorOffset(it[pagerState.currentPage])
                     .height(2.dp)
                     .background(MaterialTheme.colors.primary)
-                    .width(it[tabIndex].width * 0.6f)
             )
         }, divider = {}
     ) {
@@ -268,7 +263,10 @@ private fun TabRowDescription(
 }
 
 @Composable
-private fun LazyRowForMoreFood() {
+private fun LazyRowForMoreFood(
+    navController: NavHostController,
+    toAttributesScreen: (String) -> Unit
+) {
     Text(
         text = "بیشتر از این دسته بندی",
         style = MaterialTheme.typography.h3,
@@ -285,7 +283,9 @@ private fun LazyRowForMoreFood() {
                         .width(136.dp)
                         .height(136.dp)
                         .clickable {
-
+                            navController.navigate(NavigationBottom.FoodDetail.route){
+                                launchSingleTop=true
+                            }
                         }
                 ) {
                     Image(
@@ -331,7 +331,7 @@ private fun LazyRowForMoreFood() {
                                 color = Color(0x4D747474),
                             )
                             .clickable {
-
+                                toAttributesScreen("بیشتر از این دسته")
                             }
                     ) {
                         Text(text = "بیشتر", style = MaterialTheme.typography.body1)

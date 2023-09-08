@@ -87,38 +87,37 @@ fun DropDownMenu(
                 )
                 Text(text = "ارسال")
             }
-            BookMark(coroutineScope, snackbarHostState)
-        } else {
-            BookMark(coroutineScope, snackbarHostState)
-        }
-    }
-}
-
-@Composable
-fun BookMark(
-    coroutineScope: CoroutineScope,
-    snackbarHostState: SnackbarHostState
-) {
-    DropdownMenuItem(
-        onClick = {
-            coroutineScope.launch {
-                val snackbarResult =
-                    snackbarHostState.showSnackbar(
-                        message = "دستور به علاقه مندی ها اضافه شد",
-                        actionLabel = "ذخیره شده ها",
-                    )
-                when (snackbarResult) {
-                    SnackbarResult.ActionPerformed -> TODO()
-                    else -> SnackbarResult.Dismissed
-                }
+            DropdownMenuItem(
+                onClick = {
+                    coroutineScope.launch {
+                        val snackbarResult =
+                            snackbarHostState.showSnackbar(
+                                message = "دستور به علاقه مندی ها اضافه شد",
+                                actionLabel = "ذخیره شده ها",
+                            )
+                        when (snackbarResult) {
+                            SnackbarResult.ActionPerformed -> TODO()
+                            else -> SnackbarResult.Dismissed
+                        }
+                    }
+                },
+            ) {
+                Icon(
+                    painterResource(R.drawable.bookmark),
+                    contentDescription = ""
+                )
+                Text(text = "ذخیره")
             }
-        },
-    ) {
-        Icon(
-            painterResource(R.drawable.bookmark),
-            contentDescription = ""
-        )
-        Text(text = "ذخیره")
+        } else {
+            DropdownMenuItem(
+                onClick = { }) {
+                Icon(
+                    painterResource(R.drawable.share),
+                    contentDescription = ""
+                )
+                Text(text = "ارسال")
+            }
+        }
     }
 }
 
@@ -126,7 +125,7 @@ fun BookMark(
 fun CustomSnackbarHost(
     modifier: Modifier = Modifier,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
-    snackbarBackgroundColor: Color = MaterialTheme.colors.surface,
+    snackbarBackgroundColor: Color = MaterialTheme.colors.secondary,
     actionColor: Color = MaterialTheme.colors.primary
 ) {
     SnackbarHost(
@@ -141,13 +140,5 @@ fun CustomSnackbarHost(
                 actionColor = actionColor
             )
         }
-    )
-}
-@Composable
-fun CustomSnakBarHost(snackbarHostState: SnackbarHostState) {
-    CustomSnackbarHost(
-        snackbarHostState = snackbarHostState,
-        snackbarBackgroundColor = MaterialTheme.colors.surface,
-        actionColor = MaterialTheme.colors.primary
     )
 }
