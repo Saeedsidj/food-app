@@ -120,19 +120,48 @@ class MainActivity : ComponentActivity() {
                         startDestination = NavigationBottom.Category.route,
                         Modifier.padding(it)
                     ) {
-                        composable(NavigationBottom.FoodPhoto.route){
+                        composable(NavigationBottom.FoodPhoto.route) {
                             ShowPhoto(navController = navController)
                         }
-                        composable(NavigationBottom.FoodDetail.route) {
+                        composable(
+                            NavigationBottom.FoodDetail.route,
+                            arguments = listOf(
+                                navArgument("degree") {
+                                    type = NavType.IntType
+                                },
+                                navArgument("name") {
+                                    type = NavType.StringType
+                                },
+                                navArgument("time") {
+                                    type = NavType.IntType
+                                },
+                                navArgument("image") {
+                                    type = NavType.IntType
+                                }
+                            )
+                        ) {entry ->
+                            val degree = entry.arguments?.getInt("degree")!!
+                            val name = entry.arguments?.getString("name")!!
+                            val time=entry.arguments?.getInt("time")!!
+                            val image=entry.arguments?.getInt("image")!!
+
                             FoodDetail(
+                                degree,
+                                name,
+                                time,
+                                image,
                                 navController,
                                 isLogin,
                                 toAttributesScreen = { title: String ->
                                     navController.navigate("showFoodByAttributes/$title")
                                 })
                         }
-                        composable(NavigationBottom.Category.route) {
-                            Category(navController)
+                        composable(
+                            NavigationBottom.Category.route
+                        ) {
+                            Category(navController){degree:Int,name:String,time:Int,image:Int ->
+                                navController.navigate("foodDetail/$degree/$name/$time/$image")
+                            }
                         }
                         composable(NavigationBottom.Cook.route) {
                             WhatToCook(
@@ -241,7 +270,7 @@ class MainActivity : ComponentActivity() {
                             )
                         ) { entry ->
                             val topTitle = entry.arguments?.getString("title")!!
-                            ShowFoodByAttributes(topTitle,navController)
+                            ShowFoodByAttributes(topTitle, navController)
                         }
                     }
                 }

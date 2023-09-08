@@ -46,6 +46,8 @@ import mobin.shabanifar.foodpart.NavigationBottom
 import mobin.shabanifar.foodpart.R
 import mobin.shabanifar.foodpart.detailList
 import mobin.shabanifar.foodpart.ui.theme.green
+import mobin.shabanifar.foodpart.ui.theme.red
+import mobin.shabanifar.foodpart.ui.theme.yellow
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -58,7 +60,11 @@ fun MainScreen(
     tabIndex: Int,
     pagerState: PagerState,
     tabData: List<String>,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
+    degree: Int,
+    name: String,
+    time: Int,
+    image: Int
 ) {
     Column(
         Modifier
@@ -68,17 +74,17 @@ fun MainScreen(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.Start
     ) {
-        ImageFood(navController)
-        AttributeRow(navController, toAttributesScreen = toAttributesScreen)
+        ImageFood(navController,image)
+        AttributeRow(navController, toAttributesScreen = toAttributesScreen, degree,name,time)
         TabRowDescription(tabIndex, pagerState, tabData, coroutineScope)
-        LazyRowForMoreFood(navController,toAttributesScreen = toAttributesScreen)
+        LazyRowForMoreFood(navController, toAttributesScreen = toAttributesScreen)
     }
 }
 
 @Composable
-private fun ImageFood(navController: NavHostController) {
+private fun ImageFood(navController: NavHostController, image: Int) {
     Image(
-        painterResource(R.drawable.abgoosht),
+        painterResource(image),
         contentDescription = "",
         modifier = Modifier
             .height(244.dp)
@@ -92,14 +98,20 @@ private fun ImageFood(navController: NavHostController) {
 }
 
 @Composable
-private fun AttributeRow(navController: NavHostController, toAttributesScreen: (String) -> Unit) {
+private fun AttributeRow(
+    navController: NavHostController,
+    toAttributesScreen: (String) -> Unit,
+    degree: Int,
+    name: String,
+    time: Int,
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
     ) {
         Text(
-            text = "آب گوشت",
+            text = name,
             style = MaterialTheme.typography.h1,
             textAlign = TextAlign.End,
         )
@@ -127,14 +139,14 @@ private fun AttributeRow(navController: NavHostController, toAttributesScreen: (
                 }
         ) {
             Image(painterResource(R.drawable.time), contentDescription = "")
-            Text(text = "30 دقیقه", style = MaterialTheme.typography.caption)
+            Text(text = "$time", style = MaterialTheme.typography.caption)
         }
     }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
-        Text(text = "صبحانه",
+        Text(text ="صبحانه",
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .clip(RoundedCornerShape(16.dp))
@@ -147,7 +159,7 @@ private fun AttributeRow(navController: NavHostController, toAttributesScreen: (
                 }
                 .padding(5.dp),
             style = MaterialTheme.typography.caption)
-        Text(text = "نهار",
+        Text(text ="نهار",
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .clip(RoundedCornerShape(26.dp))
@@ -172,13 +184,23 @@ private fun AttributeRow(navController: NavHostController, toAttributesScreen: (
                 .clip(RoundedCornerShape(16.dp))
                 .border(
                     1.dp,
-                    color = Color.Green,
+                    color = when (degree) {
+                        1 -> red
+                        2 -> yellow
+                        3 -> green
+                        else -> Color.Transparent
+                    },
                     shape = MaterialTheme.shapes.medium
                 )
                 .width(80.dp)
                 .height(32.dp)
                 .background(
-                    color = Color(0x1A00FF67),
+                    color = when(degree){
+                        1-> Color(0x1AFF4444)
+                        2->Color(0x26FFE100)
+                        3->Color(0x1A00FF67)
+                        else->Color.Transparent
+                    }
                 )
                 .clickable {
                 }
@@ -187,9 +209,22 @@ private fun AttributeRow(navController: NavHostController, toAttributesScreen: (
             Icon(
                 painterResource(id = R.drawable.level),
                 contentDescription = "",
-                tint = green
+                tint = when (degree) {
+                    1 -> red
+                    2 -> yellow
+                    3 -> green
+                    else -> Color.Transparent
+                }
             )
-            Text(text = "اسان")
+            Text(
+                text =
+                when (degree) {
+                    1 -> "دوشوار"
+                    2 -> "متوسط"
+                    3 -> "آسان"
+                    else -> ""
+                }
+            )
         }
     }
 }
@@ -283,8 +318,8 @@ private fun LazyRowForMoreFood(
                         .width(136.dp)
                         .height(136.dp)
                         .clickable {
-                            navController.navigate(NavigationBottom.FoodDetail.route){
-                                launchSingleTop=true
+                            navController.navigate(NavigationBottom.FoodDetail.route) {
+                                launchSingleTop = true
                             }
                         }
                 ) {

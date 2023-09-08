@@ -39,12 +39,7 @@ fun ShowPhoto(navController: NavHostController) {
                 elevation = 0.dp
             ) {
                 IconButton(onClick = {
-                    navController.navigate("foodDetail") {
-                        popUpTo("foodDetail"){
-                            saveState=true
-                        }
-                        launchSingleTop = true
-                    }
+                    navController.navigateUp()
                 }) {
                     Icon(
                         painterResource(R.drawable.ic_back),
