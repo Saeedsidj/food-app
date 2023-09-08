@@ -27,12 +27,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import mobin.shabanifar.foodpart.NavigationBottom
 import mobin.shabanifar.foodpart.R
 import mobin.shabanifar.foodpart.fakeFoods
 
 @Composable
-fun ShowFoodByAttributes(topTitle: String, navController: NavHostController) {
+fun ShowFoodByAttributes(
+    topTitle: String,
+    navToDetail: (Int, String, Int, Int) -> Unit, navController: NavHostController
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -79,7 +81,7 @@ fun ShowFoodByAttributes(topTitle: String, navController: NavHostController) {
                         .padding(bottom = 24.dp)
                         .clip(MaterialTheme.shapes.medium)
                         .clickable {
-                            navController.navigate(NavigationBottom.FoodDetail.route)
+                            navToDetail(it.degree, it.name, it.time, it.image)
                         }
                 ) {
                     Image(

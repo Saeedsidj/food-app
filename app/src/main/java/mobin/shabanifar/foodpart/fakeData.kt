@@ -1,7 +1,5 @@
 package mobin.shabanifar.foodpart
 
-import androidx.compose.ui.res.painterResource
-
 // فیک دیتا آیتم های غذا
 val itemImage = R.drawable.food_itemj
 
@@ -13,7 +11,7 @@ data class FakeFoods(
     var breakfast: Boolean = true,
     var lunch: Boolean = false,
     var dinner: Boolean = true,
-    var degree : Int = 3
+    var degree: Int = 3
 )
 
 // کلاس فیک دیتا برای آیتم های کتگوری
@@ -24,9 +22,33 @@ data class CategoryItems(
 )
 
 val fakeFoods = listOf<FakeFoods>(
-    FakeFoods(R.drawable.abgoosht, name = "آب گوشت", time = 30,breakfast = true,lunch = false,dinner = true, degree = 2),
-    FakeFoods(R.drawable.kookoo, name = "کوکو", time = 60,breakfast = false,lunch = false,dinner = true, degree = 3),
-    FakeFoods(R.drawable.ash, name = "آش", time = 90,breakfast = false,lunch = true,dinner = true, degree = 1),
+    FakeFoods(
+        R.drawable.abgoosht,
+        name = "آب گوشت",
+        time = 30,
+        breakfast = true,
+        lunch = false,
+        dinner = true,
+        degree = 2
+    ),
+    FakeFoods(
+        R.drawable.kookoo,
+        name = "کوکو",
+        time = 60,
+        breakfast = false,
+        lunch = false,
+        dinner = true,
+        degree = 3
+    ),
+    FakeFoods(
+        R.drawable.ash,
+        name = "آش",
+        time = 90,
+        breakfast = false,
+        lunch = true,
+        dinner = true,
+        degree = 1
+    ),
     FakeFoods(image = itemImage, name = "آش", time = 15),
     FakeFoods(image = itemImage, name = "پلو", time = 15),
     FakeFoods(image = itemImage, name = "چلو گوشت", time = 15),

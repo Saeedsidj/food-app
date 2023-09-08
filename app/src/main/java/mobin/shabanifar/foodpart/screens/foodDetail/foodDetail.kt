@@ -56,9 +56,9 @@ import mobin.shabanifar.foodpart.ui.theme.shapes
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun FoodDetail(
-    degree:Int,
-    name:String,
-    time:Int,
+    degree: Int,
+    name: String,
+    time: Int,
     image: Int,
     navController: NavHostController,
     isLogin: Boolean,

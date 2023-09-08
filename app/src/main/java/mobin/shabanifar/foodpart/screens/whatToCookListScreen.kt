@@ -42,7 +42,8 @@ fun WhatToCookListScreen(
     howMuchTimeHave: String?,
     level: String?,
     navigateToWTCForm: () -> Unit,
-    navigateToDetailScreen: () -> Unit
+    navToDetail: (Int, String, Int, Int) -> Unit
+    //navigateToDetailScreen: () -> Unit
 
 ) {
     val lazyState = rememberLazyGridState()
@@ -102,14 +103,18 @@ fun WhatToCookListScreen(
                 style = MaterialTheme.typography.subtitle1,
                 color = MaterialTheme.colors.onBackground
             )
-            SearchedItems(lazyState, navigateToDetailScreen)
+            SearchedItems(
+                state = lazyState,
+                navToDetail = navToDetail
+            )
         }
     }
 }
 
 @Composable
 fun SearchedItems(
-    state: LazyGridState, navigateToDetailScreen: () -> Unit
+    state: LazyGridState,
+    navToDetail: (Int, String, Int, Int) -> Unit
 ) {
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
@@ -126,7 +131,7 @@ fun SearchedItems(
                 .padding(bottom = 24.dp)
                 .clip(MaterialTheme.shapes.medium)
                 .clickable {
-                    navigateToDetailScreen()
+                    navToDetail(it.degree, it.name, it.time, it.image)
                 }) {
                 Image(
                     painter = painterResource(id = it.image),

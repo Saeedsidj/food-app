@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -45,6 +46,7 @@ import kotlinx.coroutines.launch
 import mobin.shabanifar.foodpart.NavigationBottom
 import mobin.shabanifar.foodpart.R
 import mobin.shabanifar.foodpart.detailList
+import mobin.shabanifar.foodpart.fakeFoods
 import mobin.shabanifar.foodpart.ui.theme.green
 import mobin.shabanifar.foodpart.ui.theme.red
 import mobin.shabanifar.foodpart.ui.theme.yellow
@@ -74,10 +76,17 @@ fun MainScreen(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.Start
     ) {
-        ImageFood(navController,image)
-        AttributeRow(navController, toAttributesScreen = toAttributesScreen, degree,name,time)
+        ImageFood(navController, image)
+        AttributeRow(navController, toAttributesScreen = toAttributesScreen, degree, name, time)
         TabRowDescription(tabIndex, pagerState, tabData, coroutineScope)
-        LazyRowForMoreFood(navController, toAttributesScreen = toAttributesScreen)
+        LazyRowForMoreFood(
+            navToDetail = { degree: Int, name: String, time: Int, image: Int ->
+                navController.navigate("foodDetail/$degree/$name/$time/$image") {
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            }, toAttributesScreen = toAttributesScreen
+        )
     }
 }
 
@@ -135,18 +144,18 @@ private fun AttributeRow(
                     color = Color(0x1AFF6262),
                 )
                 .clickable {
-                    toAttributesScreen("30 دقیقه")
+                    toAttributesScreen("$time دقیقه")
                 }
         ) {
             Image(painterResource(R.drawable.time), contentDescription = "")
-            Text(text = "$time", style = MaterialTheme.typography.caption)
+            Text(text = "$time دقیقه", style = MaterialTheme.typography.caption)
         }
     }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
-        Text(text ="صبحانه",
+        Text(text = "صبحانه",
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .clip(RoundedCornerShape(16.dp))
@@ -159,7 +168,7 @@ private fun AttributeRow(
                 }
                 .padding(5.dp),
             style = MaterialTheme.typography.caption)
-        Text(text ="نهار",
+        Text(text = "نهار",
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .clip(RoundedCornerShape(26.dp))
@@ -195,11 +204,11 @@ private fun AttributeRow(
                 .width(80.dp)
                 .height(32.dp)
                 .background(
-                    color = when(degree){
-                        1-> Color(0x1AFF4444)
-                        2->Color(0x26FFE100)
-                        3->Color(0x1A00FF67)
-                        else->Color.Transparent
+                    color = when (degree) {
+                        1 -> Color(0x1AFF4444)
+                        2 -> Color(0x26FFE100)
+                        3 -> Color(0x1A00FF67)
+                        else -> Color.Transparent
                     }
                 )
                 .clickable {
@@ -299,7 +308,7 @@ private fun TabRowDescription(
 
 @Composable
 private fun LazyRowForMoreFood(
-    navController: NavHostController,
+    navToDetail: (Int, String, Int, Int) -> Unit,
     toAttributesScreen: (String) -> Unit
 ) {
     Text(
@@ -307,9 +316,10 @@ private fun LazyRowForMoreFood(
         style = MaterialTheme.typography.h3,
         color = MaterialTheme.colors.onBackground,
     )
+    val fakeFoodsFiveItem = fakeFoods.subList(fromIndex = 0, toIndex = 4)
     LazyRow(
         content = {
-            items(5) {
+            items(fakeFoodsFiveItem) {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(3.dp),
                     horizontalAlignment = Alignment.Start,
@@ -318,13 +328,11 @@ private fun LazyRowForMoreFood(
                         .width(136.dp)
                         .height(136.dp)
                         .clickable {
-                            navController.navigate(NavigationBottom.FoodDetail.route) {
-                                launchSingleTop = true
-                            }
+                            navToDetail(it.degree, it.name, it.time, it.image)
                         }
                 ) {
                     Image(
-                        painterResource(R.drawable.abgoosht),
+                        painterResource(it.image),
                         contentDescription = "",
                         modifier = Modifier
                             .width(136.dp)
@@ -333,12 +341,12 @@ private fun LazyRowForMoreFood(
                         contentScale = ContentScale.Crop
                     )
                     Text(
-                        text = " غذا$it",
+                        text = "${it.name}",
                         style = MaterialTheme.typography.body1,
                         modifier = Modifier.padding(start = 8.dp)
                     )
                     Text(
-                        text = " زمان : ${it * 9}",
+                        text = "${it.time} دقیقه",
                         style = MaterialTheme.typography.caption,
                         modifier = Modifier.padding(start = 8.dp)
                     )
