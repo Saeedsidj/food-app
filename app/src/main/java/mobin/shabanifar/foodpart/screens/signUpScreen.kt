@@ -52,32 +52,30 @@ fun signUpScreen(
     isLogin: (Boolean) -> Unit
 
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                modifier = Modifier.fillMaxWidth(),
-                backgroundColor = MaterialTheme.colors.background,
-                contentColor = MaterialTheme.colors.onBackground,
-                elevation = 0.dp,
-            ) {
-                IconButton(onClick = {
-                    navigateToProfile()
+    Scaffold(topBar = {
+        TopAppBar(
+            modifier = Modifier.fillMaxWidth(),
+            backgroundColor = MaterialTheme.colors.background,
+            contentColor = MaterialTheme.colors.onBackground,
+            elevation = 0.dp,
+        ) {
+            IconButton(onClick = {
+                navigateToProfile()
 
-                }) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_back),
-                        contentDescription = "",
-                        tint = MaterialTheme.colors.onBackground
-                    )
-                }
-                Text(
-                    text = stringResource(id = R.string.register),
-                    style = MaterialTheme.typography.h2,
-                    color = MaterialTheme.colors.onBackground
+            }) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_back),
+                    contentDescription = "",
+                    tint = MaterialTheme.colors.onBackground
                 )
             }
+            Text(
+                text = stringResource(id = R.string.register),
+                style = MaterialTheme.typography.h2,
+                color = MaterialTheme.colors.onBackground
+            )
         }
-    ) {
+    }) {
         var valueTextFieldUserName by rememberSaveable {
             mutableStateOf("")
         }
@@ -132,8 +130,7 @@ fun signUpScreen(
                     .fillMaxWidth()
                     .height(56.dp)
                     .border(
-                        width = 1.dp,
-                        color = Color.Transparent
+                        width = 1.dp, color = Color.Transparent
                     ),
                 singleLine = true,
                 placeholder = {
@@ -149,8 +146,7 @@ fun signUpScreen(
                     backgroundColor = MaterialTheme.colors.surface,
                 ),
                 keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Next,
-                    keyboardType = KeyboardType.Text
+                    imeAction = ImeAction.Next, keyboardType = KeyboardType.Text
                 )
             )
             TextField(
@@ -167,8 +163,7 @@ fun signUpScreen(
                     .height(56.dp)
                     .align(End)
                     .border(
-                        width = 1.dp,
-                        color = Color.Transparent
+                        width = 1.dp, color = Color.Transparent
                     ),
                 singleLine = true,
                 placeholder = {
@@ -184,8 +179,7 @@ fun signUpScreen(
                     backgroundColor = MaterialTheme.colors.surface,
                 ),
                 keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Next,
-                    keyboardType = KeyboardType.NumberPassword
+                    imeAction = ImeAction.Next, keyboardType = KeyboardType.NumberPassword
                 )
             )
             TextField(
@@ -201,8 +195,7 @@ fun signUpScreen(
                     .fillMaxWidth()
                     .height(56.dp)
                     .border(
-                        width = 1.dp,
-                        color = Color.Transparent
+                        width = 1.dp, color = Color.Transparent
                     ),
                 singleLine = true,
                 placeholder = {
@@ -218,19 +211,17 @@ fun signUpScreen(
                     backgroundColor = MaterialTheme.colors.surface,
                 ),
                 keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Done,
-                    keyboardType = KeyboardType.NumberPassword
+                    imeAction = ImeAction.Done, keyboardType = KeyboardType.NumberPassword
                 )
             )
             Button(
-                enabled = valueTextFieldPassword == valueTextFieldPasswordCheck
-                        && valueTextFieldUserName.isNotBlank()
-                        && valueTextFieldPasswordCheck.isNotBlank(),
+                enabled = valueTextFieldPassword == valueTextFieldPasswordCheck && valueTextFieldUserName.isNotBlank() && valueTextFieldPasswordCheck.isNotBlank(),
                 onClick = {
                     navigateToProfile()
                     saveUserName(valueTextFieldUserName)
                     isLogin(true)
-                }, modifier = Modifier
+                },
+                modifier = Modifier
                     .clip(MaterialTheme.shapes.medium)
                     .fillMaxWidth()
                     .height(48.dp)

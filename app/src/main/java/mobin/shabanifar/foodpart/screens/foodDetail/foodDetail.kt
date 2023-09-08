@@ -34,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -77,16 +78,12 @@ fun FoodDetail(
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
-    var textReportState by remember { mutableStateOf("") }
+    var textReportState by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
-    ModalBottomSheetLayout(
-        sheetBackgroundColor = MaterialTheme.colors.secondary,
+    ModalBottomSheetLayout(sheetBackgroundColor = MaterialTheme.colors.secondary,
         sheetState = modalSheetState,
         sheetShape = RoundedCornerShape(
-            bottomEnd = 0.dp,
-            bottomStart = 0.dp,
-            topStart = 16.dp,
-            topEnd = 16.dp
+            bottomEnd = 0.dp, bottomStart = 0.dp, topStart = 16.dp, topEnd = 16.dp
         ),
         scrimColor = Color.Transparent,
         sheetContent = {
@@ -114,7 +111,7 @@ fun FoodDetail(
                         textAlign = TextAlign.Start,
                     ),
                     shape = shapes.medium,
-                    placeholder = { Text(text = "ایتجا بنویسید . . .") },
+                    placeholder = { Text(text = stringResource(R.string.write_here)) },
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Done
                     ),
@@ -127,18 +124,13 @@ fun FoodDetail(
                     )
                 )
                 Button(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    onClick = {
+                    modifier = Modifier.fillMaxWidth(), onClick = {
                         coroutineScope.launch {
                             textReportState = ""
                             modalSheetState.hide()
-                            Toast.makeText(context, "گزارش شما ثبت شد", Toast.LENGTH_SHORT)
-                                .show()
+                            Toast.makeText(context, "گزارش شما ثبت شد", Toast.LENGTH_SHORT).show()
                         }
-                    },
-                    enabled = textReportState.isNotEmpty(),
-                    colors = ButtonDefaults.buttonColors(
+                    }, enabled = textReportState.isNotEmpty(), colors = ButtonDefaults.buttonColors(
                         backgroundColor = MaterialTheme.colors.primary,
                         contentColor = MaterialTheme.colors.onPrimary,
                         disabledBackgroundColor = MaterialTheme.colors.surface,
@@ -146,67 +138,57 @@ fun FoodDetail(
                     )
                 ) {
                     Text(
-                        text = "ثبت",
+                        text = stringResource(id = R.string.submit),
                         color = MaterialTheme.colors.onBackground,
                         style = MaterialTheme.typography.button
                     )
                 }
             }
-        }
-    ) {
+        }) {
         FoodPartTheme(
         ) {
-            Scaffold(
-                scaffoldState = scaffoldState,
-                snackbarHost = {
-                    CustomSnackbarHost(
-                        snackbarHostState = snackbarHostState,
-                        snackbarBackgroundColor = MaterialTheme.colors.surface,
-                        actionColor = MaterialTheme.colors.primary
-                    )
-                },
-                topBar = {
-                    TopAppBar(
-                        modifier = Modifier.fillMaxWidth(),
-                        backgroundColor = MaterialTheme.colors.background,
-                        contentColor = MaterialTheme.colors.onBackground,
-                        elevation = 0.dp
-                    ) {
-                        IconButton(onClick = {
-                            navController.navigateUp()
-                        }) {
-                            Icon(
-                                painterResource(R.drawable.ic_back),
-                                contentDescription = "",
-                                tint = MaterialTheme.colors.onBackground,
-                            )
-                        }
-                        Text(
-                            text = stringResource(R.string.food_info),
-                            style = MaterialTheme.typography.h2,
-                            color = MaterialTheme.colors.onBackground
+            Scaffold(scaffoldState = scaffoldState, snackbarHost = {
+                CustomSnackbarHost(
+                    snackbarHostState = snackbarHostState,
+                    snackbarBackgroundColor = MaterialTheme.colors.surface,
+                    actionColor = MaterialTheme.colors.primary
+                )
+            }, topBar = {
+                TopAppBar(
+                    modifier = Modifier.fillMaxWidth(),
+                    backgroundColor = MaterialTheme.colors.background,
+                    contentColor = MaterialTheme.colors.onBackground,
+                    elevation = 0.dp
+                ) {
+                    IconButton(onClick = {
+                        navController.navigateUp()
+                    }) {
+                        Icon(
+                            painterResource(R.drawable.ic_back),
+                            contentDescription = "",
+                            tint = MaterialTheme.colors.onBackground,
                         )
-                        Spacer(modifier = Modifier.weight(1f))
-                        IconButton(
-                            onClick = { showMenu = !showMenu }) {
-                            Icon(
-                                painterResource(R.drawable.more),
-                                contentDescription = "",
-                                tint = MaterialTheme.colors.onBackground
-                            )
-                            DropDownMenu(
-                                showMenu,
-                                isLogin,
-                                coroutineScope,
-                                modalSheetState,
-                                snackbarHostState
-                            ) {
-                                showMenu = it
-                            }
+                    }
+                    Text(
+                        text = stringResource(R.string.food_info),
+                        style = MaterialTheme.typography.h2,
+                        color = MaterialTheme.colors.onBackground
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    IconButton(onClick = { showMenu = !showMenu }) {
+                        Icon(
+                            painterResource(R.drawable.more),
+                            contentDescription = "",
+                            tint = MaterialTheme.colors.onBackground
+                        )
+                        DropDownMenu(
+                            showMenu, isLogin, coroutineScope, modalSheetState, snackbarHostState
+                        ) {
+                            showMenu = it
                         }
                     }
                 }
-            ) {
+            }) {
                 MainScreen(
                     toAttributesScreen = toAttributesScreen,
                     it,

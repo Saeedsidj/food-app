@@ -16,9 +16,7 @@ data class FakeFoods(
 
 // کلاس فیک دیتا برای آیتم های کتگوری
 data class CategoryItems(
-    val name: String,
-    val image: Int,
-    var isClicked: Boolean = false
+    val name: String, val image: Int, var isClicked: Boolean = false
 )
 
 val fakeFoods = listOf<FakeFoods>(
@@ -134,23 +132,22 @@ val categoryItems = listOf<CategoryItems>(
 )
 
 // لیست ساب کتگوری ها - لیست استرینگی ساده
-val subCategoryList =
-    listOf<String>(
-        "آبگوشت",
-        "همبرگر",
-        "اشکنه",
-        "آش رشته",
-        "آبگوشت",
-        "همبرگر",
-        "اشکنه",
-        "آش رشته",
-        "آبگوشت",
-        "همبرگر",
-        "اشکنه",
-        "آش رشته",
-        "آبگوشت",
-        "همبرگر",
-        "اشکنه",
-        "آش رشته",
+val subCategoryList = listOf<String>(
+    "آبگوشت",
+    "همبرگر",
+    "اشکنه",
+    "آش رشته",
+    "آبگوشت",
+    "همبرگر",
+    "اشکنه",
+    "آش رشته",
+    "آبگوشت",
+    "همبرگر",
+    "اشکنه",
+    "آش رشته",
+    "آبگوشت",
+    "همبرگر",
+    "اشکنه",
+    "آش رشته",
 
-        )
+    )

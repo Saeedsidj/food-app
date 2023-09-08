@@ -60,61 +60,59 @@ class MainActivity : ComponentActivity() {
                 val currentDestination = navBackStackEntry?.destination
                 var userName by rememberSaveable { mutableStateOf("مهمان") }
                 var isLogin by rememberSaveable { mutableStateOf(false) }
-                Scaffold(
-                    bottomBar = {
-                        if (currentDestination?.route in mainRoute) {
-                            BottomNavigation(
-                                backgroundColor = MaterialTheme.colors.secondary,
-                                modifier = Modifier
-                                    .clip(
-                                        shape = RoundedCornerShape(
-                                            topStart = 28.dp, topEnd = 28.dp
+                Scaffold(bottomBar = {
+                    if (currentDestination?.route in mainRoute) {
+                        BottomNavigation(
+                            backgroundColor = MaterialTheme.colors.secondary,
+                            modifier = Modifier
+                                .clip(
+                                    shape = RoundedCornerShape(
+                                        topStart = 28.dp, topEnd = 28.dp
+                                    )
+                                )
+                                .height(80.dp)
+                        ) {
+                            val navBackStackEntry by navController.currentBackStackEntryAsState()
+                            val currentDestination = navBackStackEntry?.destination
+
+                            items.forEach { screen ->
+                                BottomNavigationItem(
+                                    modifier = Modifier.padding(8.dp),
+                                    label = {
+                                        Text(
+                                            text = getString(screen.name),
+                                            style = MaterialTheme.typography.subtitle1,
                                         )
-                                    )
-                                    .height(80.dp)
-                            ) {
-                                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                                val currentDestination = navBackStackEntry?.destination
-
-                                items.forEach { screen ->
-                                    BottomNavigationItem(
-                                        modifier = Modifier.padding(8.dp),
-                                        label = {
-                                            Text(
-                                                text = getString(screen.name),
-                                                style = MaterialTheme.typography.subtitle1,
-                                            )
-                                        },
-                                        selected = currentDestination?.hierarchy?.any {
-                                            it.route == screen.route
-                                        } == true,
-                                        onClick = {
-                                            val currentRoute = currentDestination?.route
-                                            if (currentRoute != screen.route) {
-                                                navController.navigate(screen.route) {
-                                                    popUpTo(navController.graph.findStartDestination().id) {
-                                                        saveState = true
-                                                    }
-                                                    restoreState = true
+                                    },
+                                    selected = currentDestination?.hierarchy?.any {
+                                        it.route == screen.route
+                                    } == true,
+                                    onClick = {
+                                        val currentRoute = currentDestination?.route
+                                        if (currentRoute != screen.route) {
+                                            navController.navigate(screen.route) {
+                                                popUpTo(navController.graph.findStartDestination().id) {
+                                                    saveState = true
                                                 }
+                                                restoreState = true
                                             }
+                                        }
 
-                                        },
-                                        icon = {
-                                            Icon(
-                                                painterResource(id = screen.icon!!),
-                                                contentDescription = ""
-                                            )
-                                        },
-                                        selectedContentColor = Color.Red,
-                                        unselectedContentColor = MaterialTheme.colors.onBackground,
-                                    )
-                                }
+                                    },
+                                    icon = {
+                                        Icon(
+                                            painterResource(id = screen.icon!!),
+                                            contentDescription = ""
+                                        )
+                                    },
+                                    selectedContentColor = Color.Red,
+                                    unselectedContentColor = MaterialTheme.colors.onBackground,
+                                )
                             }
-
                         }
+
                     }
-                ) {
+                }) {
                     NavHost(
                         navController = navController,
                         startDestination = NavigationBottom.Category.route,
@@ -123,30 +121,22 @@ class MainActivity : ComponentActivity() {
                         composable(NavigationBottom.FoodPhoto.route) {
                             ShowPhoto(navController = navController)
                         }
-                        composable(
-                            NavigationBottom.FoodDetail.route,
-                            arguments = listOf(
-                                navArgument("degree") {
-                                    type = NavType.IntType
-                                },
-                                navArgument("name") {
-                                    type = NavType.StringType
-                                },
-                                navArgument("time") {
-                                    type = NavType.IntType
-                                },
-                                navArgument("image") {
-                                    type = NavType.IntType
-                                }
-                            )
-                        ) { entry ->
+                        composable(NavigationBottom.FoodDetail.route,
+                            arguments = listOf(navArgument("degree") {
+                                type = NavType.IntType
+                            }, navArgument("name") {
+                                type = NavType.StringType
+                            }, navArgument("time") {
+                                type = NavType.IntType
+                            }, navArgument("image") {
+                                type = NavType.IntType
+                            })) { entry ->
                             val degree = entry.arguments?.getInt("degree")!!
                             val name = entry.arguments?.getString("name")!!
                             val time = entry.arguments?.getInt("time")!!
                             val image = entry.arguments?.getInt("image")!!
 
-                            FoodDetail(
-                                degree,
+                            FoodDetail(degree,
                                 name,
                                 time,
                                 image,
@@ -162,103 +152,79 @@ class MainActivity : ComponentActivity() {
                         composable(
                             NavigationBottom.Category.route
                         ) {
-                            Category(
-                                navToDetail = { degree: Int, name: String, time: Int, image: Int ->
-                                    navController.navigate("foodDetail/$degree/$name/$time/$image") {
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
+                            Category(navToDetail = { degree: Int, name: String, time: Int, image: Int ->
+                                navController.navigate("foodDetail/$degree/$name/$time/$image") {
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                            )
+                            })
                         }
                         composable(NavigationBottom.Cook.route) {
-                            WhatToCook(
-                                navigateToWTCList = { whatDoYouHave, howMuchTimeHave, level ->
-                                    navController.navigate("whatToCookList?whatDoYouHave=$whatDoYouHave&howMuchTimeHave=$howMuchTimeHave&level=$level")
-                                }
-                            )
+                            WhatToCook(navigateToWTCList = { whatDoYouHave, howMuchTimeHave, level ->
+                                navController.navigate("whatToCookList?whatDoYouHave=$whatDoYouHave&howMuchTimeHave=$howMuchTimeHave&level=$level")
+                            })
                         }
                         composable(NavigationBottom.Search.route) {
-                            Search(
-                                navToDetail = { degree: Int, name: String, time: Int, image: Int ->
-                                    navController.navigate("foodDetail/$degree/$name/$time/$image") {
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
+                            Search(navToDetail = { degree: Int, name: String, time: Int, image: Int ->
+                                navController.navigate("foodDetail/$degree/$name/$time/$image") {
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                            )
+                            })
                         }
                         composable(NavigationBottom.Profile.route) {
-                            ProfileScreen(
-                                usernameSave = userName,
+                            ProfileScreen(usernameSave = userName,
                                 isLogin = isLogin,
                                 navigateToProfileSignIn = {
                                     navController.navigate(NavigationBottom.SignUp.route)
                                 },
                                 changeLoginState = {
                                     isLogin = !isLogin
-                                }
-                            )
+                                })
                         }
                         composable(NavigationBottom.SignUp.route) {
-                            signUpScreen(
-                                isLogin = { result ->
-                                    isLogin = result
-                                },
-                                saveUserName = { username ->
-                                    userName = username
-                                },
-                                navigateToProfile = {
-                                    navController.popBackStack()
-                                },
-                                navigateToProfileLogin = {
-                                    navController.navigate(NavigationBottom.Login.route) {
-                                        popUpTo(NavigationBottom.Profile.route)
-                                    }
+                            signUpScreen(isLogin = { result ->
+                                isLogin = result
+                            }, saveUserName = { username ->
+                                userName = username
+                            }, navigateToProfile = {
+                                navController.popBackStack()
+                            }, navigateToProfileLogin = {
+                                navController.navigate(NavigationBottom.Login.route) {
+                                    popUpTo(NavigationBottom.Profile.route)
                                 }
+                            }
 
                             )
                         }
                         composable(NavigationBottom.Login.route) {
-                            LoginScreen(
-                                navigateToProfileSignIn = {
-                                    navController.navigate(NavigationBottom.SignUp.route) {
-                                        popUpTo(NavigationBottom.Profile.route)
-                                    }
-                                },
-                                navigateToProfile = {
-                                    navController.popBackStack()
-                                },
-                                saveUserName = { username ->
-                                    userName = username
-                                },
-                                isLogin = { result ->
-                                    isLogin = result
+                            LoginScreen(navigateToProfileSignIn = {
+                                navController.navigate(NavigationBottom.SignUp.route) {
+                                    popUpTo(NavigationBottom.Profile.route)
                                 }
-                            )
+                            }, navigateToProfile = {
+                                navController.popBackStack()
+                            }, saveUserName = { username ->
+                                userName = username
+                            }, isLogin = { result ->
+                                isLogin = result
+                            })
                         }
-                        composable(
-                            route = NavigationBottom.WhatToCook.route,
-                            arguments = listOf(
-                                navArgument(WHAT_DO_YOU_HAVE) {
-                                    type = NavType.StringType
-                                    nullable = true
-                                },
-                                navArgument(HOW_MUCH_TIME_HAVE) {
-                                    type = NavType.StringType
-                                    nullable = true
-                                },
-                                navArgument(LEVEL) {
-                                    type = NavType.StringType
-                                    nullable = true
-                                }
-                            )
-                        ) { getData ->
+                        composable(route = NavigationBottom.WhatToCook.route,
+                            arguments = listOf(navArgument(WHAT_DO_YOU_HAVE) {
+                                type = NavType.StringType
+                                nullable = true
+                            }, navArgument(HOW_MUCH_TIME_HAVE) {
+                                type = NavType.StringType
+                                nullable = true
+                            }, navArgument(LEVEL) {
+                                type = NavType.StringType
+                                nullable = true
+                            })) { getData ->
                             val whatDoYouHave = getData.arguments?.getString(WHAT_DO_YOU_HAVE)
                             val howMuchTimeHave = getData.arguments?.getString(HOW_MUCH_TIME_HAVE)
                             val level = getData.arguments?.getString(LEVEL)
-                            WhatToCookListScreen(
-                                whatDoYouHave.toString(),
+                            WhatToCookListScreen(whatDoYouHave.toString(),
                                 howMuchTimeHave.toString(),
                                 level.toString(),
                                 navToDetail = { degree: Int, name: String, time: Int, image: Int ->
@@ -273,28 +239,21 @@ class MainActivity : ComponentActivity() {
                                 },
                                 navigateToWTCForm = {
                                     navController.popBackStack()
-                                }
-                            )
+                                })
                         }
-                        composable(
-                            route = NavigationBottom.ShowFoodByAttributes.route,
-                            arguments = listOf(
-                                navArgument("title") {
-                                    type = NavType.StringType
-                                }
-                            )
-                        ) { entry ->
+                        composable(route = NavigationBottom.ShowFoodByAttributes.route,
+                            arguments = listOf(navArgument("title") {
+                                type = NavType.StringType
+                            })) { entry ->
                             val topTitle = entry.arguments?.getString("title")!!
-                            ShowFoodByAttributes(
-                                topTitle = topTitle,
+                            ShowFoodByAttributes(topTitle = topTitle,
                                 navController = navController,
                                 navToDetail = { degree: Int, name: String, time: Int, image: Int ->
                                     navController.navigate("foodDetail/$degree/$name/$time/$image") {
                                         launchSingleTop = true
                                         restoreState = true
                                     }
-                                }
-                            )
+                                })
                         }
                     }
                 }

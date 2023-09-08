@@ -20,7 +20,7 @@
     <string name="recipe_added_to_favorites">دستور به علاقه‌مندی‌ها اضافه شد.</string>
     <string name="saved_recipes">ذخیره شده ها</string>
     <string name="enter_to">وارد شوید</string>
-    <string name="save">ثبت</string>
+    <string name="save">ذخیره</string>
     <string name="no_data_to_display">اطلاعاتی برای نمایش وجود ندارد</string>
     <string name="login">ورود</string>
     <string name="guest">مهمان</string>
@@ -59,9 +59,11 @@
     <string name="min">دقیقه</string>
     <string name="what_should_i_cook_result">نتایج چی بپزم</string>
     <string name="what_are_you_looking_for">دنبال چی میگردی؟</string>
-    <string name="write_here">اینجا بنویس...</string>
+    <string name="write_here">اینجا بنویسید...</string>
     <string name="oops_no_results">اوپس... چیزی پیدا نشد!</string>
     <string name="reportTitle">گزارش دستور به عنوان نامناسب</string>
     <string name="show_food_by_attribute">نمایش با اتریبیون</string>
     <string name="cook_in_minutes">تو %1$s چی میشه پخت؟</string>
+    <string name="report">گزارش</string>
+    <string name="send">ارسال</string>
 </resources>
