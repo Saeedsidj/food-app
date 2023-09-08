@@ -95,7 +95,6 @@ class MainActivity : ComponentActivity() {
                                                     popUpTo(navController.graph.findStartDestination().id) {
                                                         saveState = true
                                                     }
-                                                    launchSingleTop = true
                                                     restoreState = true
                                                 }
                                             }
@@ -150,12 +149,7 @@ class MainActivity : ComponentActivity() {
                                 usernameSave = userName,
                                 isLogin = isLogin,
                                 navigateToProfileSignIn = {
-                                    navController.navigate(NavigationBottom.SignUp.route) {
-                                        popUpTo(NavigationBottom.Profile.route) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                    }
+                                    navController.navigate(NavigationBottom.SignUp.route)
                                 },
                                 changeLoginState = {
                                     isLogin = !isLogin
@@ -171,14 +165,7 @@ class MainActivity : ComponentActivity() {
                                     userName = username
                                 },
                                 navigateToProfile = {
-                                    navController.navigate(NavigationBottom.Profile.route) {
-                                        popUpTo(NavigationBottom.Profile.route) {
-                                            inclusive = true
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                    }
-
+                                    navController.popBackStack()
                                 },
                                 navigateToProfileLogin = {
                                     navController.navigate(NavigationBottom.Login.route) {
@@ -196,13 +183,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 },
                                 navigateToProfile = {
-                                    navController.navigate(NavigationBottom.Profile.route) {
-                                        popUpTo(NavigationBottom.Profile.route) {
-                                            inclusive = true
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                    }
+                                    navController.popBackStack()
                                 },
                                 saveUserName = { username ->
                                     userName = username
@@ -243,6 +224,7 @@ class MainActivity : ComponentActivity() {
                                             saveState = true
                                         }
                                         launchSingleTop = true
+                                        restoreState = true
                                     }
                                 },
                                 navigateToWTCForm = {

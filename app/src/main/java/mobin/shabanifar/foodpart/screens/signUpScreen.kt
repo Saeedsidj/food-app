@@ -42,6 +42,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import mobin.shabanifar.foodpart.R
+import mobin.shabanifar.foodpart.ui.theme.blue
 
 @Composable
 fun signUpScreen(
@@ -63,7 +64,11 @@ fun signUpScreen(
                     navigateToProfile()
 
                 }) {
-                    Icon(painter = painterResource(R.drawable.ic_back), contentDescription = "")
+                    Icon(
+                        painter = painterResource(R.drawable.ic_back),
+                        contentDescription = "",
+                        tint = MaterialTheme.colors.onBackground
+                    )
                 }
                 Text(
                     text = stringResource(id = R.string.register),
@@ -140,8 +145,8 @@ fun signUpScreen(
                 },
                 colors = TextFieldDefaults.textFieldColors(
                     focusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
+                    unfocusedIndicatorColor = Color.Transparent,
+                    backgroundColor = MaterialTheme.colors.surface,
                 ),
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next,
@@ -175,8 +180,8 @@ fun signUpScreen(
                 },
                 colors = TextFieldDefaults.textFieldColors(
                     focusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
+                    unfocusedIndicatorColor = Color.Transparent,
+                    backgroundColor = MaterialTheme.colors.surface,
                 ),
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next,
@@ -202,15 +207,15 @@ fun signUpScreen(
                 singleLine = true,
                 placeholder = {
                     Text(
-                        text = stringResource(id = R.string.new_password),
+                        text = stringResource(id = R.string.repeat_password),
                         style = MaterialTheme.typography.body1,
                         color = MaterialTheme.colors.onSurface
                     )
                 },
                 colors = TextFieldDefaults.textFieldColors(
                     focusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
+                    unfocusedIndicatorColor = Color.Transparent,
+                    backgroundColor = MaterialTheme.colors.surface,
                 ),
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Done,
@@ -218,15 +223,13 @@ fun signUpScreen(
                 )
             )
             Button(
-                enabled = valueTextFieldPassword == valueTextFieldPasswordCheck,
+                enabled = valueTextFieldPassword == valueTextFieldPasswordCheck
+                        && valueTextFieldUserName.isNotBlank()
+                        && valueTextFieldPasswordCheck.isNotBlank(),
                 onClick = {
-                    if (valueTextFieldPassword.isNullOrEmpty()
-                            .not() && valueTextFieldUserName.isNullOrEmpty().not()
-                    ) {
-                        navigateToProfile()
-                        saveUserName(valueTextFieldUserName)
-                        isLogin(true)
-                    }
+                    navigateToProfile()
+                    saveUserName(valueTextFieldUserName)
+                    isLogin(true)
                 }, modifier = Modifier
                     .clip(MaterialTheme.shapes.medium)
                     .fillMaxWidth()
@@ -256,7 +259,7 @@ fun signUpScreen(
                     },
                     text = stringResource(id = R.string.login),
                     style = MaterialTheme.typography.subtitle1,
-                    color = MaterialTheme.colors.primaryVariant
+                    color = blue
                 )
             }
         }

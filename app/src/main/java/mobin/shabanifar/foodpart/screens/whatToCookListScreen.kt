@@ -59,7 +59,11 @@ fun WhatToCookListScreen(
             IconButton(onClick = {
                 navigateToWTCForm()
             }) {
-                Icon(painter = painterResource(R.drawable.ic_back), contentDescription = "")
+                Icon(
+                    painter = painterResource(R.drawable.ic_back),
+                    contentDescription = "",
+                    tint = MaterialTheme.colors.onBackground
+                )
             }
             Text(
                 text = stringResource(id = R.string.what_should_i_cook),
