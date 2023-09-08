@@ -42,17 +42,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.NavController
 import mobin.shabanifar.foodpart.FakeFoods
-import mobin.shabanifar.foodpart.NavigationBottom
 import mobin.shabanifar.foodpart.R
 import mobin.shabanifar.foodpart.fakeFoods
 
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun Search(navController: NavHostController) {
+fun Search(
+    navToDetail: (Int, String, Int, Int) -> Unit
+) {
     val keyboardController = LocalSoftwareKeyboardController.current
     var textField by remember { mutableStateOf(TextFieldValue("")) }
     var searchText by remember { mutableStateOf("") }
@@ -155,7 +154,7 @@ fun Search(navController: NavHostController) {
                     color = MaterialTheme.colors.onBackground
                 )
 
-                SearchedItems(foundItems,navController)
+                SearchedItems(foundItems, navToDetail)
             } else if (searchText != "") {
                 isSearchSuccessful = false
                 SearchedFailed()
@@ -167,7 +166,10 @@ fun Search(navController: NavHostController) {
 
 
 @Composable
-fun SearchedItems(foundItems: List<FakeFoods>, navController: NavHostController) {
+fun SearchedItems(
+    foundItems: List<FakeFoods>,
+    navToDetail: (Int, String, Int, Int) -> Unit
+) {
 
     LazyVerticalGrid(
         modifier = Modifier
@@ -185,9 +187,7 @@ fun SearchedItems(foundItems: List<FakeFoods>, navController: NavHostController)
                     .padding(bottom = 24.dp)
                     .clip(MaterialTheme.shapes.medium)
                     .clickable {
-                        navController.navigate(NavigationBottom.FoodDetail.route){
-                            launchSingleTop = true
-                        }
+                        navToDetail(it.degree, it.name, it.time, it.image)
                     }
             ) {
                 Image(

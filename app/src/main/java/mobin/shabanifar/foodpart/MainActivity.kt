@@ -139,11 +139,11 @@ class MainActivity : ComponentActivity() {
                                     type = NavType.IntType
                                 }
                             )
-                        ) {entry ->
+                        ) { entry ->
                             val degree = entry.arguments?.getInt("degree")!!
                             val name = entry.arguments?.getString("name")!!
-                            val time=entry.arguments?.getInt("time")!!
-                            val image=entry.arguments?.getInt("image")!!
+                            val time = entry.arguments?.getInt("time")!!
+                            val image = entry.arguments?.getInt("image")!!
 
                             FoodDetail(
                                 degree,
@@ -153,15 +153,23 @@ class MainActivity : ComponentActivity() {
                                 navController,
                                 isLogin,
                                 toAttributesScreen = { title: String ->
-                                    navController.navigate("showFoodByAttributes/$title")
+                                    navController.navigate("showFoodByAttributes/$title") {
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
                                 })
                         }
                         composable(
                             NavigationBottom.Category.route
                         ) {
-                            Category(navController){degree:Int,name:String,time:Int,image:Int ->
-                                navController.navigate("foodDetail/$degree/$name/$time/$image")
-                            }
+                            Category(
+                                navToDetail = { degree: Int, name: String, time: Int, image: Int ->
+                                    navController.navigate("foodDetail/$degree/$name/$time/$image") {
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
+                            )
                         }
                         composable(NavigationBottom.Cook.route) {
                             WhatToCook(
@@ -171,7 +179,14 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(NavigationBottom.Search.route) {
-                            Search(navController)
+                            Search(
+                                navToDetail = { degree: Int, name: String, time: Int, image: Int ->
+                                    navController.navigate("foodDetail/$degree/$name/$time/$image") {
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
+                            )
                         }
                         composable(NavigationBottom.Profile.route) {
                             ProfileScreen(
@@ -246,8 +261,8 @@ class MainActivity : ComponentActivity() {
                                 whatDoYouHave.toString(),
                                 howMuchTimeHave.toString(),
                                 level.toString(),
-                                navigateToDetailScreen = {
-                                    navController.navigate(NavigationBottom.FoodDetail.route) {
+                                navToDetail = { degree: Int, name: String, time: Int, image: Int ->
+                                    navController.navigate("foodDetail/$degree/$name/$time/$image") {
                                         popUpTo(NavigationBottom.Profile.route) {
                                             inclusive = true
                                             saveState = true
@@ -270,7 +285,16 @@ class MainActivity : ComponentActivity() {
                             )
                         ) { entry ->
                             val topTitle = entry.arguments?.getString("title")!!
-                            ShowFoodByAttributes(topTitle, navController)
+                            ShowFoodByAttributes(
+                                topTitle = topTitle,
+                                navController = navController,
+                                navToDetail = { degree: Int, name: String, time: Int, image: Int ->
+                                    navController.navigate("foodDetail/$degree/$name/$time/$image") {
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
+                            )
                         }
                     }
                 }

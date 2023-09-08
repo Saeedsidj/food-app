@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.IconToggleButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -290,7 +289,7 @@ fun WhatToCook(
                         selectedLevel
                     )
                 }, modifier = Modifier
-                    .padding(bottom = 8.dp, start = 16.dp,end = 16.dp)
+                    .padding(bottom = 8.dp, start = 16.dp, end = 16.dp)
                     .clip(MaterialTheme.shapes.medium)
                     .fillMaxWidth()
                     .height(48.dp)
