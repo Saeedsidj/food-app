@@ -32,38 +32,34 @@ import mobin.shabanifar.foodpart.fakeFoods
 
 @Composable
 fun ShowFoodByAttributes(
-    topTitle: String,
-    navToDetail: (Int, String, Int, Int) -> Unit, navController: NavHostController
+    topTitle: String, navToDetail: (Int, String, Int, Int) -> Unit, navController: NavHostController
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                backgroundColor = MaterialTheme.colors.background,
-                elevation = 0.dp,
+    Scaffold(topBar = {
+        TopAppBar(
+            backgroundColor = MaterialTheme.colors.background,
+            elevation = 0.dp,
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    IconButton(
-                        onClick = {
-                            navController.navigateUp()
-                        }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_back),
-                            contentDescription = "",
-                            tint = MaterialTheme.colors.onBackground
-                        )
-                    }
-                    Text(
-                        text = stringResource(R.string.cook_in_minutes, topTitle),
-                        color = MaterialTheme.colors.onBackground,
-                        style = MaterialTheme.typography.h2
+                IconButton(onClick = {
+                    navController.navigateUp()
+                }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_back),
+                        contentDescription = "",
+                        tint = MaterialTheme.colors.onBackground
                     )
                 }
+                Text(
+                    text = stringResource(R.string.cook_in_minutes, topTitle),
+                    color = MaterialTheme.colors.onBackground,
+                    style = MaterialTheme.typography.h2
+                )
             }
         }
-    ) {
+    }) {
         LazyVerticalGrid(
             modifier = Modifier
                 .padding(it)
@@ -71,19 +67,16 @@ fun ShowFoodByAttributes(
             columns = GridCells.Fixed(2),
             horizontalArrangement = Arrangement.spacedBy(24.dp),
             contentPadding = PaddingValues(
-                vertical = 16.dp,
-                horizontal = 40.dp
+                vertical = 16.dp, horizontal = 40.dp
             ) // پدینگ آیتم ها با حاشیه = horizontal
         ) {
             items(fakeFoods) {
-                Column(
-                    modifier = Modifier
-                        .padding(bottom = 24.dp)
-                        .clip(MaterialTheme.shapes.medium)
-                        .clickable {
-                            navToDetail(it.degree, it.name, it.time, it.image)
-                        }
-                ) {
+                Column(modifier = Modifier
+                    .padding(bottom = 24.dp)
+                    .clip(MaterialTheme.shapes.medium)
+                    .clickable {
+                        navToDetail(it.degree, it.name, it.time, it.image)
+                    }) {
                     Image(
                         painter = painterResource(id = it.image),
                         contentDescription = "",
@@ -97,15 +90,13 @@ fun ShowFoodByAttributes(
                         text = it.name,
                         style = MaterialTheme.typography.body1,
                         color = MaterialTheme.colors.onSurface,
-                        modifier = Modifier
-                            .padding(start = 8.dp, bottom = 4.dp)
+                        modifier = Modifier.padding(start = 8.dp, bottom = 4.dp)
                     )
                     Text(
                         text = stringResource(id = R.string.food_time, it.time),
                         style = MaterialTheme.typography.subtitle1,
                         color = MaterialTheme.colors.onSurface,
-                        modifier = Modifier
-                            .padding(start = 8.dp)
+                        modifier = Modifier.padding(start = 8.dp)
                     )
                 }
             }

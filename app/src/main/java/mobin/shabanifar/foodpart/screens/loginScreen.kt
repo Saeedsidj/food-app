@@ -50,33 +50,31 @@ fun LoginScreen(
     saveUserName: (String) -> Unit,
     isLogin: (Boolean) -> Unit
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                modifier = Modifier.fillMaxWidth(),
-                backgroundColor = MaterialTheme.colors.background,
-                contentColor = MaterialTheme.colors.onBackground,
-                elevation = 0.dp,
-            ) {
-                IconButton(onClick = {
-                    navigateToProfile()
+    Scaffold(topBar = {
+        TopAppBar(
+            modifier = Modifier.fillMaxWidth(),
+            backgroundColor = MaterialTheme.colors.background,
+            contentColor = MaterialTheme.colors.onBackground,
+            elevation = 0.dp,
+        ) {
+            IconButton(onClick = {
+                navigateToProfile()
 
-                }) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_back),
-                        contentDescription = "",
-                        tint = MaterialTheme.colors.onBackground
-                    )
-                }
-                Text(
-                    text = stringResource(id = R.string.login),
-                    style = MaterialTheme.typography.h2,
-                    color = MaterialTheme.colors.onBackground
+            }) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_back),
+                    contentDescription = "",
+                    tint = MaterialTheme.colors.onBackground
                 )
-
             }
+            Text(
+                text = stringResource(id = R.string.login),
+                style = MaterialTheme.typography.h2,
+                color = MaterialTheme.colors.onBackground
+            )
+
         }
-    ) {
+    }) {
         var valueTextFieldUserName by rememberSaveable {
             mutableStateOf("")
         }
@@ -129,8 +127,7 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .height(56.dp)
                     .border(
-                        width = 1.dp,
-                        color = Color.Transparent
+                        width = 1.dp, color = Color.Transparent
                     ),
                 singleLine = true,
                 placeholder = {
@@ -146,8 +143,7 @@ fun LoginScreen(
                     backgroundColor = MaterialTheme.colors.surface,
                 ),
                 keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Next,
-                    keyboardType = KeyboardType.Text
+                    imeAction = ImeAction.Next, keyboardType = KeyboardType.Text
                 )
 
             )
@@ -165,8 +161,7 @@ fun LoginScreen(
                     .height(56.dp)
                     .align(Alignment.End)
                     .border(
-                        width = 1.dp,
-                        color = Color.Transparent
+                        width = 1.dp, color = Color.Transparent
                     ),
                 singleLine = true,
                 placeholder = {
@@ -182,8 +177,7 @@ fun LoginScreen(
                     backgroundColor = MaterialTheme.colors.surface,
                 ),
                 keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Done,
-                    keyboardType = KeyboardType.NumberPassword
+                    imeAction = ImeAction.Done, keyboardType = KeyboardType.NumberPassword
                 )
             )
             Button(
@@ -192,7 +186,8 @@ fun LoginScreen(
                     saveUserName(valueTextFieldUserName)
                     isLogin(true)
                     navigateToProfile()
-                }, modifier = Modifier
+                },
+                modifier = Modifier
                     .padding(bottom = 8.dp)
                     .clip(MaterialTheme.shapes.medium)
                     .fillMaxWidth()

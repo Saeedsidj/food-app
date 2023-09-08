@@ -31,7 +31,6 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -53,27 +52,23 @@ fun Category(
     navToDetail: (Int, String, Int, Int) -> Unit
 ) {
     // برای نشون دادن صفحه غذایی یافت نشد
-    var isFood by remember { mutableStateOf<Boolean>(true) }
+    var isFood by rememberSaveable { mutableStateOf<Boolean>(true) }
     val lambIsFood = { it: Boolean -> isFood = it }
 
-    var isSub by remember { mutableStateOf<Boolean>(true) }
+    var isSub by rememberSaveable { mutableStateOf<Boolean>(true) }
     val lambIsSub = { it: Boolean -> isSub = it }
 
     //
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(id = R.string.app_name_fa),
-                        style = MaterialTheme.typography.h1,
-                    )
-                },
-                backgroundColor = MaterialTheme.colors.background,
-                elevation = 0.dp
-            )
-        }
-    ) {
+    Scaffold(topBar = {
+        TopAppBar(
+            title = {
+                Text(
+                    text = stringResource(id = R.string.app_name_fa),
+                    style = MaterialTheme.typography.h1,
+                )
+            }, backgroundColor = MaterialTheme.colors.background, elevation = 0.dp
+        )
+    }) {
         Column(
             modifier = Modifier.padding(it)
         ) {
@@ -88,11 +83,10 @@ fun Category(
             //خط جدا کننده اول
             Divider(
                 modifier = Modifier
-                    .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+                    .padding(start = 16.dp, end = 16.dp)
                     .height(0.5.dp),
                 //startIndent = 16.dp,
-                thickness = 1.dp,
-                color = MaterialTheme.colors.onSurface
+                thickness = 1.dp, color = MaterialTheme.colors.onSurface
             )
 
             if (isSub) {
@@ -103,9 +97,7 @@ fun Category(
                 Divider(
                     modifier = Modifier
                         .padding(start = 16.dp, end = 16.dp, top = 8.dp)
-                        .height(0.5.dp),
-                    thickness = 1.dp,
-                    color = MaterialTheme.colors.onSurface
+                        .height(0.5.dp), thickness = 1.dp, color = MaterialTheme.colors.onSurface
                 )
             } else {
                 if (isFood) {
@@ -135,37 +127,32 @@ fun CategoryItems(
 
     // نمایش لیست کتگوری ها
     LazyRow(
-        modifier = Modifier
-            .fillMaxWidth(),
-        contentPadding = PaddingValues(horizontal = 8.dp)
+        modifier = Modifier.fillMaxWidth(), contentPadding = PaddingValues(horizontal = 8.dp)
     ) {
         itemsIndexed(categoryItems) { index, it ->
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    // فاصله عکس های کتگوری باهمدیگه، برشداری بهم میچسبن
-                    .padding(start = 8.dp, end = 8.dp)
-                    .clip(MaterialTheme.shapes.medium)
-                    .clickable {
-                        when (it.name) {
-                            "بی ساب" -> {
-                                lambIsSub(false)
-                                lambIsFood(true)
-                            }
-
-                            "غذا نیست" -> {
-                                lambIsFood(false)
-                                lambIsSub(false)
-                            }
-
-                            else -> {
-                                lambIsFood(true)
-                                lambIsSub(true)
-                            }
+            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
+                // فاصله عکس های کتگوری باهمدیگه، برشداری بهم میچسبن
+                .padding(start = 8.dp, end = 8.dp)
+                .clip(MaterialTheme.shapes.medium)
+                .clickable {
+                    when (it.name) {
+                        "بی ساب" -> {
+                            lambIsSub(false)
+                            lambIsFood(true)
                         }
-                        indexCategoryClicked = index
+
+                        "غذا نیست" -> {
+                            lambIsFood(false)
+                            lambIsSub(false)
+                        }
+
+                        else -> {
+                            lambIsFood(true)
+                            lambIsSub(true)
+                        }
                     }
-            ) {
+                    indexCategoryClicked = index
+                }) {
 
                 // نمایش آیتمی که کلیکشده بصورت رنگی
                 if (index == indexCategoryClicked) {
@@ -225,16 +212,16 @@ fun SubCategory() {
     var indexSubCategoryClicked by rememberSaveable { mutableStateOf<Int>(0) }
 
     LazyRow(
+        modifier = Modifier.padding(top = 8.dp),
         contentPadding = PaddingValues(horizontal = 16.dp), // پدینگ ساب کتگوری از کنار صفحه
         horizontalArrangement = Arrangement.spacedBy(8.dp) // پدینگ بین ساب کتگوری ها
     ) {
         itemsIndexed(subCategoryList) { index, it ->
-            Chip(
-                border = if (indexSubCategoryClicked == index) {
-                    BorderStroke(1.dp, MaterialTheme.colors.primary)
-                } else {
-                    BorderStroke(0.dp, MaterialTheme.colors.surface)
-                },
+            Chip(border = if (indexSubCategoryClicked == index) {
+                BorderStroke(1.dp, MaterialTheme.colors.primary)
+            } else {
+                BorderStroke(0.dp, MaterialTheme.colors.surface)
+            },
                 modifier = Modifier.height(32.dp),
                 shape = MaterialTheme.shapes.medium,
                 colors = chipColors(
@@ -243,8 +230,7 @@ fun SubCategory() {
                 ),
                 onClick = {
                     indexSubCategoryClicked = index
-                }
-            ) {
+                }) {
                 if (index == indexSubCategoryClicked) {
                     Text(
                         text = it,
@@ -271,24 +257,20 @@ fun SubCategory() {
 fun FoodItems(navToDetail: (Int, String, Int, Int) -> Unit) {
 
     LazyVerticalGrid(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(24.dp),
         contentPadding = PaddingValues(
-            vertical = 16.dp,
-            horizontal = 40.dp
+            vertical = 16.dp, horizontal = 40.dp
         ) // پدینگ آیتم ها با حاشیه = horizontal
     ) {
         items(fakeFoods) {
-            Column(
-                modifier = Modifier
-                    .padding(bottom = 24.dp)
-                    .clip(MaterialTheme.shapes.medium)
-                    .clickable {
-                        navToDetail(it.degree, it.name, it.time, it.image)
-                    }
-            ) {
+            Column(modifier = Modifier
+                .padding(bottom = 24.dp)
+                .clip(MaterialTheme.shapes.medium)
+                .clickable {
+                    navToDetail(it.degree, it.name, it.time, it.image)
+                }) {
                 Image(
                     painter = painterResource(id = it.image),
                     contentDescription = "",
@@ -302,15 +284,13 @@ fun FoodItems(navToDetail: (Int, String, Int, Int) -> Unit) {
                     text = it.name,
                     style = MaterialTheme.typography.body1,
                     color = MaterialTheme.colors.onSurface,
-                    modifier = Modifier
-                        .padding(start = 8.dp, bottom = 4.dp)
+                    modifier = Modifier.padding(start = 8.dp, bottom = 4.dp)
                 )
                 Text(
                     text = stringResource(id = R.string.food_time, it.time),
                     style = MaterialTheme.typography.subtitle1,
                     color = MaterialTheme.colors.onSurface,
-                    modifier = Modifier
-                        .padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp)
                 )
             }
         }
@@ -322,8 +302,7 @@ fun FoodItems(navToDetail: (Int, String, Int, Int) -> Unit) {
 @Composable
 fun NoFood() {
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -340,8 +319,7 @@ fun NoFood() {
             )
             Button(
 
-                onClick = { /*TODO*/ }
-            ) {
+                onClick = { /*TODO*/ }) {
                 Text(
 
                     text = stringResource(id = R.string.try_again),

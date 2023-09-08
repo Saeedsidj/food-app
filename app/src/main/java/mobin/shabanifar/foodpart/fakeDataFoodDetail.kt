@@ -1,9 +1,7 @@
 package mobin.shabanifar.foodpart
 
 data class foodDetail(
-    val material: String,
-    val recipie: String,
-    val moreInfo: String
+    val material: String, val recipie: String, val moreInfo: String
 )
 
 val detailList = listOf<foodDetail>(
@@ -11,7 +9,5 @@ val detailList = listOf<foodDetail>(
 )
 
 val tabData = listOf(
-    "مواد اولیه",
-    "طرز تهیه",
-    "اطلاعات بیشتر"
+    "مواد اولیه", "طرز تهیه", "اطلاعات بیشتر"
 )

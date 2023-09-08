@@ -25,42 +25,39 @@ import mobin.shabanifar.foodpart.R
 
 @Composable
 fun ShowPhoto(navController: NavHostController) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                modifier = Modifier.fillMaxWidth(),
-                backgroundColor = MaterialTheme.colors.background,
-                contentColor = MaterialTheme.colors.onBackground,
-                elevation = 0.dp
-            ) {
-                IconButton(onClick = {
-                    navController.navigateUp()
-                }) {
-                    Icon(
-                        painterResource(R.drawable.ic_back),
-                        contentDescription = "",
-                        tint = MaterialTheme.colors.onBackground
-                    )
-                }
-                Text(
-                    text = stringResource(R.string.photo),
-                    style = MaterialTheme.typography.h2,
-                    color = MaterialTheme.colors.onBackground
+    Scaffold(topBar = {
+        TopAppBar(
+            modifier = Modifier.fillMaxWidth(),
+            backgroundColor = MaterialTheme.colors.background,
+            contentColor = MaterialTheme.colors.onBackground,
+            elevation = 0.dp
+        ) {
+            IconButton(onClick = {
+                navController.navigateUp()
+            }) {
+                Icon(
+                    painterResource(R.drawable.ic_back),
+                    contentDescription = "",
+                    tint = MaterialTheme.colors.onBackground
                 )
-                Spacer(modifier = Modifier.weight(1f))
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(
-                        painterResource(R.drawable.save),
-                        contentDescription = "",
-                        tint = MaterialTheme.colors.onBackground
-                    )
-                }
+            }
+            Text(
+                text = stringResource(R.string.photo),
+                style = MaterialTheme.typography.h2,
+                color = MaterialTheme.colors.onBackground
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            IconButton(onClick = { /*TODO*/ }) {
+                Icon(
+                    painterResource(R.drawable.save),
+                    contentDescription = "",
+                    tint = MaterialTheme.colors.onBackground
+                )
             }
         }
-    ) {
+    }) {
         Column(
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
+            verticalArrangement = Arrangement.Center, modifier = Modifier
                 .padding(it)
                 .fillMaxSize()
         ) {

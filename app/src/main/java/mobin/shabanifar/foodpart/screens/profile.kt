@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -45,20 +46,17 @@ fun ProfileScreen(
 ) {
     var showDialogState by remember { mutableStateOf(false) }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(id = R.string.account),
-                        style = MaterialTheme.typography.h2,
-                        color = MaterialTheme.colors.onBackground
-                    )
-                }, backgroundColor = MaterialTheme.colors.background,
-                elevation = 0.dp
-            )
-        }
-    ) {
+    Scaffold(topBar = {
+        TopAppBar(
+            title = {
+                Text(
+                    text = stringResource(id = R.string.account),
+                    style = MaterialTheme.typography.h2,
+                    color = MaterialTheme.colors.onBackground
+                )
+            }, backgroundColor = MaterialTheme.colors.background, elevation = 0.dp
+        )
+    }) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -115,23 +113,21 @@ fun ProfileScreen(
                 )
             }
             if (showDialogState) {
-                Dialog(
-                    onDismissRequest = {
-                        showDialogState = false
-                    }
-                ) {
+                Dialog(onDismissRequest = {
+                    showDialogState = false
+                }) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .background(
-                                color = MaterialTheme.colors.surface,
-                                shape = MaterialTheme.shapes.medium
-                            ),
+                            //.fillMaxWidth()
+                            .clip(MaterialTheme.shapes.medium)
+                            .background(color = MaterialTheme.colors.surface)
+                            .width(294.dp)
+                            .height(180.dp),
                     ) {
                         Text(
                             modifier = Modifier.padding(
-                                top = 36.dp, bottom = 24.dp
+                                top = 36.dp, bottom = 24.dp, start = 40.dp, end = 40.dp
                             ),
                             text = stringResource(R.string.confirm_exit),
                             style = MaterialTheme.typography.body1,
@@ -168,8 +164,7 @@ fun ProfileScreen(
                                 modifier = Modifier.padding(end = 16.dp),
                                 shape = MaterialTheme.shapes.medium,
                                 border = BorderStroke(
-                                    1.dp,
-                                    MaterialTheme.colors.primary
+                                    1.dp, MaterialTheme.colors.primary
                                 )
                             ) {
                                 Text(

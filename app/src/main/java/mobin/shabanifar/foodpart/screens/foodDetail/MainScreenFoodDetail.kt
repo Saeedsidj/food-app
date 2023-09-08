@@ -115,9 +115,7 @@ private fun AttributeRow(
     time: Int,
 ) {
     Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
+        verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
     ) {
         Text(
             text = name,
@@ -130,11 +128,9 @@ private fun AttributeRow(
             style = MaterialTheme.typography.caption,
             modifier = Modifier.padding(start = 10.dp, end = 10.dp)
         )
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(
-                10.dp,
-                Alignment.CenterHorizontally
-            ),
+        Row(horizontalArrangement = Arrangement.spacedBy(
+            10.dp, Alignment.CenterHorizontally
+        ),
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .clip(RoundedCornerShape(16.dp))
@@ -145,8 +141,7 @@ private fun AttributeRow(
                 )
                 .clickable {
                     toAttributesScreen("$time دقیقه")
-                }
-        ) {
+                }) {
             Image(painterResource(R.drawable.time), contentDescription = "")
             Text(text = "$time دقیقه", style = MaterialTheme.typography.caption)
         }
@@ -164,8 +159,7 @@ private fun AttributeRow(
                 .background(
                     color = Color(0xFF222228)
                 )
-                .clickable {
-                }
+                .clickable {}
                 .padding(5.dp),
             style = MaterialTheme.typography.caption)
         Text(text = "نهار",
@@ -177,29 +171,23 @@ private fun AttributeRow(
                 .background(
                     color = Color(0xFF222228),
                 )
-                .clickable {
-                }
+                .clickable {}
                 .padding(5.dp),
-            style = MaterialTheme.typography.caption
-        )
+            style = MaterialTheme.typography.caption)
         Spacer(modifier = Modifier.weight(1f))
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
+        Row(verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(
-                10.dp,
-                Alignment.CenterHorizontally
+                10.dp, Alignment.CenterHorizontally
             ),
             modifier = Modifier
                 .clip(RoundedCornerShape(16.dp))
                 .border(
-                    1.dp,
-                    color = when (degree) {
+                    1.dp, color = when (degree) {
                         1 -> red
                         2 -> yellow
                         3 -> green
                         else -> Color.Transparent
-                    },
-                    shape = MaterialTheme.shapes.medium
+                    }, shape = MaterialTheme.shapes.medium
                 )
                 .width(80.dp)
                 .height(32.dp)
@@ -211,10 +199,8 @@ private fun AttributeRow(
                         else -> Color.Transparent
                     }
                 )
-                .clickable {
-                }
-                .padding(5.dp)
-        ) {
+                .clickable {}
+                .padding(5.dp)) {
             Icon(
                 painterResource(id = R.drawable.level),
                 contentDescription = "",
@@ -226,8 +212,7 @@ private fun AttributeRow(
                 }
             )
             Text(
-                text =
-                when (degree) {
+                text = when (degree) {
                     1 -> "دوشوار"
                     2 -> "متوسط"
                     3 -> "آسان"
@@ -241,15 +226,11 @@ private fun AttributeRow(
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 private fun TabRowDescription(
-    tabIndex: Int,
-    pagerState: PagerState,
-    tabData: List<String>,
-    coroutineScope: CoroutineScope
+    tabIndex: Int, pagerState: PagerState, tabData: List<String>, coroutineScope: CoroutineScope
 ) {
-    TabRow(
-        modifier = Modifier
-            .height(40.dp)
-            .fillMaxWidth(0.7f),
+    TabRow(modifier = Modifier
+        .height(40.dp)
+        .fillMaxWidth(0.7f),
         backgroundColor = MaterialTheme.colors.background,
         selectedTabIndex = tabIndex,
         indicator = {
@@ -259,25 +240,24 @@ private fun TabRowDescription(
                     .height(2.dp)
                     .background(MaterialTheme.colors.primary)
             )
-        }, divider = {}
-    ) {
+        },
+        divider = {}) {
         tabData.forEachIndexed { index, text ->
-            Tab(
-                selectedContentColor = MaterialTheme.colors.primary,
+            Tab(selectedContentColor = MaterialTheme.colors.primary,
                 unselectedContentColor = MaterialTheme.colors.onBackground,
                 selected = tabIndex == index,
                 onClick = {
                     coroutineScope.launch {
                         pagerState.animateScrollToPage(index)
                     }
-                }, text = {
+                },
+                text = {
                     Text(
                         text = text,
                         style = MaterialTheme.typography.h3,
                     )
                 },
-                modifier = Modifier
-                    .wrapContentWidth(Alignment.CenterHorizontally, true)
+                modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally, true)
             )
         }
     }
@@ -285,16 +265,12 @@ private fun TabRowDescription(
         modifier = Modifier
             .height(230.dp)
             .background(
-                Color(0xFF222228),
-                shape = RoundedCornerShape(16.dp)
+                Color(0xFF222228), shape = RoundedCornerShape(16.dp)
             )
-            .padding(10.dp),
-        state = pagerState,
-        verticalAlignment = Alignment.Top
+            .padding(10.dp), state = pagerState, verticalAlignment = Alignment.Top
     ) { index ->
         Text(
-            text =
-            when (index) {
+            text = when (index) {
                 0 -> detailList.map { it.material }.joinToString { it }
                 1 -> detailList.map { it.recipie }.joinToString { it }
                 2 -> detailList.map { it.moreInfo }.joinToString { it }
@@ -308,8 +284,7 @@ private fun TabRowDescription(
 
 @Composable
 private fun LazyRowForMoreFood(
-    navToDetail: (Int, String, Int, Int) -> Unit,
-    toAttributesScreen: (String) -> Unit
+    navToDetail: (Int, String, Int, Int) -> Unit, toAttributesScreen: (String) -> Unit
 ) {
     Text(
         text = "بیشتر از این دسته بندی",
@@ -320,8 +295,7 @@ private fun LazyRowForMoreFood(
     LazyRow(
         content = {
             items(fakeFoodsFiveItem) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(3.dp),
+                Column(verticalArrangement = Arrangement.spacedBy(3.dp),
                     horizontalAlignment = Alignment.Start,
                     modifier = Modifier
                         .clip(MaterialTheme.shapes.medium)
@@ -329,8 +303,7 @@ private fun LazyRowForMoreFood(
                         .height(136.dp)
                         .clickable {
                             navToDetail(it.degree, it.name, it.time, it.image)
-                        }
-                ) {
+                        }) {
                     Image(
                         painterResource(it.image),
                         contentDescription = "",
@@ -360,11 +333,9 @@ private fun LazyRowForMoreFood(
                         .width(136.dp)
                         .height(136.dp)
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
+                    Row(verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(
-                            10.dp,
-                            Alignment.CenterHorizontally
+                            10.dp, Alignment.CenterHorizontally
                         ),
                         modifier = Modifier
                             .clip(MaterialTheme.shapes.medium)
@@ -375,8 +346,7 @@ private fun LazyRowForMoreFood(
                             )
                             .clickable {
                                 toAttributesScreen("بیشتر از این دسته")
-                            }
-                    ) {
+                            }) {
                         Text(text = "بیشتر", style = MaterialTheme.typography.body1)
                         Icon(
                             painterResource(R.drawable.ic_back),
@@ -388,7 +358,8 @@ private fun LazyRowForMoreFood(
 
                 }
             }
-        }, verticalAlignment = Alignment.CenterVertically,
+        },
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     )
 }

@@ -2,7 +2,9 @@ package mobin.shabanifar.foodpart.screens.foodDetail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
@@ -19,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -35,12 +38,9 @@ fun DropDownMenu(
     showMenuFalse: (Boolean) -> Unit
 ) {
     DropdownMenu(
-        expanded = showMenu,
-        onDismissRequest = {
+        expanded = showMenu, onDismissRequest = {
             showMenuFalse(false)
-        },
-        modifier = Modifier
-            .background(
+        }, modifier = Modifier.background(
                 color = MaterialTheme.colors.surface
             )
     ) {
@@ -54,27 +54,25 @@ fun DropDownMenu(
                 }, contentPadding = PaddingValues(10.dp)
             ) {
                 Icon(
-                    painterResource(R.drawable.report),
-                    contentDescription = ""
+                    painterResource(R.drawable.report), contentDescription = ""
                 )
-                Text(text = "گزارش")
+                Spacer(modifier = Modifier.size(8.dp))
+                Text(text = stringResource(R.string.report))
             }
-            DropdownMenuItem(
-                onClick = { }) {
+            DropdownMenuItem(onClick = { }) {
                 Icon(
-                    painterResource(R.drawable.share),
-                    contentDescription = ""
+                    painterResource(R.drawable.share), contentDescription = ""
                 )
-                Text(text = "ارسال")
+                Spacer(modifier = Modifier.size(8.dp))
+                Text(text = stringResource(R.string.send))
             }
             DropdownMenuItem(
                 onClick = {
                     coroutineScope.launch {
-                        val snackbarResult =
-                            snackbarHostState.showSnackbar(
-                                message = "دستور به علاقه مندی ها اضافه شد",
-                                actionLabel = "ذخیره شده ها",
-                            )
+                        val snackbarResult = snackbarHostState.showSnackbar(
+                            message = "دستور به علاقه مندی ها اضافه شد",
+                            actionLabel = "ذخیره شده ها",
+                        )
                         when (snackbarResult) {
                             SnackbarResult.ActionPerformed -> TODO()
                             else -> SnackbarResult.Dismissed
@@ -83,19 +81,18 @@ fun DropDownMenu(
                 },
             ) {
                 Icon(
-                    painterResource(R.drawable.bookmark),
-                    contentDescription = ""
+                    painterResource(R.drawable.bookmark), contentDescription = ""
                 )
-                Text(text = "ذخیره")
+                Spacer(modifier = Modifier.size(8.dp))
+                Text(text = stringResource(R.string.save))
             }
         } else {
-            DropdownMenuItem(
-                onClick = { }) {
+            DropdownMenuItem(onClick = { }) {
                 Icon(
-                    painterResource(R.drawable.share),
-                    contentDescription = ""
+                    painterResource(R.drawable.share), contentDescription = ""
                 )
-                Text(text = "ارسال")
+                Spacer(modifier = Modifier.size(8.dp))
+                Text(text = stringResource(R.string.send))
             }
         }
     }
@@ -108,8 +105,7 @@ fun CustomSnackbarHost(
     snackbarBackgroundColor: Color = MaterialTheme.colors.secondary,
     actionColor: Color = MaterialTheme.colors.primary
 ) {
-    SnackbarHost(
-        modifier = modifier.padding(5.dp),
+    SnackbarHost(modifier = modifier.padding(5.dp),
         hostState = snackbarHostState,
         snackbar = { snackbarData ->
             Snackbar(
@@ -119,6 +115,5 @@ fun CustomSnackbarHost(
                 contentColor = MaterialTheme.colors.onSurface,
                 actionColor = actionColor
             )
-        }
-    )
+        })
 }
