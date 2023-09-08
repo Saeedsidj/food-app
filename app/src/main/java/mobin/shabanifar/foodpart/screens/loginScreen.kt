@@ -41,6 +41,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import mobin.shabanifar.foodpart.R
+import mobin.shabanifar.foodpart.ui.theme.blue
 
 @Composable
 fun LoginScreen(
@@ -61,7 +62,11 @@ fun LoginScreen(
                     navigateToProfile()
 
                 }) {
-                    Icon(painter = painterResource(R.drawable.ic_back), contentDescription = "")
+                    Icon(
+                        painter = painterResource(R.drawable.ic_back),
+                        contentDescription = "",
+                        tint = MaterialTheme.colors.onBackground
+                    )
                 }
                 Text(
                     text = stringResource(id = R.string.login),
@@ -137,8 +142,8 @@ fun LoginScreen(
                 },
                 colors = TextFieldDefaults.textFieldColors(
                     focusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
+                    unfocusedIndicatorColor = Color.Transparent,
+                    backgroundColor = MaterialTheme.colors.surface,
                 ),
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next,
@@ -173,8 +178,8 @@ fun LoginScreen(
                 },
                 colors = TextFieldDefaults.textFieldColors(
                     focusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
+                    unfocusedIndicatorColor = Color.Transparent,
+                    backgroundColor = MaterialTheme.colors.surface,
                 ),
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Done,
@@ -182,14 +187,11 @@ fun LoginScreen(
                 )
             )
             Button(
+                enabled = valueTextFieldUserName.isNotBlank() && valueTextFieldPassword.isNotBlank(),
                 onClick = {
-                    if (valueTextFieldPassword.isNullOrEmpty()
-                            .not() && valueTextFieldUserName.isNullOrEmpty().not()
-                    ) {
-                        saveUserName(valueTextFieldUserName)
-                        isLogin(true)
-                        navigateToProfile()
-                    }
+                    saveUserName(valueTextFieldUserName)
+                    isLogin(true)
+                    navigateToProfile()
                 }, modifier = Modifier
                     .padding(bottom = 8.dp)
                     .clip(MaterialTheme.shapes.medium)
@@ -220,7 +222,7 @@ fun LoginScreen(
                         .clickable { navigateToProfileSignIn() },
                     text = stringResource(id = R.string.register),
                     style = MaterialTheme.typography.subtitle1,
-                    color = MaterialTheme.colors.primaryVariant
+                    color = blue
                 )
 
                 Text(

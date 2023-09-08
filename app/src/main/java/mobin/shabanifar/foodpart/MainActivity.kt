@@ -95,7 +95,6 @@ class MainActivity : ComponentActivity() {
                                                     popUpTo(navController.graph.findStartDestination().id) {
                                                         saveState = true
                                                     }
-                                                    launchSingleTop = true
                                                     restoreState = true
                                                 }
                                             }
@@ -121,10 +120,10 @@ class MainActivity : ComponentActivity() {
                         startDestination = NavigationBottom.Category.route,
                         Modifier.padding(it)
                     ) {
-                        composable("photoScreen") {
+                        composable(NavigationBottom.FoodPhoto.route) {
                             ShowPhoto(navController = navController)
                         }
-                        composable("foodDetail") {
+                        composable(NavigationBottom.FoodDetail.route) {
                             FoodDetail(navController, isLogin)
                         }
                         composable(NavigationBottom.Category.route) {
@@ -145,19 +144,14 @@ class MainActivity : ComponentActivity() {
                                 usernameSave = userName,
                                 isLogin = isLogin,
                                 navigateToProfileSignIn = {
-                                    navController.navigate("sign_up") {
-                                        popUpTo(NavigationBottom.Profile.route) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                    }
+                                    navController.navigate(NavigationBottom.SignUp.route)
                                 },
                                 changeLoginState = {
                                     isLogin = !isLogin
                                 }
                             )
                         }
-                        composable("sign_up") {
+                        composable(NavigationBottom.SignUp.route) {
                             signUpScreen(
                                 isLogin = { result ->
                                     isLogin = result
@@ -166,38 +160,25 @@ class MainActivity : ComponentActivity() {
                                     userName = username
                                 },
                                 navigateToProfile = {
-                                    navController.navigate(NavigationBottom.Profile.route) {
-                                        popUpTo(NavigationBottom.Profile.route) {
-                                            inclusive = true
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                    }
-
+                                    navController.popBackStack()
                                 },
                                 navigateToProfileLogin = {
-                                    navController.navigate("login") {
+                                    navController.navigate(NavigationBottom.Login.route) {
                                         popUpTo(NavigationBottom.Profile.route)
                                     }
                                 }
 
                             )
                         }
-                        composable("login") {
+                        composable(NavigationBottom.Login.route) {
                             LoginScreen(
                                 navigateToProfileSignIn = {
-                                    navController.navigate("sign_up") {
+                                    navController.navigate(NavigationBottom.SignUp.route) {
                                         popUpTo(NavigationBottom.Profile.route)
                                     }
                                 },
                                 navigateToProfile = {
-                                    navController.navigate(NavigationBottom.Profile.route) {
-                                        popUpTo(NavigationBottom.Profile.route) {
-                                            inclusive = true
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                    }
+                                    navController.popBackStack()
                                 },
                                 saveUserName = { username ->
                                     userName = username
@@ -208,7 +189,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(
-                            route = "whatToCookList?whatDoYouHave={whatDoYouHave}&howMuchTimeHave={howMuchTimeHave}&level={level}",
+                            route = NavigationBottom.WhatToCook.route,
                             arguments = listOf(
                                 navArgument(WHAT_DO_YOU_HAVE) {
                                     type = NavType.StringType
@@ -238,6 +219,7 @@ class MainActivity : ComponentActivity() {
                                             saveState = true
                                         }
                                         launchSingleTop = true
+                                        restoreState = true
                                     }
                                 },
                                 navigateToWTCForm = {

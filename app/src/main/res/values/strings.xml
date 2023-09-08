@@ -39,6 +39,7 @@
     <string name="new_username">نام کاربری جدید</string>
     <string name="change_password">تغییر رمز عبور</string>
     <string name="current_password">رمز عبور فعلی</string>
+    <string name="repeat_password">تکرار رمز عبور</string>
     <string name="new_password">رمز عبور جدید</string>
     <string name="confirm_new_password">تکرار رمز عبور جدید</string>
     <string name="confirm">تایید</string>
