@@ -1,4 +1,4 @@
-package mobin.shabanifar.foodpart
+package mobin.shabanifar.foodpart.data
 
 data class foodDetail(
     val material: String, val recipie: String, val moreInfo: String

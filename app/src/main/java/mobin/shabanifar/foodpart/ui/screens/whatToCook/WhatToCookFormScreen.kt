@@ -1,8 +1,9 @@
-package mobin.shabanifar.foodpart.screens
+package mobin.shabanifar.foodpart.ui.screens.whatToCook
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,12 +11,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
-import androidx.compose.material.IconToggleButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -25,6 +27,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -38,12 +41,14 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import mobin.shabanifar.foodpart.R
-import mobin.shabanifar.foodpart.data.LevelRadioBtnState
+import mobin.shabanifar.foodpart.data.LevelState
 import mobin.shabanifar.foodpart.ui.theme.green
 
 @Composable
-fun WhatToCook(
+fun WhatToCookFormScreen(
+    // Callback for navigating to what to cook list screen
     navigateToWTCList: (whatDoYouHave: String, howMuchTimeHave: String, level: String) -> Unit
+
 ) {
     Scaffold(topBar = {
         TopAppBar(
@@ -60,22 +65,18 @@ fun WhatToCook(
             )
         }
     }) {
-        var valueTextWhatDoYouHave by rememberSaveable {
-            mutableStateOf("")
-        }
-        var valueTextHowMuchTimeDoYouHave by rememberSaveable {
-            mutableStateOf("")
-        }
-        var selectedLevel by rememberSaveable { mutableStateOf(LevelRadioBtnState.NO_MATTER) }
 
+        var valueTextWhatDoYouHave by rememberSaveable { mutableStateOf("") }
+        var valueTextHowMuchTimeDoYouHave by rememberSaveable { mutableStateOf("") }
+        var selectedLevel by rememberSaveable { mutableStateOf(LevelState.NO_MATTER) }
         var isShowVisible by rememberSaveable { mutableStateOf(true) }
-
-
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it), verticalArrangement = Arrangement.Top
+                .padding(it)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.Top
         ) {
             if (isShowVisible) {
                 Column(
@@ -86,7 +87,7 @@ fun WhatToCook(
                         .clip(MaterialTheme.shapes.medium)
                         .background(MaterialTheme.colors.surface)
                         .fillMaxWidth()
-                        .height(156.dp)
+                        .padding(bottom = 16.dp)
                 ) {
                     Row(
                         modifier = Modifier
@@ -106,7 +107,6 @@ fun WhatToCook(
                             painter = painterResource(id = R.drawable.ic_clear),
                             contentDescription = ""
                         )
-
                     }
                     Text(
                         modifier = Modifier.padding(horizontal = 8.dp),
@@ -128,7 +128,6 @@ fun WhatToCook(
                         shape = MaterialTheme.shapes.medium, color = MaterialTheme.colors.surface
                     )
                     .fillMaxWidth()
-                    .height(64.dp)
                     .border(
                         width = 1.dp, color = Color.Transparent
                     ),
@@ -156,7 +155,9 @@ fun WhatToCook(
                 style = MaterialTheme.typography.body1,
                 color = MaterialTheme.colors.onBackground
             )
-            Box(modifier = Modifier.padding(bottom = 8.dp, start = 16.dp, end = 16.dp)) {
+            Box(
+                modifier = Modifier.padding(bottom = 8.dp, start = 16.dp, end = 16.dp)
+            ) {
                 TextField(
                     value = valueTextHowMuchTimeDoYouHave, onValueChange = { value ->
                         valueTextHowMuchTimeDoYouHave = value
@@ -166,7 +167,6 @@ fun WhatToCook(
                             color = MaterialTheme.colors.surface
                         )
                         .fillMaxWidth()
-                        .height(64.dp)
                         .border(
                             width = 1.dp, color = Color.Transparent
                         ), singleLine = true, placeholder = {
@@ -200,63 +200,18 @@ fun WhatToCook(
                 style = MaterialTheme.typography.body1,
                 color = MaterialTheme.colors.onSurface
             )
+
             Row(
                 verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
             ) {
-                IconToggleButton(checked = selectedLevel == LevelRadioBtnState.NO_MATTER,
-                    onCheckedChange = { selectedLevel = LevelRadioBtnState.NO_MATTER }) {
-                    Icon(
-                        painter = painterResource(if (selectedLevel == LevelRadioBtnState.NO_MATTER) R.drawable.check_circle_outline else R.drawable.uncheck_circle_outline),
-                        contentDescription = "Radio button icon",
-                        tint = (if (selectedLevel == LevelRadioBtnState.NO_MATTER) green else MaterialTheme.colors.onBackground)
-                    )
+
+                CustomRadioButton(selectedLevel) {
+                    selectedLevel = it
                 }
-                Text(
-                    style = MaterialTheme.typography.subtitle1,
-                    modifier = Modifier.padding(start = 2.dp, end = 5.dp),
-                    text = stringResource(id = R.string.any)
-                )
-                IconToggleButton(checked = selectedLevel == LevelRadioBtnState.EASY,
-                    onCheckedChange = { selectedLevel = LevelRadioBtnState.EASY }) {
-                    Icon(
-                        painter = painterResource(if (selectedLevel == LevelRadioBtnState.EASY) R.drawable.check_circle_outline else R.drawable.uncheck_circle_outline),
-                        contentDescription = "Radio button icon",
-                        tint = (if (selectedLevel == LevelRadioBtnState.EASY) green else MaterialTheme.colors.onBackground)
-                    )
-                }
-                Text(
-                    style = MaterialTheme.typography.subtitle1,
-                    modifier = Modifier.padding(start = 2.dp, end = 5.dp),
-                    text = stringResource(id = R.string.easy)
-                )
-                IconToggleButton(checked = selectedLevel == LevelRadioBtnState.MEDIUM,
-                    onCheckedChange = { selectedLevel = LevelRadioBtnState.MEDIUM }) {
-                    Icon(
-                        painter = painterResource(if (selectedLevel == LevelRadioBtnState.MEDIUM) R.drawable.check_circle_outline else R.drawable.uncheck_circle_outline),
-                        contentDescription = "Radio button icon",
-                        tint = (if (selectedLevel == LevelRadioBtnState.MEDIUM) green else MaterialTheme.colors.onBackground)
-                    )
-                }
-                Text(
-                    style = MaterialTheme.typography.subtitle1,
-                    modifier = Modifier.padding(start = 2.dp, end = 5.dp),
-                    text = stringResource(id = R.string.medium)
-                )
-                IconToggleButton(checked = selectedLevel == LevelRadioBtnState.HARD,
-                    onCheckedChange = { selectedLevel = LevelRadioBtnState.HARD }) {
-                    Icon(
-                        painter = painterResource(if (selectedLevel == LevelRadioBtnState.HARD) R.drawable.check_circle_outline else R.drawable.uncheck_circle_outline),
-                        contentDescription = "Radio button icon",
-                        tint = (if (selectedLevel == LevelRadioBtnState.HARD) green else MaterialTheme.colors.onBackground)
-                    )
-                }
-                Text(
-                    style = MaterialTheme.typography.subtitle1,
-                    modifier = Modifier.padding(start = 2.dp, end = 5.dp),
-                    text = stringResource(id = R.string.hard)
-                )
             }
+
             Spacer(modifier = Modifier.weight(1f))
+
             Button(
                 enabled = valueTextWhatDoYouHave.isNotBlank(),
                 onClick = {
@@ -266,9 +221,8 @@ fun WhatToCook(
                 },
                 modifier = Modifier
                     .padding(bottom = 8.dp, start = 16.dp, end = 16.dp)
-                    .clip(MaterialTheme.shapes.medium)
-                    .fillMaxWidth()
-                    .height(48.dp)
+                    .fillMaxWidth(),
+                shape = MaterialTheme.shapes.medium
 
             ) {
                 Text(
@@ -277,6 +231,39 @@ fun WhatToCook(
                     color = MaterialTheme.colors.onBackground
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun CustomRadioButton(
+    selectedLevel: String,
+    changeSelectedLevel: (String) -> Unit,
+) {
+    val interactionSource = remember {
+        MutableInteractionSource()
+    }
+    val radioButtonItemsList =
+        listOf(LevelState.NO_MATTER, LevelState.EASY, LevelState.MEDIUM, LevelState.HARD)
+    radioButtonItemsList.forEach { item ->
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+            .clickable(
+                interactionSource = interactionSource, indication = null
+            ) {
+                changeSelectedLevel(item)
+            }
+            .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)) {
+            Icon(
+                painter = painterResource(if (selectedLevel == item) R.drawable.check_circle_outline else R.drawable.uncheck_circle_outline),
+                contentDescription = "",
+                tint = (if (selectedLevel == item) green else MaterialTheme.colors.onBackground)
+            )
+            Spacer(modifier = Modifier.size(5.dp))
+            Text(
+                style = MaterialTheme.typography.subtitle1,
+                modifier = Modifier.padding(start = 2.dp, end = 5.dp),
+                text = item
+            )
         }
     }
 }

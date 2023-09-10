@@ -1,4 +1,4 @@
-package mobin.shabanifar.foodpart.screens
+package mobin.shabanifar.foodpart.ui.screens.register
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -45,11 +47,11 @@ import mobin.shabanifar.foodpart.R
 import mobin.shabanifar.foodpart.ui.theme.blue
 
 @Composable
-fun signUpScreen(
-    navigateToProfileLogin: () -> Unit,
-    navigateToProfile: () -> Unit,
-    saveUserName: (String) -> Unit,
-    isLogin: (Boolean) -> Unit
+fun SignUpScreen(
+    navigateToProfileLogin: () -> Unit, // Callback for navigating to profile login screen
+    navigateToProfile: () -> Unit, // Callback for navigating to profile screen
+    saveUserName: (String) -> Unit, // Callback for get the username
+    isLogin: (Boolean) -> Unit // Callback for indicating login status
 
 ) {
     Scaffold(topBar = {
@@ -89,8 +91,8 @@ fun signUpScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
-                .padding(24.dp),
-            verticalArrangement = Arrangement.Top
+                .padding(24.dp)
+                .verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.Top
         ) {
             Spacer(modifier = Modifier.height(66.dp))
             Image(
@@ -128,7 +130,6 @@ fun signUpScreen(
                     .clip(MaterialTheme.shapes.medium)
                     .background(MaterialTheme.colors.surface)
                     .fillMaxWidth()
-                    .height(56.dp)
                     .border(
                         width = 1.dp, color = Color.Transparent
                     ),
@@ -160,7 +161,6 @@ fun signUpScreen(
                     .clip(MaterialTheme.shapes.medium)
                     .background(MaterialTheme.colors.surface)
                     .fillMaxWidth()
-                    .height(56.dp)
                     .align(End)
                     .border(
                         width = 1.dp, color = Color.Transparent
@@ -193,7 +193,6 @@ fun signUpScreen(
                     .clip(MaterialTheme.shapes.medium)
                     .background(MaterialTheme.colors.surface)
                     .fillMaxWidth()
-                    .height(56.dp)
                     .border(
                         width = 1.dp, color = Color.Transparent
                     ),
@@ -221,10 +220,8 @@ fun signUpScreen(
                     saveUserName(valueTextFieldUserName)
                     isLogin(true)
                 },
-                modifier = Modifier
-                    .clip(MaterialTheme.shapes.medium)
-                    .fillMaxWidth()
-                    .height(48.dp)
+                modifier = Modifier.fillMaxWidth(),
+                shape = MaterialTheme.shapes.medium
 
             ) {
                 Text(

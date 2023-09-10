@@ -1,4 +1,4 @@
-package mobin.shabanifar.foodpart.screens
+package mobin.shabanifar.foodpart.ui.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -43,9 +43,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import mobin.shabanifar.foodpart.R
-import mobin.shabanifar.foodpart.categoryItems
-import mobin.shabanifar.foodpart.fakeFoods
-import mobin.shabanifar.foodpart.subCategoryList
+import mobin.shabanifar.foodpart.data.categoryItems
+import mobin.shabanifar.foodpart.data.fakeFoods
+import mobin.shabanifar.foodpart.data.subCategoryList
 
 @Composable
 fun Category(

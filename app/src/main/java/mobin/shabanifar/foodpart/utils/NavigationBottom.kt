@@ -1,4 +1,6 @@
-package mobin.shabanifar.foodpart
+package mobin.shabanifar.foodpart.utils
+
+import mobin.shabanifar.foodpart.R
 
 sealed class NavigationBottom(
     val name: Int,

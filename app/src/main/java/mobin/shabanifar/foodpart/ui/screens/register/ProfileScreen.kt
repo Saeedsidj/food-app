@@ -1,4 +1,4 @@
-package mobin.shabanifar.foodpart.screens
+package mobin.shabanifar.foodpart.ui.screens.register
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -39,10 +38,10 @@ import mobin.shabanifar.foodpart.R
 
 @Composable
 fun ProfileScreen(
-    navigateToProfileSignIn: () -> Unit,
-    changeLoginState: () -> Unit,
-    usernameSave: String,
-    isLogin: Boolean,
+    navigateToProfileSignIn: () -> Unit, // Callback for navigating to profile sign-in screen
+    changeLoginState: () -> Unit, // Callback for change the login status
+    usernameSave: String, // Callback for get the username
+    isLogin: Boolean, // Callback for indicating login status
 ) {
     var showDialogState by remember { mutableStateOf(false) }
 
@@ -105,9 +104,7 @@ fun ProfileScreen(
                 }, modifier = Modifier.fillMaxWidth(), enabled = !isLogin
             ) {
                 Text(
-                    text = if (!isLogin) stringResource(id = R.string.enter_to) else stringResource(
-                        id = R.string.confirm
-                    ),
+                    text = stringResource(id = if (!isLogin) R.string.enter_to else R.string.confirm),
                     style = MaterialTheme.typography.button,
                     color = MaterialTheme.colors.onBackground
                 )
@@ -119,11 +116,9 @@ fun ProfileScreen(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
-                            //.fillMaxWidth()
+                            .fillMaxWidth()
                             .clip(MaterialTheme.shapes.medium)
-                            .background(color = MaterialTheme.colors.surface)
-                            .width(294.dp)
-                            .height(180.dp),
+                            .background(color = MaterialTheme.colors.surface),
                     ) {
                         Text(
                             modifier = Modifier.padding(

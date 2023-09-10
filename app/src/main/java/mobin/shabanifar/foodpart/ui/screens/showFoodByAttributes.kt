@@ -1,4 +1,4 @@
-package mobin.shabanifar.foodpart.screens
+package mobin.shabanifar.foodpart.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -28,7 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import mobin.shabanifar.foodpart.R
-import mobin.shabanifar.foodpart.fakeFoods
+import mobin.shabanifar.foodpart.data.fakeFoods
 
 @Composable
 fun ShowFoodByAttributes(

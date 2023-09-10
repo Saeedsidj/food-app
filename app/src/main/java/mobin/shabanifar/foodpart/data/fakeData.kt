@@ -1,4 +1,6 @@
-package mobin.shabanifar.foodpart
+package mobin.shabanifar.foodpart.data
+
+import mobin.shabanifar.foodpart.R
 
 // فیک دیتا آیتم های غذا
 val itemImage = R.drawable.food_itemj

@@ -1,4 +1,4 @@
-package mobin.shabanifar.foodpart.screens
+package mobin.shabanifar.foodpart.ui.screens.register
 
 
 import androidx.compose.foundation.Image
@@ -14,8 +14,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -45,10 +47,10 @@ import mobin.shabanifar.foodpart.ui.theme.blue
 
 @Composable
 fun LoginScreen(
-    navigateToProfileSignIn: () -> Unit,
-    navigateToProfile: () -> Unit,
-    saveUserName: (String) -> Unit,
-    isLogin: (Boolean) -> Unit
+    navigateToProfileSignIn: () -> Unit, // Callback for navigating to profile sign-in screen
+    navigateToProfile: () -> Unit, // Callback for navigating to profile screen
+    saveUserName: (String) -> Unit, // Callback for saving the entered username
+    isLogin: (Boolean) -> Unit // Callback for indicating login status
 ) {
     Scaffold(topBar = {
         TopAppBar(
@@ -59,7 +61,6 @@ fun LoginScreen(
         ) {
             IconButton(onClick = {
                 navigateToProfile()
-
             }) {
                 Icon(
                     painter = painterResource(R.drawable.ic_back),
@@ -72,7 +73,6 @@ fun LoginScreen(
                 style = MaterialTheme.typography.h2,
                 color = MaterialTheme.colors.onBackground
             )
-
         }
     }) {
         var valueTextFieldUserName by rememberSaveable {
@@ -85,8 +85,10 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
-                .padding(24.dp),
-            verticalArrangement = Arrangement.Top
+                .padding(24.dp)
+                .verticalScroll(
+                    rememberScrollState()
+                ), verticalArrangement = Arrangement.Top
         ) {
             Spacer(modifier = Modifier.height(66.dp))
             Image(
@@ -113,7 +115,6 @@ fun LoginScreen(
                 color = MaterialTheme.colors.onBackground
             )
             Spacer(modifier = Modifier.height(43.dp))
-
             TextField(
                 value = valueTextFieldUserName,
                 onValueChange = { value ->
@@ -125,7 +126,6 @@ fun LoginScreen(
                     .clip(MaterialTheme.shapes.medium)
                     .background(MaterialTheme.colors.surface)
                     .fillMaxWidth()
-                    .height(56.dp)
                     .border(
                         width = 1.dp, color = Color.Transparent
                     ),
@@ -158,8 +158,6 @@ fun LoginScreen(
                     .clip(MaterialTheme.shapes.medium)
                     .background(MaterialTheme.colors.surface)
                     .fillMaxWidth()
-                    .height(56.dp)
-                    .align(Alignment.End)
                     .border(
                         width = 1.dp, color = Color.Transparent
                     ),
@@ -189,9 +187,8 @@ fun LoginScreen(
                 },
                 modifier = Modifier
                     .padding(bottom = 8.dp)
-                    .clip(MaterialTheme.shapes.medium)
-                    .fillMaxWidth()
-                    .height(48.dp)
+                    .fillMaxWidth(),
+                shape = MaterialTheme.shapes.medium
             ) {
                 Text(
                     text = stringResource(id = R.string.confirm),
@@ -210,7 +207,6 @@ fun LoginScreen(
                     style = MaterialTheme.typography.subtitle1,
                     color = MaterialTheme.colors.onBackground
                 )
-
                 Text(
                     modifier = Modifier
                         .padding(end = 2.dp)
@@ -219,7 +215,6 @@ fun LoginScreen(
                     style = MaterialTheme.typography.subtitle1,
                     color = blue
                 )
-
                 Text(
                     text = stringResource(id = R.string.doo),
                     style = MaterialTheme.typography.subtitle1,
