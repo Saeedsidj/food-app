@@ -1,4 +1,4 @@
-package mobin.shabanifar.foodpart.screens.foodDetail
+package mobin.shabanifar.foodpart.ui.screens.foodDetail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues

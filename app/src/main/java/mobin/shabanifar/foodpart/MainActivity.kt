@@ -31,24 +31,26 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import mobin.shabanifar.foodpart.screens.Category
-import mobin.shabanifar.foodpart.screens.LoginScreen
-import mobin.shabanifar.foodpart.screens.ProfileScreen
-import mobin.shabanifar.foodpart.screens.Search
-import mobin.shabanifar.foodpart.screens.ShowFoodByAttributes
-import mobin.shabanifar.foodpart.screens.WhatToCook
-import mobin.shabanifar.foodpart.screens.WhatToCookListScreen
-import mobin.shabanifar.foodpart.screens.foodDetail.FoodDetail
-import mobin.shabanifar.foodpart.screens.foodDetail.ShowPhoto
-import mobin.shabanifar.foodpart.screens.signUpScreen
+import mobin.shabanifar.foodpart.ui.screens.Category
+import mobin.shabanifar.foodpart.ui.screens.Search
+import mobin.shabanifar.foodpart.ui.screens.ShowFoodByAttributes
+import mobin.shabanifar.foodpart.ui.screens.foodDetail.FoodDetail
+import mobin.shabanifar.foodpart.ui.screens.foodDetail.ShowPhoto
+import mobin.shabanifar.foodpart.ui.screens.register.LoginScreen
+import mobin.shabanifar.foodpart.ui.screens.register.ProfileScreen
+import mobin.shabanifar.foodpart.ui.screens.register.SignUpScreen
+import mobin.shabanifar.foodpart.ui.screens.whatToCook.WhatToCookFormScreen
+import mobin.shabanifar.foodpart.ui.screens.whatToCook.WhatToCookListScreen
 import mobin.shabanifar.foodpart.ui.theme.FoodPartTheme
 import mobin.shabanifar.foodpart.utils.HOW_MUCH_TIME_HAVE
 import mobin.shabanifar.foodpart.utils.LEVEL
+import mobin.shabanifar.foodpart.utils.NavigationBottom
 import mobin.shabanifar.foodpart.utils.WHAT_DO_YOU_HAVE
+import mobin.shabanifar.foodpart.utils.items
+import mobin.shabanifar.foodpart.utils.mainRoute
 
 
 class MainActivity : ComponentActivity() {
-
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -72,9 +74,6 @@ class MainActivity : ComponentActivity() {
                                 )
                                 .height(80.dp)
                         ) {
-                            val navBackStackEntry by navController.currentBackStackEntryAsState()
-                            val currentDestination = navBackStackEntry?.destination
-
                             items.forEach { screen ->
                                 BottomNavigationItem(
                                     modifier = Modifier.padding(8.dp),
@@ -121,7 +120,8 @@ class MainActivity : ComponentActivity() {
                         composable(NavigationBottom.FoodPhoto.route) {
                             ShowPhoto(navController = navController)
                         }
-                        composable(NavigationBottom.FoodDetail.route,
+                        composable(
+                            NavigationBottom.FoodDetail.route,
                             arguments = listOf(navArgument("degree") {
                                 type = NavType.IntType
                             }, navArgument("name") {
@@ -130,7 +130,8 @@ class MainActivity : ComponentActivity() {
                                 type = NavType.IntType
                             }, navArgument("image") {
                                 type = NavType.IntType
-                            })) { entry ->
+                            })
+                        ) { entry ->
                             val degree = entry.arguments?.getInt("degree")!!
                             val name = entry.arguments?.getString("name")!!
                             val time = entry.arguments?.getInt("time")!!
@@ -160,7 +161,7 @@ class MainActivity : ComponentActivity() {
                             })
                         }
                         composable(NavigationBottom.Cook.route) {
-                            WhatToCook(navigateToWTCList = { whatDoYouHave, howMuchTimeHave, level ->
+                            WhatToCookFormScreen(navigateToWTCList = { whatDoYouHave, howMuchTimeHave, level ->
                                 navController.navigate("whatToCookList?whatDoYouHave=$whatDoYouHave&howMuchTimeHave=$howMuchTimeHave&level=$level")
                             })
                         }
@@ -183,7 +184,7 @@ class MainActivity : ComponentActivity() {
                                 })
                         }
                         composable(NavigationBottom.SignUp.route) {
-                            signUpScreen(isLogin = { result ->
+                            SignUpScreen(isLogin = { result ->
                                 isLogin = result
                             }, saveUserName = { username ->
                                 userName = username
@@ -210,7 +211,8 @@ class MainActivity : ComponentActivity() {
                                 isLogin = result
                             })
                         }
-                        composable(route = NavigationBottom.WhatToCook.route,
+                        composable(
+                            route = NavigationBottom.WhatToCook.route,
                             arguments = listOf(navArgument(WHAT_DO_YOU_HAVE) {
                                 type = NavType.StringType
                                 nullable = true
@@ -220,7 +222,8 @@ class MainActivity : ComponentActivity() {
                             }, navArgument(LEVEL) {
                                 type = NavType.StringType
                                 nullable = true
-                            })) { getData ->
+                            })
+                        ) { getData ->
                             val whatDoYouHave = getData.arguments?.getString(WHAT_DO_YOU_HAVE)
                             val howMuchTimeHave = getData.arguments?.getString(HOW_MUCH_TIME_HAVE)
                             val level = getData.arguments?.getString(LEVEL)
@@ -241,10 +244,12 @@ class MainActivity : ComponentActivity() {
                                     navController.popBackStack()
                                 })
                         }
-                        composable(route = NavigationBottom.ShowFoodByAttributes.route,
+                        composable(
+                            route = NavigationBottom.ShowFoodByAttributes.route,
                             arguments = listOf(navArgument("title") {
                                 type = NavType.StringType
-                            })) { entry ->
+                            })
+                        ) { entry ->
                             val topTitle = entry.arguments?.getString("title")!!
                             ShowFoodByAttributes(topTitle = topTitle,
                                 navController = navController,

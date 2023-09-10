@@ -1,4 +1,4 @@
-package mobin.shabanifar.foodpart.screens
+package mobin.shabanifar.foodpart.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -42,9 +42,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import mobin.shabanifar.foodpart.FakeFoods
+import mobin.shabanifar.foodpart.data.FakeFoods
 import mobin.shabanifar.foodpart.R
-import mobin.shabanifar.foodpart.fakeFoods
+import mobin.shabanifar.foodpart.data.fakeFoods
 
 
 @OptIn(ExperimentalComposeUiApi::class)

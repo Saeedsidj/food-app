@@ -1,6 +1,6 @@
 package mobin.shabanifar.foodpart.data
 
-data class LevelRadioBtnState(
+data class LevelState(
     val HARD: String,
     val MEDIUM: String,
     var EASY: String,

@@ -1,4 +1,4 @@
-package mobin.shabanifar.foodpart.screens
+package mobin.shabanifar.foodpart.ui.screens.whatToCook
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -34,15 +34,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import mobin.shabanifar.foodpart.R
-import mobin.shabanifar.foodpart.fakeFoods
+import mobin.shabanifar.foodpart.data.fakeFoods
 
 @Composable
 fun WhatToCookListScreen(
-    whatDoYouHave: String?,
-    howMuchTimeHave: String?,
-    level: String?,
-    navigateToWTCForm: () -> Unit,
-    navToDetail: (Int, String, Int, Int) -> Unit
+    whatDoYouHave: String?, // Callback get whatDoYouHave
+    howMuchTimeHave: String?, // Callback get howMuchTimeHave
+    level: String?, // Callback get level
+    navigateToWTCForm: () -> Unit, // Callback for navigating to what to cook form screen
+    navToDetail: (Int, String, Int, Int) -> Unit // Callback for navigating to detail screen
 ) {
     val lazyState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
@@ -91,8 +91,6 @@ fun WhatToCookListScreen(
                 .padding(it)
                 .fillMaxSize()
         ) {
-
-
             Text(
                 modifier = Modifier.padding(start = 16.dp),
                 text = setString(
@@ -119,7 +117,7 @@ fun SearchedItems(
         horizontalArrangement = Arrangement.spacedBy(24.dp),
         contentPadding = PaddingValues(vertical = 16.dp, horizontal = 40.dp)
     ) {
-        val foundItems = fakeFoods.filter { items ->
+        val foundItems = fakeFoods.filter {
             true
         }
         items(foundItems) {
@@ -153,7 +151,7 @@ fun SearchedItems(
         }
     }
 }
-
+//Create String for show in top of screen
 fun setString(whatDoYouHave: String?, howMuchTimeHave: String?, level: String?): String {
     val stringBuilder = StringBuilder()
     stringBuilder.append("نتایج جستجو با ")

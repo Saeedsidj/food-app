@@ -1,4 +1,4 @@
-package mobin.shabanifar.foodpart.screens.foodDetail
+package mobin.shabanifar.foodpart.ui.screens.foodDetail
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -43,10 +43,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import mobin.shabanifar.foodpart.NavigationBottom
+import mobin.shabanifar.foodpart.utils.NavigationBottom
 import mobin.shabanifar.foodpart.R
-import mobin.shabanifar.foodpart.detailList
-import mobin.shabanifar.foodpart.fakeFoods
+import mobin.shabanifar.foodpart.data.detailList
+import mobin.shabanifar.foodpart.data.fakeFoods
 import mobin.shabanifar.foodpart.ui.theme.green
 import mobin.shabanifar.foodpart.ui.theme.red
 import mobin.shabanifar.foodpart.ui.theme.yellow

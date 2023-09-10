@@ -1,4 +1,4 @@
-package mobin.shabanifar.foodpart.screens.foodDetail
+package mobin.shabanifar.foodpart.ui.screens.foodDetail
 
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -49,7 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import mobin.shabanifar.foodpart.R
-import mobin.shabanifar.foodpart.tabData
+import mobin.shabanifar.foodpart.data.tabData
 import mobin.shabanifar.foodpart.ui.theme.FoodPartTheme
 import mobin.shabanifar.foodpart.ui.theme.shapes
 
