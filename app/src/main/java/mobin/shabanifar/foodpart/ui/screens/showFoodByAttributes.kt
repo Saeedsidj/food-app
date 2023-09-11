@@ -32,34 +32,39 @@ import mobin.shabanifar.foodpart.data.fakeFoods
 
 @Composable
 fun ShowFoodByAttributes(
-    topTitle: String, navToDetail: (Int, String, Int, Int) -> Unit, navController: NavHostController
+    topTitle: String, navToDetail: (Int, String, Int, Int) -> Unit,
+    navController: NavHostController
 ) {
-    Scaffold(topBar = {
-        TopAppBar(
-            backgroundColor = MaterialTheme.colors.background,
-            elevation = 0.dp,
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                backgroundColor = MaterialTheme.colors.background,
+                elevation = 0.dp,
             ) {
-                IconButton(onClick = {
-                    navController.navigateUp()
-                }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_back),
-                        contentDescription = "",
-                        tint = MaterialTheme.colors.onBackground
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    IconButton(
+                        onClick = {
+                            navController.navigateUp()
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_back),
+                            contentDescription = "",
+                            tint = MaterialTheme.colors.onBackground
+                        )
+                    }
+                    Text(
+                        text = stringResource(R.string.cook_in_minutes, topTitle),
+                        color = MaterialTheme.colors.onBackground,
+                        style = MaterialTheme.typography.h2
                     )
                 }
-                Text(
-                    text = stringResource(R.string.cook_in_minutes, topTitle),
-                    color = MaterialTheme.colors.onBackground,
-                    style = MaterialTheme.typography.h2
-                )
             }
         }
-    }) {
+    ) {
         LazyVerticalGrid(
             modifier = Modifier
                 .padding(it)
@@ -67,23 +72,26 @@ fun ShowFoodByAttributes(
             columns = GridCells.Fixed(2),
             horizontalArrangement = Arrangement.spacedBy(24.dp),
             contentPadding = PaddingValues(
-                vertical = 16.dp, horizontal = 40.dp
+                vertical = 16.dp,
+                horizontal = 40.dp
             ) // پدینگ آیتم ها با حاشیه = horizontal
         ) {
             items(fakeFoods) {
-                Column(modifier = Modifier
-                    .padding(bottom = 24.dp)
-                    .clip(MaterialTheme.shapes.medium)
-                    .clickable {
-                        navToDetail(it.degree, it.name, it.time, it.image)
-                    }) {
+                Column(
+                    modifier = Modifier
+                        .padding(bottom = 24.dp)
+                        .clip(MaterialTheme.shapes.medium)
+                        .clickable {
+                            navToDetail(it.degree, it.name, it.time, it.image)
+                        }
+                ) {
                     Image(
-                        painter = painterResource(id = it.image),
-                        contentDescription = "",
-                        contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .clip(MaterialTheme.shapes.medium)
-                            .size(width = 240.dp, height = 85.dp)
+                            .size(width = 240.dp, height = 85.dp),
+                        painter = painterResource(id = it.image),
+                        contentDescription = "",
+                        contentScale = ContentScale.Crop
                     )
 
                     Text(

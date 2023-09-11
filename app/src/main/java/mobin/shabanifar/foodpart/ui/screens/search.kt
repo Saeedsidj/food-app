@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -53,46 +54,53 @@ fun Search(
     navToDetail: (Int, String, Int, Int) -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    var textField by remember { mutableStateOf(TextFieldValue("")) }
-    var searchText by remember { mutableStateOf("") }
-    var isSearchSuccessful: Boolean? by remember { mutableStateOf(null) }
+    var textField by rememberSaveable { mutableStateOf("") }
+    var searchText by rememberSaveable { mutableStateOf("") }
+    var isSearchSuccessful: Boolean? by rememberSaveable { mutableStateOf(null) }
 
-    Scaffold(topBar = {
-        TopAppBar(
-            title = {
-                Text(
-                    text = stringResource(id = R.string.what_are_you_looking_for),
-                    color = MaterialTheme.colors.onBackground,
-                    style = MaterialTheme.typography.h2
-                )
-            }, backgroundColor = MaterialTheme.colors.background, elevation = 0.dp
-        )
-    }) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.what_are_you_looking_for),
+                        color = MaterialTheme.colors.onBackground,
+                        style = MaterialTheme.typography.h2
+                    )
+                },
+                backgroundColor = MaterialTheme.colors.background,
+                elevation = 0.dp
+            )
+        }
+    ) {
         Column(
             modifier = Modifier
                 .padding(it)
                 .fillMaxSize()
         ) {
-            TextField(modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
-                .border(
-                    1.dp, when (isSearchSuccessful) {
-                        true -> MaterialTheme.colors.onBackground
-                        false -> MaterialTheme.colors.primary
-                        null -> MaterialTheme.colors.surface
-                    }, MaterialTheme.shapes.medium
-                ),
+            TextField(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+                    .border(
+                        width = 1.dp, when (isSearchSuccessful) {
+                            true -> MaterialTheme.colors.onBackground
+                            false -> MaterialTheme.colors.primary
+                            null -> MaterialTheme.colors.surface
+                        },
+                        shape = MaterialTheme.shapes.medium
+                    ),
                 value = textField,
                 shape = MaterialTheme.shapes.medium,
                 textStyle = MaterialTheme.typography.body1,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(onSearch = {
-                    keyboardController?.hide()
-                    searchText = textField.text
-                }),
+                keyboardActions = KeyboardActions(
+                    onSearch = {
+                        searchText = textField
+                        keyboardController?.hide()
+                    }
+                ),
                 singleLine = true,
-
                 colors = TextFieldDefaults.textFieldColors(
                     focusedIndicatorColor = Color.Transparent,// خط زیر تکست فیلد وقتی روش کلیک بشه
                     unfocusedIndicatorColor = Color.Transparent, // خط زیر تکست فیلد وقتی روش کلیک نشده هنوز
@@ -110,26 +118,29 @@ fun Search(
                 onValueChange = { newTextValue ->
                     textField = newTextValue
                     // این شرط باعث میشه وقتی متن تکست فیلد خالی بشه خودکار سرچ ریست بشه و تکست فیلد برگرده به حالت اول
-                    if (newTextValue.text == "") {
+                    if (newTextValue == "") {
                         searchText = ""
                         isSearchSuccessful = null
                     }
                 },
                 trailingIcon = {
-                    if (/*isSearchSuccessful != null*/textField.text.isNotEmpty()) {
-                        IconButton(onClick = {
-                            textField = TextFieldValue("")
-                            searchText = ""
-                            isSearchSuccessful = null
-                        }) {
+                    if (textField.isNotEmpty()) {
+                        IconButton(
+                            onClick = {
+                                textField = ""
+                                searchText = ""
+                                isSearchSuccessful = null
+                            }
+                        ) {
                             Icon(
                                 imageVector = Icons.Filled.Clear,
                                 contentDescription = "",
-                                tint = if (textField.text.isNotEmpty() && isSearchSuccessful != false) MaterialTheme.colors.onBackground else MaterialTheme.colors.primary,
+                                tint = if (textField.isNotEmpty() && isSearchSuccessful != false) MaterialTheme.colors.onBackground else MaterialTheme.colors.primary,
                             )
                         }
                     }
-                })
+                }
+            )
             val foundItems = fakeFoods.filter { items ->
                 items.name == searchText
             }
@@ -163,16 +174,19 @@ fun SearchedItems(
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(24.dp),
         contentPadding = PaddingValues(
-            vertical = 16.dp, horizontal = 40.dp
+            vertical = 16.dp,
+            horizontal = 40.dp
         ) // پدینگ آیتم ها با حاشیه = horizontal
     ) {
         items(foundItems) {
-            Column(modifier = Modifier
-                .padding(bottom = 24.dp)
-                .clip(MaterialTheme.shapes.medium)
-                .clickable {
-                    navToDetail(it.degree, it.name, it.time, it.image)
-                }) {
+            Column(
+                modifier = Modifier
+                    .padding(bottom = 24.dp)
+                    .clip(MaterialTheme.shapes.medium)
+                    .clickable {
+                        navToDetail(it.degree, it.name, it.time, it.image)
+                    }
+            ) {
                 Image(
                     painter = painterResource(id = it.image),
                     contentDescription = "",
