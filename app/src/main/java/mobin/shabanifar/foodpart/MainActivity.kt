@@ -31,9 +31,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import mobin.shabanifar.foodpart.ui.screens.Category
-import mobin.shabanifar.foodpart.ui.screens.Search
-import mobin.shabanifar.foodpart.ui.screens.ShowFoodByAttributes
+import mobin.shabanifar.foodpart.ui.screens.CategoryScreen
+import mobin.shabanifar.foodpart.ui.screens.SearchScreen
+import mobin.shabanifar.foodpart.ui.screens.ShowFoodByAttributesScreen
 import mobin.shabanifar.foodpart.ui.screens.foodDetail.FoodDetail
 import mobin.shabanifar.foodpart.ui.screens.foodDetail.ShowPhoto
 import mobin.shabanifar.foodpart.ui.screens.register.LoginScreen
@@ -153,7 +153,7 @@ class MainActivity : ComponentActivity() {
                         composable(
                             NavigationBottom.Category.route
                         ) {
-                            Category(navToDetail = { degree: Int, name: String, time: Int, image: Int ->
+                            CategoryScreen(navToDetail = { degree: Int, name: String, time: Int, image: Int ->
                                 navController.navigate("foodDetail/$degree/$name/$time/$image") {
                                     launchSingleTop = true
                                     restoreState = true
@@ -166,7 +166,7 @@ class MainActivity : ComponentActivity() {
                             })
                         }
                         composable(NavigationBottom.Search.route) {
-                            Search(navToDetail = { degree: Int, name: String, time: Int, image: Int ->
+                            SearchScreen(navToDetail = { degree: Int, name: String, time: Int, image: Int ->
                                 navController.navigate("foodDetail/$degree/$name/$time/$image") {
                                     launchSingleTop = true
                                     restoreState = true
@@ -251,7 +251,7 @@ class MainActivity : ComponentActivity() {
                             })
                         ) { entry ->
                             val topTitle = entry.arguments?.getString("title")!!
-                            ShowFoodByAttributes(topTitle = topTitle,
+                            ShowFoodByAttributesScreen(topTitle = topTitle,
                                 navController = navController,
                                 navToDetail = { degree: Int, name: String, time: Int, image: Int ->
                                     navController.navigate("foodDetail/$degree/$name/$time/$image") {
