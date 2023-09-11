@@ -31,7 +31,7 @@ import mobin.shabanifar.foodpart.R
 import mobin.shabanifar.foodpart.data.fakeFoods
 
 @Composable
-fun ShowFoodByAttributes(
+fun ShowFoodByAttributesScreen(
     topTitle: String, navToDetail: (Int, String, Int, Int) -> Unit,
     navController: NavHostController
 ) {

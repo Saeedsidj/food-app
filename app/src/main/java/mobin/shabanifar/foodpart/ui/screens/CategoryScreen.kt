@@ -50,7 +50,7 @@ import mobin.shabanifar.foodpart.data.fakeFoods
 import mobin.shabanifar.foodpart.data.subCategoryList
 
 @Composable
-fun Category(
+fun CategoryScreen(
     navToDetail: (Int, String, Int, Int) -> Unit
 ) {
     // برای نشون دادن صفحه غذایی یافت نشد
@@ -203,7 +203,6 @@ fun CategoryItems(
                     textAlign = TextAlign.Center
                 )
             }
-
         }
     }
 }
