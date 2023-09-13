@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("dagger.hilt.android.plugin")
+    id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -64,9 +66,24 @@ dependencies {
     implementation("androidx.compose.material:material")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     implementation("androidx.navigation:navigation-common-ktx:2.7.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+
+
+    implementation("com.google.dagger:hilt-android:2.46.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.46.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+
+    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
+    implementation("com.squareup.moshi:moshi:1.14.0")
+
+    implementation ("androidx.room:room-runtime:2.5.2")
+    implementation ("androidx.room:room-ktx:2.5.2")
+    kapt ("androidx.room:room-compiler:2.5.2")
+
+    implementation("io.coil-kt:coil-compose:2.4.0")
 }

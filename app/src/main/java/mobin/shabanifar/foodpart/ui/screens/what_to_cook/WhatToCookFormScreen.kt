@@ -1,4 +1,4 @@
-package mobin.shabanifar.foodpart.ui.screens.whatToCook
+package mobin.shabanifar.foodpart.ui.screens.what_to_cook
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

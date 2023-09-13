@@ -1,4 +1,4 @@
-package mobin.shabanifar.foodpart
+package mobin.shabanifar.foodpart.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -39,8 +40,8 @@ import mobin.shabanifar.foodpart.ui.screens.foodDetail.ShowPhoto
 import mobin.shabanifar.foodpart.ui.screens.register.LoginScreen
 import mobin.shabanifar.foodpart.ui.screens.register.ProfileScreen
 import mobin.shabanifar.foodpart.ui.screens.register.SignUpScreen
-import mobin.shabanifar.foodpart.ui.screens.whatToCook.WhatToCookFormScreen
-import mobin.shabanifar.foodpart.ui.screens.whatToCook.WhatToCookListScreen
+import mobin.shabanifar.foodpart.ui.screens.what_to_cook.WhatToCookFormScreen
+import mobin.shabanifar.foodpart.ui.screens.what_to_cook.WhatToCookListScreen
 import mobin.shabanifar.foodpart.ui.theme.FoodPartTheme
 import mobin.shabanifar.foodpart.utils.HOW_MUCH_TIME_HAVE
 import mobin.shabanifar.foodpart.utils.LEVEL
@@ -81,6 +82,8 @@ class MainActivity : ComponentActivity() {
                                         Text(
                                             text = getString(screen.name),
                                             style = MaterialTheme.typography.subtitle1,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
                                         )
                                     },
                                     selected = currentDestination?.hierarchy?.any {
@@ -104,7 +107,7 @@ class MainActivity : ComponentActivity() {
                                             contentDescription = ""
                                         )
                                     },
-                                    selectedContentColor = Color.Red,
+                                    selectedContentColor = MaterialTheme.colors.primary,
                                     unselectedContentColor = MaterialTheme.colors.onBackground,
                                 )
                             }

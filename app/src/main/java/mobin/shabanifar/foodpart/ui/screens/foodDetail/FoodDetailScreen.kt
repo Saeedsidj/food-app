@@ -67,9 +67,7 @@ fun FoodDetail(
 ) {
 
     val modalSheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-        confirmStateChange = { it != ModalBottomSheetValue.HalfExpanded },
-        skipHalfExpanded = true,
+        initialValue = ModalBottomSheetValue.Hidden
     )
     val scaffoldState = rememberScaffoldState()
     var showMenu by remember { mutableStateOf(false) }
@@ -80,20 +78,32 @@ fun FoodDetail(
     val coroutineScope = rememberCoroutineScope()
     var textReportState by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
-    ModalBottomSheetLayout(sheetBackgroundColor = MaterialTheme.colors.secondary,
+    ModalBottomSheetLayout(
+        sheetBackgroundColor = MaterialTheme.colors.secondary,
         sheetState = modalSheetState,
         sheetShape = RoundedCornerShape(
-            bottomEnd = 0.dp, bottomStart = 0.dp, topStart = 16.dp, topEnd = 16.dp
+            bottomEnd = 0.dp,
+            bottomStart = 0.dp,
+            topStart = 16.dp,
+            topEnd = 16.dp
         ),
         scrimColor = Color.Transparent,
         sheetContent = {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.3f)
-                    .padding(start = 16.dp, end = 16.dp),
+                    .fillMaxHeight(
+                        0.3f
+                    )
+                    .padding(
+                        start = 16.dp,
+                        end = 16.dp
+                    ),
                 horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically)
+                verticalArrangement = Arrangement.spacedBy(
+                    16.dp,
+                    Alignment.CenterVertically
+                )
             ) {
                 Text(
                     text = stringResource(R.string.reportTitle),
@@ -105,7 +115,10 @@ fun FoodDetail(
                     onValueChange = { newString -> textReportState = newString },
                     modifier = Modifier
                         .fillMaxHeight(0.5f)
-                        .background(MaterialTheme.colors.surface, MaterialTheme.shapes.medium)
+                        .background(
+                            MaterialTheme.colors.surface,
+                            MaterialTheme.shapes.medium
+                        )
                         .fillMaxWidth(1f),
                     textStyle = TextStyle(
                         textAlign = TextAlign.Start,

@@ -70,10 +70,9 @@ fun MainScreen(
 ) {
     Column(
         Modifier
-            .padding(start = 13.dp, end = 13.dp)
             .fillMaxSize()
             .verticalScroll(state = scrollState),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.Start
     ) {
         ImageFood(navController, image)
@@ -81,10 +80,7 @@ fun MainScreen(
         TabRowDescription(tabIndex, pagerState, tabData, coroutineScope)
         LazyRowForMoreFood(
             navToDetail = { degree: Int, name: String, time: Int, image: Int ->
-                navController.navigate("foodDetail/$degree/$name/$time/$image") {
-                    launchSingleTop = true
-                    restoreState = true
-                }
+                navController.navigate("foodDetail/$degree/$name/$time/$image")
             }, toAttributesScreen = toAttributesScreen
         )
     }
@@ -96,13 +92,14 @@ private fun ImageFood(navController: NavHostController, image: Int) {
         painterResource(image),
         contentDescription = "",
         modifier = Modifier
+            .padding(horizontal = 16.dp)
             .height(244.dp)
-            .width(380.dp)
+            .fillMaxWidth()
             .clip(shape = RoundedCornerShape(16.dp))
             .clickable {
                 navController.navigate(NavigationBottom.FoodPhoto.route)
             },
-        contentScale = ContentScale.Crop
+        contentScale = ContentScale.Crop,
     )
 }
 
@@ -115,8 +112,12 @@ private fun AttributeRow(
     time: Int,
 ) {
     Row(
-        verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
-    ) {
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+
+        ) {
         Text(
             text = name,
             style = MaterialTheme.typography.h1,
@@ -148,7 +149,8 @@ private fun AttributeRow(
     }
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(5.dp)
+        horizontalArrangement = Arrangement.spacedBy(5.dp),
+        modifier = Modifier.padding(horizontal = 16.dp)
     ) {
         Text(text = "صبحانه",
             textAlign = TextAlign.Center,
@@ -229,6 +231,7 @@ private fun TabRowDescription(
     tabIndex: Int, pagerState: PagerState, tabData: List<String>, coroutineScope: CoroutineScope
 ) {
     TabRow(modifier = Modifier
+        .padding(horizontal = 16.dp)
         .height(40.dp)
         .fillMaxWidth(0.7f),
         backgroundColor = MaterialTheme.colors.background,
@@ -243,7 +246,8 @@ private fun TabRowDescription(
         },
         divider = {}) {
         tabData.forEachIndexed { index, text ->
-            Tab(selectedContentColor = MaterialTheme.colors.primary,
+            Tab(
+                selectedContentColor = MaterialTheme.colors.primary,
                 unselectedContentColor = MaterialTheme.colors.onBackground,
                 selected = tabIndex == index,
                 onClick = {
@@ -257,17 +261,14 @@ private fun TabRowDescription(
                         style = MaterialTheme.typography.h3,
                     )
                 },
-                modifier = Modifier.wrapContentWidth(Alignment.CenterHorizontally, true)
+                modifier = Modifier
+                    .wrapContentWidth(Alignment.CenterHorizontally, true)
             )
         }
     }
     HorizontalPager(
         modifier = Modifier
-            .height(230.dp)
-            .background(
-                Color(0xFF222228), shape = RoundedCornerShape(16.dp)
-            )
-            .padding(10.dp), state = pagerState, verticalAlignment = Alignment.Top
+            .padding(horizontal = 16.dp), state = pagerState, verticalAlignment = Alignment.Top
     ) { index ->
         Text(
             text = when (index) {
@@ -278,6 +279,13 @@ private fun TabRowDescription(
             },
             style = MaterialTheme.typography.body1,
             textAlign = TextAlign.Start,
+            modifier = Modifier
+                .background(
+                    Color(0xFF222228), shape = RoundedCornerShape(16.dp)
+                )
+                .height(230.dp)
+                .padding(10.dp)
+                .fillMaxWidth()
         )
     }
 }
@@ -293,6 +301,7 @@ private fun LazyRowForMoreFood(
     )
     val fakeFoodsFiveItem = fakeFoods.subList(fromIndex = 0, toIndex = 4)
     LazyRow(
+        contentPadding = PaddingValues(horizontal = 10.dp),
         content = {
             items(fakeFoodsFiveItem) {
                 Column(verticalArrangement = Arrangement.spacedBy(3.dp),
