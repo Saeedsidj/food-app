@@ -1,7 +1,9 @@
 package mobin.shabanifar.foodpart.ui.screens
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +32,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -44,14 +47,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import mobin.shabanifar.foodpart.R
-import mobin.shabanifar.foodpart.data.categoryItems
 import mobin.shabanifar.foodpart.data.fakeFoods
-import mobin.shabanifar.foodpart.data.subCategoryList
+import mobin.shabanifar.foodpart.viewmodel.CategoryViewModel
 
 @Composable
 fun CategoryScreen(
-    navToDetail: (Int, String, Int, Int) -> Unit
+    navToDetail: (Int, String, Int, Int) -> Unit,
+    viewModel: CategoryViewModel = hiltViewModel()
 ) {
     // برای نشون دادن صفحه غذایی یافت نشد
     var isFood by rememberSaveable { mutableStateOf(true) }
@@ -59,6 +63,8 @@ fun CategoryScreen(
 
     var isSub by rememberSaveable { mutableStateOf(true) }
     val lambIsSub = { it: Boolean -> isSub = it }
+
+    val subCategoryList by viewModel.subCategoryList.collectAsState()
 
     Scaffold(
         topBar = {
@@ -94,7 +100,7 @@ fun CategoryScreen(
                 color = MaterialTheme.colors.onSurface
             )
 
-            if (isSub) {
+            if (!subCategoryList.isNullOrEmpty()) {
                 //ساب کتگوری ها
                 SubCategory()
 
@@ -122,14 +128,18 @@ fun CategoryScreen(
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CategoryItems(
     lambIsFood: (Boolean) -> Unit,
     lambIsSub: (Boolean) -> Unit,
+    viewModel: CategoryViewModel = hiltViewModel()
 ) {
 
     // ذخیره ایندکس کتگوری ای که انتخاب شده است برای رنگی کردن آن
-    var indexCategoryClicked by rememberSaveable { mutableIntStateOf(0) }
+    //var indexCategoryClicked by rememberSaveable { mutableIntStateOf(0) }
+    val selectedCategoryIndex by viewModel.selectedCategoryIndex.collectAsState()
+    val categoryData by viewModel.categoryData.collectAsState()
 
     // نمایش لیست کتگوری ها
     LazyRow(
@@ -137,35 +147,20 @@ fun CategoryItems(
         contentPadding = PaddingValues(horizontal = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        itemsIndexed(categoryItems) { index, it ->
+        itemsIndexed(categoryData?.data ?: emptyList()) { index, it ->
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .width(64.dp)
                     .clip(MaterialTheme.shapes.medium)
                     .clickable {
-                        when (it.name) {
-                            "بی ساب" -> {
-                                lambIsSub(false)
-                                lambIsFood(true)
-                            }
-
-                            "غذا نیست" -> {
-                                lambIsFood(false)
-                                lambIsSub(false)
-                            }
-
-                            else -> {
-                                lambIsFood(true)
-                                lambIsSub(true)
-                            }
-                        }
-                        indexCategoryClicked = index
+                        viewModel.updateCategorySelectedIndex(index)
+                        viewModel.setDataOfSelectedCategory(it.id)
+                        viewModel.updateSubCategorySelectedIndex(0)
                     }
             ) {
-
                 // نمایش آیتمی که کلیکشده بصورت رنگی
-                val categoryImageModifier = if (index == indexCategoryClicked) {
+                val categoryImageModifier = if (index == selectedCategoryIndex) {
                     Modifier
                         .size(64.dp)
                         .clip(MaterialTheme.shapes.medium)
@@ -179,7 +174,7 @@ fun CategoryItems(
                         .size(64.dp)
                         .clip(MaterialTheme.shapes.medium)
                 }
-                val categoryTextColor = if (index == indexCategoryClicked) {
+                val categoryTextColor = if (index == selectedCategoryIndex) {
                     MaterialTheme.colors.primary
                 } else {
                     MaterialTheme.colors.onBackground
@@ -187,7 +182,7 @@ fun CategoryItems(
 
                 Image(
                     modifier = categoryImageModifier,
-                    painter = painterResource(id = it.image),
+                    painter = painterResource(id = R.drawable.abgoosht),
                     contentScale = ContentScale.Crop,
                     contentDescription = ""
                 )
@@ -196,7 +191,10 @@ fun CategoryItems(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .fillMaxWidth()
+                        .basicMarquee(),
                     text = it.name,
                     style = MaterialTheme.typography.body1,
                     color = categoryTextColor,
@@ -209,18 +207,24 @@ fun CategoryItems(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SubCategory() {
+fun SubCategory(
+    viewModel: CategoryViewModel = hiltViewModel()
+) {
     // ذخیره ایندکسی که کلیک شده برای رنگی کردن آن
     var indexSubCategoryClicked by rememberSaveable { mutableIntStateOf(0) }
+    val categoryData by viewModel.categoryData.collectAsState()
+    val subCategoryList by viewModel.subCategoryList.collectAsState()
+    val selectedSubCategoryIndex by viewModel.selectedSubCategoryIndex.collectAsState()
+
 
     LazyRow(
         modifier = Modifier.padding(top = 8.dp),
         contentPadding = PaddingValues(horizontal = 16.dp), // پدینگ ساب کتگوری از کنار صفحه
         horizontalArrangement = Arrangement.spacedBy(8.dp) // پدینگ بین ساب کتگوری ها
     ) {
-        itemsIndexed(subCategoryList) { index, item ->
+        itemsIndexed(subCategoryList ?: emptyList()) { index, item ->
             Chip(
-                border = if (indexSubCategoryClicked == index) {
+                border = if (selectedSubCategoryIndex == index) {
                     BorderStroke(1.dp, MaterialTheme.colors.primary)
                 } else {
                     BorderStroke(0.dp, MaterialTheme.colors.surface)
@@ -228,7 +232,7 @@ fun SubCategory() {
                 modifier = Modifier.height(32.dp),
                 shape = MaterialTheme.shapes.medium,
                 colors = chipColors(
-                    backgroundColor = if (indexSubCategoryClicked == index) {
+                    backgroundColor = if (selectedSubCategoryIndex == index) {
                         Color(0x1AFF6262)
                     } else {
                         MaterialTheme.colors.surface
@@ -236,16 +240,17 @@ fun SubCategory() {
                     contentColor = MaterialTheme.colors.onBackground,
                 ),
                 onClick = {
-                    indexSubCategoryClicked = index
+                    //indexSubCategoryClicked = index
+                    viewModel.updateSubCategorySelectedIndex(index)
                 }
             ) {
-                val subTextColor = if (index == indexSubCategoryClicked) {
+                val subTextColor = if (index == selectedSubCategoryIndex) {
                     MaterialTheme.colors.primary
                 } else {
                     MaterialTheme.colors.onBackground
                 }
                 Text(
-                    text = item,
+                    text = item.name,
                     style = MaterialTheme.typography.subtitle1,
                     color = subTextColor,
                     textAlign = TextAlign.Center
@@ -258,7 +263,10 @@ fun SubCategory() {
 
 
 @Composable
-fun FoodItems(navToDetail: (Int, String, Int, Int) -> Unit) {
+fun FoodItems(
+    navToDetail: (Int, String, Int, Int) -> Unit,
+    viewModel: CategoryViewModel = hiltViewModel()
+) {
 
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
