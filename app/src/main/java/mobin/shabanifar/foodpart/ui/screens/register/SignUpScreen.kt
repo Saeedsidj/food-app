@@ -1,11 +1,11 @@
 package mobin.shabanifar.foodpart.ui.screens.register
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -37,13 +37,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
-import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import mobin.shabanifar.foodpart.data.models.Result
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -69,7 +67,15 @@ fun SignUpScreen(
     val signUpResult by viewModel.signUpResult.collectAsState(Recomposer.State.Idle)
     val foods by viewModel.signUpResponse.collectAsState()
 
+    var valueTextFieldUserName by rememberSaveable { mutableStateOf("") }
+    var valueTextFieldPassword by rememberSaveable { mutableStateOf("") }
+    var valueTextFieldPasswordCheck by rememberSaveable { mutableStateOf("") }
+
+    val isPasswordValid = isValidPassword(valueTextFieldPassword.trim())
+    val isUsernameValid = isValidUser(valueTextFieldUserName.trim())
+
     var passwordVisibility by remember { mutableStateOf(false) }
+    var passwordCheckVisibility by remember { mutableStateOf(false) }
     Scaffold(topBar = {
         TopAppBar(
             modifier = Modifier.fillMaxWidth(),
@@ -94,15 +100,6 @@ fun SignUpScreen(
             )
         }
     }) {
-        var valueTextFieldUserName by rememberSaveable {
-            mutableStateOf("")
-        }
-        var valueTextFieldPassword by rememberSaveable {
-            mutableStateOf("")
-        }
-        var valueTextFieldPasswordCheck by rememberSaveable {
-            mutableStateOf("")
-        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -166,81 +163,110 @@ fun SignUpScreen(
                     imeAction = ImeAction.Next, keyboardType = KeyboardType.Text
                 )
             )
-            TextField(
-                value = valueTextFieldPassword,
-                onValueChange = { value ->
-                    valueTextFieldPassword = value
-                },
-                shape = MaterialTheme.shapes.medium,
-                modifier = Modifier
-                    .padding(bottom = 8.dp)
-                    .clip(MaterialTheme.shapes.medium)
-                    .background(MaterialTheme.colors.surface)
-                    .fillMaxWidth()
-                    .align(End)
-                    .border(
-                        width = 1.dp, color = Color.Transparent
+            Box {
+                TextField(
+                    value = valueTextFieldPassword,
+                    onValueChange = { value ->
+                        valueTextFieldPassword = value
+                    },
+                    shape = MaterialTheme.shapes.medium,
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .clip(MaterialTheme.shapes.medium)
+                        .background(MaterialTheme.colors.surface)
+                        .fillMaxWidth()
+                        .border(
+                            width = 1.dp, color = Color.Transparent
+                        ),
+                    singleLine = true,
+                    placeholder = {
+                        Text(
+                            text = stringResource(id = R.string.password),
+                            style = MaterialTheme.typography.body1,
+                            color = MaterialTheme.colors.onSurface
+                        )
+                    },
+                    colors = TextFieldDefaults.textFieldColors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        backgroundColor = MaterialTheme.colors.surface,
                     ),
-                singleLine = true,
-                placeholder = {
-                    Text(
-                        text = stringResource(id = R.string.password),
-                        style = MaterialTheme.typography.body1,
-                        color = MaterialTheme.colors.onSurface
-                    )
-                },
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    backgroundColor = MaterialTheme.colors.surface,
-                ),
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Next, keyboardType = KeyboardType.Password
-                ),
-                visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-
-                )
-            TextField(
-                value = valueTextFieldPasswordCheck,
-                onValueChange = { value ->
-                    valueTextFieldPasswordCheck = value
-                },
-                shape = MaterialTheme.shapes.medium,
-                modifier = Modifier
-                    .padding(bottom = 8.dp)
-                    .clip(MaterialTheme.shapes.medium)
-                    .background(MaterialTheme.colors.surface)
-                    .fillMaxWidth()
-                    .border(
-                        width = 1.dp, color = Color.Transparent
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next, keyboardType = KeyboardType.Password
                     ),
-                singleLine = true,
-                placeholder = {
-                    Text(
-                        text = stringResource(id = R.string.repeat_password),
-                        style = MaterialTheme.typography.body1,
-                        color = MaterialTheme.colors.onSurface
-                    )
-                },
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    backgroundColor = MaterialTheme.colors.surface,
-                ),
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Done, keyboardType = KeyboardType.Password
-                ),
-                visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                    visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
 
+                    )
+                IconButton(
+                    onClick = {
+                        passwordVisibility = !passwordVisibility
+                    }, modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 5.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = if (passwordVisibility) R.drawable.noun_visibility else R.drawable.visible),
+                        contentDescription = "Toggle Password Visibility",
+                        tint = MaterialTheme.colors.onSurface
+                    )
+                }
+            }
+            Box {
+                TextField(
+                    value = valueTextFieldPasswordCheck,
+                    onValueChange = { value ->
+                        valueTextFieldPasswordCheck = value
+                    },
+                    shape = MaterialTheme.shapes.medium,
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .clip(MaterialTheme.shapes.medium)
+                        .background(MaterialTheme.colors.surface)
+                        .fillMaxWidth()
+                        .border(
+                            width = 1.dp, color = Color.Transparent
+                        ),
+                    singleLine = true,
+                    placeholder = {
+                        Text(
+                            text = stringResource(id = R.string.repeat_password),
+                            style = MaterialTheme.typography.body1,
+                            color = MaterialTheme.colors.onSurface
+                        )
+                    },
+                    colors = TextFieldDefaults.textFieldColors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        backgroundColor = MaterialTheme.colors.surface,
+                    ),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done, keyboardType = KeyboardType.Password
+                    ),
+                    visualTransformation = if (passwordCheckVisibility) VisualTransformation.None else PasswordVisualTransformation(),
                 )
+                IconButton(
+                    onClick = {
+                        passwordCheckVisibility = !passwordCheckVisibility
+                    }, modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .padding(end = 5.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = if (passwordCheckVisibility) R.drawable.noun_visibility else R.drawable.visible),
+                        contentDescription = "Toggle Password Visibility",
+                        tint = MaterialTheme.colors.onSurface
+                    )
+                }
+            }
             Button(
-                enabled = valueTextFieldPassword.trim().length>=8 && valueTextFieldPassword == valueTextFieldPasswordCheck && valueTextFieldUserName.isNotBlank() && valueTextFieldPasswordCheck.isNotBlank(),
+                enabled = isPasswordValid && valueTextFieldPassword == valueTextFieldPasswordCheck && isUsernameValid,
                 onClick = {
-                    val body= SignUpBody(username = valueTextFieldUserName, password = valueTextFieldPassword)
+                    val body = SignUpBody(
+                        username = valueTextFieldUserName,
+                        password = valueTextFieldPassword
+                    )
                     viewModel.postUserSignUp(body)
-                    if (signUpResult is Result.Success) {
-                        navigateToProfileLogin()
-                    }
+                    navigateToProfileLogin()
                     saveUserName(valueTextFieldUserName)
                     isLogin(true)
                 },
@@ -276,4 +302,14 @@ fun SignUpScreen(
             }
         }
     }
+}
+
+fun isValidPassword(password: String): Boolean {
+    val passwordRegex = Regex("^(?=.*[a-z])(?=.*[A-Z]).{8,}$")
+    return passwordRegex.matches(password)
+}
+
+fun isValidUser(userName: String): Boolean {
+    val userNameRegex = Regex("^.{4,}$")
+    return userNameRegex.matches(userName)
 }

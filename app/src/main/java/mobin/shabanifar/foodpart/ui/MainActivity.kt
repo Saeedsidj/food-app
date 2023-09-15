@@ -19,7 +19,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -195,11 +194,8 @@ class MainActivity : ComponentActivity() {
                             }, navigateToProfile = {
                                 navController.popBackStack()
                             }, navigateToProfileLogin = {
-                                navController.navigate(NavigationBottom.Login.route) {
-                                    popUpTo(NavigationBottom.Profile.route)
-                                }
+                                navController.navigate(NavigationBottom.Login.route)
                             }
-
                             )
                         }
                         composable(NavigationBottom.Login.route) {
