@@ -30,6 +30,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,12 +47,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import mobin.shabanifar.foodpart.R
 import mobin.shabanifar.foodpart.data.tabData
 import mobin.shabanifar.foodpart.ui.theme.FoodPartTheme
 import mobin.shabanifar.foodpart.ui.theme.shapes
+import mobin.shabanifar.foodpart.viewmodel.FoodDetailViewModel
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)

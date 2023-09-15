@@ -44,10 +44,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import mobin.shabanifar.foodpart.R
 import mobin.shabanifar.foodpart.data.categoryItems
 import mobin.shabanifar.foodpart.data.fakeFoods
 import mobin.shabanifar.foodpart.data.subCategoryList
+import mobin.shabanifar.foodpart.viewmodel.FoodDetailViewModel
 
 @Composable
 fun CategoryScreen(
@@ -259,7 +261,6 @@ fun SubCategory() {
 
 @Composable
 fun FoodItems(navToDetail: (Int, String, Int, Int) -> Unit) {
-
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
         columns = GridCells.Fixed(2),

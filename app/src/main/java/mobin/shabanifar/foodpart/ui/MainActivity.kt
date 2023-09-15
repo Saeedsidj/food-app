@@ -32,6 +32,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import dagger.hilt.android.AndroidEntryPoint
 import mobin.shabanifar.foodpart.ui.screens.CategoryScreen
 import mobin.shabanifar.foodpart.ui.screens.SearchScreen
 import mobin.shabanifar.foodpart.ui.screens.ShowFoodByAttributesScreen
@@ -51,6 +52,7 @@ import mobin.shabanifar.foodpart.utils.items
 import mobin.shabanifar.foodpart.utils.mainRoute
 
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -140,12 +142,13 @@ class MainActivity : ComponentActivity() {
                             val time = entry.arguments?.getInt("time")!!
                             val image = entry.arguments?.getInt("image")!!
 
-                            FoodDetail(degree,
-                                name,
-                                time,
-                                image,
-                                navController,
-                                isLogin,
+                            FoodDetail(
+                                degree = degree,
+                                name = name,
+                                time = time,
+                                image = image,
+                                navController = navController,
+                                isLogin = isLogin,
                                 toAttributesScreen = { title: String ->
                                     navController.navigate("showFoodByAttributes/$title") {
                                         launchSingleTop = true
