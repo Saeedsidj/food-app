@@ -5,13 +5,15 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import mobin.shabanifar.foodpart.data.network.CategoryApi
+import mobin.shabanifar.foodpart.data.network.WhatToCookApi
 import retrofit2.Retrofit
 
 @Module
 @InstallIn(SingletonComponent::class)
-object CategoryModule {
+object WhatToCookModule {
     @Provides
-    fun provideCategoryApi(retrofit: Retrofit): CategoryApi {
-        return retrofit.create(CategoryApi::class.java)
+    fun provideWhatToCookApi(retrofit: Retrofit): WhatToCookApi {
+        return retrofit.create(WhatToCookApi::class.java)
     }
+
 }

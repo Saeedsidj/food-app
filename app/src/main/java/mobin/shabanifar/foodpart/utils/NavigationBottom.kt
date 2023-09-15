@@ -14,11 +14,16 @@ sealed class NavigationBottom(
     object FoodDetail : NavigationBottom(R.string.food_info, "foodDetail/{degree}/{name}/{time}/{image}", null)
 
     object FoodPhoto : NavigationBottom(R.string.photo, "photo", null)
-    object WhatToCook : NavigationBottom(
+    /*object WhatToCook : NavigationBottom(
         R.string.what_should_i_cook,
         "whatToCookList?whatDoYouHave={whatDoYouHave}&howMuchTimeHave={howMuchTimeHave}&level={level}",
         null
-    )
+    )*/
+    object WhatToCook : NavigationBottom(name =R.string.what_should_i_cook ,route = "whatToCookList?whatDoYouHave={whatDoYouHave}&howMuchTimeHave={howMuchTimeHave}&level={level}", icon = null) {
+        fun createRoute(whatDoYouHave: String, howMuchTimeHave: String,level :String): String {
+            return "whatToCookList?whatDoYouHave=$whatDoYouHave&howMuchTimeHave=$howMuchTimeHave&level=$level"
+        }
+    }
     object SignUp : NavigationBottom(R.string.register, "sign_up", null)
     object Login : NavigationBottom(R.string.login, "login", null)
     object ShowFoodByAttributes :
