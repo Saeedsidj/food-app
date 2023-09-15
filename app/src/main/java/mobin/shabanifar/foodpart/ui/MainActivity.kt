@@ -200,11 +200,8 @@ class MainActivity : ComponentActivity() {
                             }, navigateToProfile = {
                                 navController.popBackStack()
                             }, navigateToProfileLogin = {
-                                navController.navigate(NavigationBottom.Login.route) {
-                                    popUpTo(NavigationBottom.Profile.route)
-                                }
+                                navController.navigate(NavigationBottom.Login.route)
                             }
-
                             )
                         }
                         composable(NavigationBottom.Login.route) {
