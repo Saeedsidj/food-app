@@ -19,7 +19,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -165,8 +164,14 @@ class MainActivity : ComponentActivity() {
                             })
                         }
                         composable(NavigationBottom.Cook.route) {
-                            WhatToCookFormScreen(navigateToWTCList = { whatDoYouHave, howMuchTimeHave, level ->
-                                navController.navigate("whatToCookList?whatDoYouHave=$whatDoYouHave&howMuchTimeHave=$howMuchTimeHave&level=$level")
+                            WhatToCookFormScreen(
+                                navigateToWTCList = { whatDoYouHave, howMuchTimeHave, level ->
+                                navController.navigate(
+                                    NavigationBottom.WhatToCook.createRoute(
+                                        whatDoYouHave, howMuchTimeHave, level
+                                    )
+                                )
+                                //navController.navigate("whatToCookList?whatDoYouHave=$whatDoYouHave&howMuchTimeHave=$howMuchTimeHave&level=$level")
                             })
                         }
                         composable(NavigationBottom.Search.route) {
@@ -215,8 +220,7 @@ class MainActivity : ComponentActivity() {
                                 isLogin = result
                             })
                         }
-                        composable(
-                            route = NavigationBottom.WhatToCook.route,
+                        composable(route = NavigationBottom.WhatToCook.route,
                             arguments = listOf(navArgument(WHAT_DO_YOU_HAVE) {
                                 type = NavType.StringType
                                 nullable = true
@@ -227,13 +231,18 @@ class MainActivity : ComponentActivity() {
                                 type = NavType.StringType
                                 nullable = true
                             })
-                        ) { getData ->
-                            val whatDoYouHave = getData.arguments?.getString(WHAT_DO_YOU_HAVE)
-                            val howMuchTimeHave = getData.arguments?.getString(HOW_MUCH_TIME_HAVE)
-                            val level = getData.arguments?.getString(LEVEL)
-                            WhatToCookListScreen(whatDoYouHave.toString(),
-                                howMuchTimeHave.toString(),
-                                level.toString(),
+                        ) { backStackEntry ->
+                            val whatDoYouHave =
+                                backStackEntry.arguments?.getString(WHAT_DO_YOU_HAVE)
+                                    ?: throw IllegalStateException("authorId was null")
+                            val howMuchTimeHave =
+                                backStackEntry.arguments?.getString(HOW_MUCH_TIME_HAVE)
+                                    ?: throw IllegalStateException("authorId was null")
+                            val level = backStackEntry.arguments?.getString(LEVEL)
+                                ?: throw IllegalStateException("authorId was null")
+                            WhatToCookListScreen(whatDoYouHave,
+                                howMuchTimeHave,
+                                level,
                                 navToDetail = { degree: Int, name: String, time: Int, image: Int ->
                                     navController.navigate("foodDetail/$degree/$name/$time/$image") {
                                         popUpTo(NavigationBottom.Profile.route) {

@@ -26,6 +26,8 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -68,7 +70,7 @@ fun WhatToCookFormScreen(
 
         var valueTextWhatDoYouHave by rememberSaveable { mutableStateOf("") }
         var valueTextHowMuchTimeDoYouHave by rememberSaveable { mutableStateOf("") }
-        var selectedLevel by rememberSaveable { mutableStateOf(LevelState.NO_MATTER) }
+        var selectedLevel by rememberSaveable { mutableStateOf("") }
         var isShowVisible by rememberSaveable { mutableStateOf(true) }
 
         Column(
@@ -159,8 +161,10 @@ fun WhatToCookFormScreen(
                 modifier = Modifier.padding(bottom = 8.dp, start = 16.dp, end = 16.dp)
             ) {
                 TextField(
-                    value = valueTextHowMuchTimeDoYouHave, onValueChange = { value ->
-                        valueTextHowMuchTimeDoYouHave = value
+                    value = valueTextHowMuchTimeDoYouHave,
+                    onValueChange = { value ->
+                        if (value.length <= 4)
+                            valueTextHowMuchTimeDoYouHave = value
                     }, shape = MaterialTheme.shapes.medium, modifier = Modifier
                         .background(
                             shape = MaterialTheme.shapes.medium,
@@ -213,7 +217,7 @@ fun WhatToCookFormScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
-                enabled = valueTextWhatDoYouHave.isNotBlank(),
+                enabled = valueTextWhatDoYouHave.isNotBlank() && valueTextHowMuchTimeDoYouHave.isNotBlank() && valueTextWhatDoYouHave.trim().length >= 3,
                 onClick = {
                     navigateToWTCList(
                         valueTextWhatDoYouHave, valueTextHowMuchTimeDoYouHave, selectedLevel
@@ -244,25 +248,25 @@ fun CustomRadioButton(
         MutableInteractionSource()
     }
     val radioButtonItemsList =
-        listOf(LevelState.NO_MATTER, LevelState.EASY, LevelState.MEDIUM, LevelState.HARD)
+        listOf(LevelState.Any, LevelState.Easy, LevelState.Medium, LevelState.Hard)
     radioButtonItemsList.forEach { item ->
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
             .clickable(
                 interactionSource = interactionSource, indication = null
             ) {
-                changeSelectedLevel(item)
+                changeSelectedLevel(item.id)
             }
             .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)) {
             Icon(
-                painter = painterResource(if (selectedLevel == item) R.drawable.check_circle_outline else R.drawable.uncheck_circle_outline),
+                painter = painterResource(if (selectedLevel == item.id) R.drawable.check_circle_outline else R.drawable.uncheck_circle_outline),
                 contentDescription = "",
-                tint = (if (selectedLevel == item) green else MaterialTheme.colors.onBackground)
+                tint = (if (selectedLevel == item.id) green else MaterialTheme.colors.onBackground)
             )
             Spacer(modifier = Modifier.size(5.dp))
             Text(
                 style = MaterialTheme.typography.subtitle1,
                 modifier = Modifier.padding(start = 2.dp, end = 5.dp),
-                text = item
+                text = item.name
             )
         }
     }
