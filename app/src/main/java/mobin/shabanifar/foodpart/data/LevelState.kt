@@ -1,17 +1,10 @@
 package mobin.shabanifar.foodpart.data
 
-data class LevelState(
-    val HARD: String,
-    val MEDIUM: String,
-    var EASY: String,
-    var NO_MATTER: String
+sealed class LevelState(
+    val name: String, val id: String
 ) {
-    companion object {
-        val HARD = "سخت"
-        val MEDIUM = "متوسط"
-        val EASY = "آسان"
-        val NO_MATTER = "مهم نیست"
-    }
+    object Hard : LevelState("سخت", "3")
+    object Medium : LevelState("متوسط", "2")
+    object Easy : LevelState("آسان", "1")
+    object Any : LevelState("مهم نیست", "")
 }
-
-
