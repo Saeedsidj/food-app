@@ -5,12 +5,14 @@ import mobin.shabanifar.foodpart.data.models.food_response.FoodResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface CategoryApi {
     @GET("api/v1/category")
     suspend fun getCategory(): Response<CategoryResponse>
-    @GET("api/v1/food?category={id}")
+
+    @GET("api/v1/food")
     suspend fun getFood(
-        @Path("id") subOrCategoryId: String
-    ):Response<FoodResponse>
+        @Query("category") subOrCategoryId: String
+    ): Response<FoodResponse>
 }

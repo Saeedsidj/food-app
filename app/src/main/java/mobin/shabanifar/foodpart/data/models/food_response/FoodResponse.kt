@@ -7,14 +7,14 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class FoodResponse(
     @Json(name = "data")
-    val data: List<Data>,
+    val data: List<FoodData>,
 
-/*    @Json(name = "page")
+    @Json(name = "page")
     val page: Int,
 
     @Json(name = "perPage")
     val perPage: Int,
 
     @Json(name = "totalItems")
-    val totalItems: Int*/
+    val totalItems: Int
 )

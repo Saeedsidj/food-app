@@ -10,13 +10,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import mobin.shabanifar.foodpart.data.network.CategoryApi
-import javax.inject.Inject
 import mobin.shabanifar.foodpart.data.models.Result
+import mobin.shabanifar.foodpart.data.models.category_response.CategoryData
 import mobin.shabanifar.foodpart.data.models.category_response.CategoryResponse
 import mobin.shabanifar.foodpart.data.models.category_response.SubCategory
+import mobin.shabanifar.foodpart.data.models.food_response.FoodData
 import mobin.shabanifar.foodpart.data.models.food_response.FoodResponse
+import mobin.shabanifar.foodpart.data.network.CategoryApi
 import mobin.shabanifar.foodpart.utils.safeApi
+import javax.inject.Inject
 
 @HiltViewModel
 class CategoryViewModel @Inject constructor(
@@ -36,16 +38,18 @@ class CategoryViewModel @Inject constructor(
     val categoryData: StateFlow<CategoryResponse?> = _categoryData.asStateFlow()
 
     private val _subCategoryList = MutableStateFlow<List<SubCategory>?>(emptyList())
-    val subCategoryList : StateFlow<List<SubCategory>?> =  _subCategoryList.asStateFlow()
+    val subCategoryList: StateFlow<List<SubCategory>?> = _subCategoryList.asStateFlow()
 
-    private val _selectedCategoryIndex = MutableStateFlow<Int>(0)
-     val selectedCategoryIndex : StateFlow<Int> = _selectedCategoryIndex.asStateFlow()
+    private val _selectedCategoryId = MutableStateFlow("")
+    val selectedCategoryId: StateFlow<String> = _selectedCategoryId.asStateFlow()
 
-    private val _selectedSubCategoryIndex = MutableStateFlow<Int>(0)
-    val selectedSubCategoryIndex : StateFlow<Int> = _selectedSubCategoryIndex.asStateFlow()
+    private val _selectedSubCategoryId = MutableStateFlow("")
+    val selectedSubCategoryId: StateFlow<String> = _selectedSubCategoryId.asStateFlow()
+
     init {
         getCategoryApi()
     }
+
     private fun getCategoryApi() {
         viewModelScope.launch(Dispatchers.IO) {
             safeApi(
@@ -55,33 +59,51 @@ class CategoryViewModel @Inject constructor(
         }
     }
 
-    private fun getFoodApi(id:String) {
+
+    fun getCategoryItems(categoryData: CategoryResponse?): List<CategoryData> {
+        return categoryData?.data ?: emptyList()
+    }
+
+    fun getSubCategoryItems(subCategoryList: List<SubCategory>?): List<SubCategory> {
+        return subCategoryList ?: emptyList()
+    }
+
+    fun getFoodApi(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             safeApi(
-                call = { categoryApi.getFood(id) },
+                call = { categoryApi.getFood(subOrCategoryId = id) },
                 onDataReady = { _foodData.value = it }
             ).collect(_foodResult)
         }
     }
 
-    fun setDataOfSelectedCategory(categoryId:String){
-        viewModelScope.launch(Dispatchers.IO){
+    fun getFoodItems(foodData: FoodResponse?): List<FoodData> {
+        return foodData?.data ?: emptyList()
+    }
+
+    fun isFoodFound(foodData: FoodResponse?): Boolean {
+        return getFoodItems(foodData).isNotEmpty()
+    }
+
+
+    fun setDataOfSelectedCategory(categoryId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
             val categoryById = _categoryData.value?.data?.find {
                 it.id == categoryId
             }
             _subCategoryList.emit(categoryById?.subCategories)
-
         }
     }
 
-    fun updateCategorySelectedIndex(index:Int){
-        viewModelScope.launch(Dispatchers.IO){
-            _selectedCategoryIndex.emit(index)
+    fun updateCategorySelectedId(id: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _selectedCategoryId.emit(id)
         }
     }
-    fun updateSubCategorySelectedIndex(index:Int){
-        viewModelScope.launch(Dispatchers.IO){
-            _selectedSubCategoryIndex.emit(index)
+
+    fun updateSubCategorySelectedId(id: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _selectedSubCategoryId.emit(id)
         }
     }
 
