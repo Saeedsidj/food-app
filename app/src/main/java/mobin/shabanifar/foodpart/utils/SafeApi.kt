@@ -2,6 +2,7 @@ package mobin.shabanifar.foodpart.utils
 
 
 import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.flow
@@ -15,7 +16,7 @@ suspend fun <T> safeApi(
 ): Flow<Result> {
     return flow {
         emit(Result.Loading)
-
+        delay(1000)
         try {
             val response = call()
             if (response.isSuccessful) {

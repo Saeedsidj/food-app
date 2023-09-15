@@ -14,5 +14,4 @@ object CategoryModule {
     fun provideCategoryApi(retrofit: Retrofit): CategoryApi {
         return retrofit.create(CategoryApi::class.java)
     }
-
 }
