@@ -32,6 +32,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import dagger.hilt.android.AndroidEntryPoint
 import mobin.shabanifar.foodpart.ui.screens.CategoryScreen
 import mobin.shabanifar.foodpart.ui.screens.SearchScreen
 import mobin.shabanifar.foodpart.ui.screens.ShowFoodByAttributesScreen
@@ -50,7 +51,7 @@ import mobin.shabanifar.foodpart.utils.WHAT_DO_YOU_HAVE
 import mobin.shabanifar.foodpart.utils.items
 import mobin.shabanifar.foodpart.utils.mainRoute
 
-
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {

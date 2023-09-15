@@ -1,5 +1,6 @@
 package mobin.shabanifar.foodpart.ui.screens.register
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,8 +28,11 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Recomposer
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -39,21 +43,33 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import mobin.shabanifar.foodpart.data.models.Result
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import mobin.shabanifar.foodpart.R
+import mobin.shabanifar.foodpart.data.models.sign_up.SignUpBody
 import mobin.shabanifar.foodpart.ui.theme.blue
+import mobin.shabanifar.foodpart.viewmodel.SignUpViewModel
 
 @Composable
 fun SignUpScreen(
     navigateToProfileLogin: () -> Unit, // Callback for navigating to profile login screen
     navigateToProfile: () -> Unit, // Callback for navigating to profile screen
     saveUserName: (String) -> Unit, // Callback for get the username
-    isLogin: (Boolean) -> Unit // Callback for indicating login status
+    isLogin: (Boolean) -> Unit, // Callback for indicating login status
+    viewModel: SignUpViewModel = hiltViewModel()
+
 
 ) {
+    val signUpResult by viewModel.signUpResult.collectAsState(Recomposer.State.Idle)
+    val foods by viewModel.signUpResponse.collectAsState()
+
+    var passwordVisibility by remember { mutableStateOf(false) }
     Scaffold(topBar = {
         TopAppBar(
             modifier = Modifier.fillMaxWidth(),
@@ -179,9 +195,11 @@ fun SignUpScreen(
                     backgroundColor = MaterialTheme.colors.surface,
                 ),
                 keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Next, keyboardType = KeyboardType.NumberPassword
+                    imeAction = ImeAction.Next, keyboardType = KeyboardType.Password
+                ),
+                visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+
                 )
-            )
             TextField(
                 value = valueTextFieldPasswordCheck,
                 onValueChange = { value ->
@@ -210,13 +228,19 @@ fun SignUpScreen(
                     backgroundColor = MaterialTheme.colors.surface,
                 ),
                 keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Done, keyboardType = KeyboardType.NumberPassword
+                    imeAction = ImeAction.Done, keyboardType = KeyboardType.Password
+                ),
+                visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+
                 )
-            )
             Button(
-                enabled = valueTextFieldPassword == valueTextFieldPasswordCheck && valueTextFieldUserName.isNotBlank() && valueTextFieldPasswordCheck.isNotBlank(),
+                enabled = valueTextFieldPassword.trim().length>=8 && valueTextFieldPassword == valueTextFieldPasswordCheck && valueTextFieldUserName.isNotBlank() && valueTextFieldPasswordCheck.isNotBlank(),
                 onClick = {
-                    navigateToProfile()
+                    val body= SignUpBody(username = valueTextFieldUserName, password = valueTextFieldPassword)
+                    viewModel.postUserSignUp(body)
+                    if (signUpResult is Result.Success) {
+                        navigateToProfileLogin()
+                    }
                     saveUserName(valueTextFieldUserName)
                     isLogin(true)
                 },
