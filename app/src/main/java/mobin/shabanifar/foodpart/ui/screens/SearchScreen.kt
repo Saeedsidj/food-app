@@ -1,6 +1,7 @@
 package mobin.shabanifar.foodpart.ui.screens
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +16,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -26,6 +28,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -41,19 +44,34 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import mobin.shabanifar.foodpart.R
-import mobin.shabanifar.foodpart.data.FakeFoods
-import mobin.shabanifar.foodpart.data.fakeFoods
+import mobin.shabanifar.foodpart.data.models.Result
+import mobin.shabanifar.foodpart.data.models.search.SearchedFood
+import mobin.shabanifar.foodpart.viewmodel.SearchViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchScreen(
-    navToDetail: (Int, String, Int, Int) -> Unit
+    navToDetail: (Int, String, Int, Int) -> Unit,
+    viewModel: SearchViewModel = hiltViewModel()
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     var textField by rememberSaveable { mutableStateOf("") }
     var searchText by rememberSaveable { mutableStateOf("") }
-    var isSearchSuccessful: Boolean? by rememberSaveable { mutableStateOf(null) }
+    val searchedFood by viewModel.searchedFood.collectAsState()
+    val foundItems = searchedFood?.data ?: emptyList()
+    val isFoodFound by viewModel.isFoodFound.collectAsState()
+    val searchResult by viewModel.searchResult.collectAsState(Result.Idle)
+
+    /*LaunchedEffect(Unit){
+        launch(Dispatchers.IO) {
+            if (searchResult == Result.Success){
+                viewModel.isFoodFound(searchedFood)
+            }
+        }
+    }*/
 
     Scaffold(
         topBar = {
@@ -75,12 +93,14 @@ fun SearchScreen(
                 .padding(it)
                 .fillMaxSize()
         ) {
+            viewModel.isFoodFound(searchedFood)
             TextField(
                 modifier = Modifier
                     .padding(16.dp)
                     .fillMaxWidth()
                     .border(
-                        width = 1.dp, when (isSearchSuccessful) {
+                        width = 1.dp,
+                        color = when (isFoodFound) {
                             true -> MaterialTheme.colors.onBackground
                             false -> MaterialTheme.colors.primary
                             null -> MaterialTheme.colors.surface
@@ -93,8 +113,11 @@ fun SearchScreen(
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(
                     onSearch = {
-                        searchText = textField
-                        keyboardController?.hide()
+                        if (textField.length >= 3) {
+                            searchText = textField
+                            viewModel.doSearch(searchText)
+                            keyboardController?.hide()
+                        }
                     }
                 ),
                 singleLine = true,
@@ -103,7 +126,7 @@ fun SearchScreen(
                     unfocusedIndicatorColor = Color.Transparent, // خط زیر تکست فیلد وقتی روش کلیک نشده هنوز
                     backgroundColor = MaterialTheme.colors.surface,
                     cursorColor = Color.Yellow, // رنگ کرسر
-                    textColor = if (isSearchSuccessful == true || isSearchSuccessful == null) MaterialTheme.colors.onBackground else MaterialTheme.colors.primary,
+                    textColor = if (isFoodFound == true || isFoodFound == null) MaterialTheme.colors.onBackground else MaterialTheme.colors.primary,
                 ),
                 placeholder = {
                     Text(
@@ -117,7 +140,8 @@ fun SearchScreen(
                     // این شرط باعث میشه وقتی متن تکست فیلد خالی بشه خودکار سرچ ریست بشه و تکست فیلد برگرده به حالت اول
                     if (newTextValue == "") {
                         searchText = ""
-                        isSearchSuccessful = null
+
+                        //isSearchSuccessful = null
                     }
                 },
                 trailingIcon = {
@@ -126,34 +150,51 @@ fun SearchScreen(
                             onClick = {
                                 textField = ""
                                 searchText = ""
-                                isSearchSuccessful = null
+                                //isSearchSuccessful = null
+                                viewModel.resetIsFoodFound()
+                                viewModel.isFoodFound(searchedFood)
                             }
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Clear,
                                 contentDescription = "",
-                                tint = if (textField.isNotEmpty() && isSearchSuccessful != false) MaterialTheme.colors.onBackground else MaterialTheme.colors.primary,
+                                tint = if (textField.isNotEmpty() && isFoodFound != false) MaterialTheme.colors.onBackground else MaterialTheme.colors.primary,
                             )
                         }
                     }
                 }
             )
-            val foundItems = fakeFoods.filter { items ->
-                items.name == searchText
-            }
-            if (foundItems.isNotEmpty()) {
-                isSearchSuccessful = true
-                Text(
-                    modifier = Modifier.padding(start = 16.dp),
-                    text = stringResource(R.string.search_result, searchText),
-                    style = MaterialTheme.typography.body1,
-                    color = MaterialTheme.colors.onBackground
+            if (searchResult == Result.Loading) {
+                //Spacer(modifier = Modifier.height(8.dp))
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(150.dp)
+                        .padding(top = 70.dp)
                 )
-
-                SearchedItems(foundItems, navToDetail)
-            } else if (searchText != "") {
-                isSearchSuccessful = false
-                SearchedFailed()
+                /*if (searchText != ""*//* && isFoodFound == true*//*) {
+                    Text(
+                        modifier = Modifier.padding(start = 16.dp),
+                        text = stringResource(R.string.search_result, searchText),
+                        style = MaterialTheme.typography.body1,
+                        color = MaterialTheme.colors.onBackground
+                    )
+                }*/
+            }
+            if (searchResult == Result.Success) {
+                if (searchText != "" && isFoodFound == true) {
+                    Text(
+                        modifier = Modifier.padding(start = 16.dp),
+                        text = stringResource(R.string.search_result, searchText),
+                        style = MaterialTheme.typography.body1,
+                        color = MaterialTheme.colors.onBackground
+                    )
+                }
+                if (isFoodFound == true) {
+                    SearchedItems(foundItems, navToDetail)
+                } else if (isFoodFound == false) {
+                    SearchedFailed()
+                }
             }
 
         }
@@ -161,11 +202,14 @@ fun SearchScreen(
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SearchedItems(
-    foundItems: List<FakeFoods>, navToDetail: (Int, String, Int, Int) -> Unit
+    foundItems: List<SearchedFood>,
+    navToDetail: (Int, String, Int, Int) -> Unit,
 ) {
-
+    //val searchedFood by viewModel.searchedFood.collectAsState()
+    //val foundItems = searchedFood?.data?: emptyList()
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
         columns = GridCells.Fixed(2),
@@ -181,12 +225,14 @@ fun SearchedItems(
                     .padding(bottom = 24.dp)
                     .clip(MaterialTheme.shapes.medium)
                     .clickable {
-                        navToDetail(it.degree, it.name, it.time, it.image)
+                        //navToDetail(it.degree, it.name, it.time, it.image)
                     }
             ) {
-                Image(
-                    painter = painterResource(id = it.image),
-                    contentDescription = "",
+                AsyncImage(
+                    model = it.image,
+                    error = painterResource(id = R.drawable.no_food_image_found_ghavidel),
+                    placeholder = painterResource(id = R.drawable.image_place_holder_ghavidel),
+                    contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .clip(MaterialTheme.shapes.medium)
@@ -197,14 +243,19 @@ fun SearchedItems(
                     text = it.name,
                     style = MaterialTheme.typography.body1,
                     color = MaterialTheme.colors.onSurface,
-                    modifier = Modifier.padding(start = 8.dp, bottom = 4.dp)
+                    modifier = Modifier
+                        .padding(start = 8.dp, bottom = 4.dp)
+                        .basicMarquee()
                 )
-                Text(
-                    text = stringResource(id = R.string.food_time, it.time),
-                    style = MaterialTheme.typography.subtitle1,
-                    color = MaterialTheme.colors.onSurface,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
+                val time = (it.cookTime ?: 0) + (it.readyTime ?: 0)
+                if (time > 0) {
+                    Text(
+                        text = stringResource(id = R.string.food_time, time),
+                        style = MaterialTheme.typography.subtitle1,
+                        color = MaterialTheme.colors.onSurface,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
             }
         }
     }

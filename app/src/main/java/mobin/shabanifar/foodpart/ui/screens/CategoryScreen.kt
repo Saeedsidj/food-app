@@ -1,5 +1,6 @@
 package mobin.shabanifar.foodpart.ui.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.basicMarquee
@@ -265,6 +266,8 @@ fun SubCategory(
 }
 
 
+@SuppressLint("SuspiciousIndentation")
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FoodItems(
     navToDetail: (Int, String, Int, Int) -> Unit,
@@ -302,15 +305,20 @@ fun FoodItems(
                     text = it.name,
                     style = MaterialTheme.typography.body1,
                     color = MaterialTheme.colors.onSurface,
-                    modifier = Modifier.padding(start = 8.dp, bottom = 4.dp)
+                    modifier = Modifier
+                        .padding(start = 8.dp, bottom = 4.dp)
+                        .basicMarquee()
                 )
+
                 val time = (it.cookTime ?: 0) + (it.readyTime ?: 0)
-                Text(
-                    text = stringResource(id = R.string.food_time, time),
-                    style = MaterialTheme.typography.subtitle1,
-                    color = MaterialTheme.colors.onSurface,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
+                if (time > 0) {
+                    Text(
+                        text = stringResource(id = R.string.food_time, time),
+                        style = MaterialTheme.typography.subtitle1,
+                        color = MaterialTheme.colors.onSurface,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
             }
         }
     }
