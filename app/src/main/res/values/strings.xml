@@ -15,6 +15,7 @@
     <string name="more_info">اطلاعات بیشتر</string>
     <string name="search_result">نتایج جستجو با %1$s</string>
     <string name="more_from_this_category">بیشتر از این دسته</string>
+    <string name="error_communicating_with_server">خطا در برقراری ارتباط با سرور</string>
     <string name="more">بیشتر</string>
     <string name="photo">عکس</string>
     <string name="recipe_added_to_favorites">دستور به علاقه‌مندی‌ها اضافه شد.</string>

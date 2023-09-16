@@ -5,10 +5,16 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import mobin.shabanifar.foodpart.utils.BASE_URL
+import mobin.shabanifar.foodpart.utils.CONNECTION_TIME
+import mobin.shabanifar.foodpart.utils.NAMED_PING
+import mobin.shabanifar.foodpart.utils.PING_INTERVAL
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -16,21 +22,39 @@ import javax.inject.Singleton
 class NetworkModule {
 
     @Provides
+    @Singleton
+    fun provideBaseUrl() = BASE_URL
+
+
+    @Provides
+    @Singleton
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
         return HttpLoggingInterceptor().also {
             it.level = HttpLoggingInterceptor.Level.BODY
         }
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideOkHttpClient(
+        timeout: Long,
+        @Named(NAMED_PING) pingInterval: Long,
         httpLoggingInterceptor: HttpLoggingInterceptor
     ): OkHttpClient {
-        return OkHttpClient.Builder()
-            .addNetworkInterceptor(httpLoggingInterceptor)
-            .build()
+        return OkHttpClient.Builder().addNetworkInterceptor(httpLoggingInterceptor)
+            .writeTimeout(timeout, TimeUnit.SECONDS).readTimeout(timeout, TimeUnit.SECONDS)
+            .connectTimeout(timeout, TimeUnit.SECONDS).retryOnConnectionFailure(true)
+            .pingInterval(pingInterval, TimeUnit.SECONDS).build()
     }
+
+    @Provides
+    @Singleton
+    fun provideTimeout() = CONNECTION_TIME
+
+    @Provides
+    @Singleton
+    @Named(NAMED_PING)
+    fun providePingInterval() = PING_INTERVAL
 
     @Singleton
     @Provides
@@ -38,17 +62,14 @@ class NetworkModule {
         return Moshi.Builder().build()
     }
 
-    @Singleton
     @Provides
+    @Singleton
     fun provideRetrofit(
-        okHttpClient: OkHttpClient,
-        moshi: Moshi
+        baseUrl: String, okHttpClient: OkHttpClient, moshi: Moshi
     ): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl("https://foodpart.samentic.com/")
+        return Retrofit.Builder().baseUrl(baseUrl)
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
     }
-
 }
