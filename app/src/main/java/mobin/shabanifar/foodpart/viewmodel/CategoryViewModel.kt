@@ -106,5 +106,4 @@ class CategoryViewModel @Inject constructor(
             _selectedSubCategoryId.emit(id)
         }
     }
-
 }
