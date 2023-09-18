@@ -19,17 +19,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Recomposer
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +41,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -49,34 +51,72 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.drop
 import mobin.shabanifar.foodpart.R
-import mobin.shabanifar.foodpart.data.models.sign_up.SignUpBody
+import mobin.shabanifar.foodpart.data.models.Result
+import mobin.shabanifar.foodpart.data.models.sign_up.RegisterBody
+import mobin.shabanifar.foodpart.ui.screens.foodDetail.CustomSnackbarHost
 import mobin.shabanifar.foodpart.ui.theme.blue
+import mobin.shabanifar.foodpart.utils.isValidPassword
+import mobin.shabanifar.foodpart.utils.isValidUser
 import mobin.shabanifar.foodpart.viewmodel.SignUpViewModel
 
 @Composable
 fun SignUpScreen(
     navigateToProfileLogin: () -> Unit, // Callback for navigating to profile login screen
     navigateToProfile: () -> Unit, // Callback for navigating to profile screen
-    saveUserName: (String) -> Unit, // Callback for get the username
-    isLogin: (Boolean) -> Unit, // Callback for indicating login status
-    viewModel: SignUpViewModel = hiltViewModel()
-
-
+    viewModel: SignUpViewModel = hiltViewModel()// SignUpViewModel
 ) {
-    val signUpResult by viewModel.signUpResult.collectAsState(Recomposer.State.Idle)
-    val foods by viewModel.signUpResponse.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    var usernameValue by rememberSaveable { mutableStateOf("") }
+    var passwordValue by rememberSaveable { mutableStateOf("") }
+    var passwordConfirmationValue by rememberSaveable { mutableStateOf("") }
+    val isPasswordValid = passwordValue.trim().isValidPassword()
+    val isUsernameValid = usernameValue.trim().isValidUser()
+    var isLoading by rememberSaveable { mutableStateOf(false) }
+    var passwordVisibility by rememberSaveable { mutableStateOf(false) }
+    var passwordCheckVisibility by rememberSaveable { mutableStateOf(false) }
+    val context = LocalContext.current
 
-    var valueTextFieldUserName by rememberSaveable { mutableStateOf("") }
-    var valueTextFieldPassword by rememberSaveable { mutableStateOf("") }
-    var valueTextFieldPasswordCheck by rememberSaveable { mutableStateOf("") }
 
-    val isPasswordValid = isValidPassword(valueTextFieldPassword.trim())
-    val isUsernameValid = isValidUser(valueTextFieldUserName.trim())
+    LaunchedEffect(Unit) {
+        viewModel.signUpResult.drop(1).collectLatest { result ->
+            when (result) {
+                is Result.Error -> {
+                    isLoading = false
+                    when (result.code) {
+                        400 -> snackbarHostState.showSnackbar(
+                            message = context.resources.getString(
+                                R.string.there_is_user_with_this_name
+                            )
+                        )
 
-    var passwordVisibility by remember { mutableStateOf(false) }
-    var passwordCheckVisibility by remember { mutableStateOf(false) }
-    Scaffold(topBar = {
+                        else -> snackbarHostState.showSnackbar(
+                            message = context.resources.getString(
+                                R.string.oops_something_went_wrong
+                            )
+                        )
+                    }
+                }
+
+                Result.Idle, Result.Loading -> {
+                    isLoading = true
+                }
+
+                Result.Success -> {
+                    isLoading = false
+                    navigateToProfileLogin()
+                }
+            }
+        }
+    }
+
+    Scaffold(snackbarHost = {
+        CustomSnackbarHost(
+            snackbarHostState = snackbarHostState,
+        )
+    }, topBar = {
         TopAppBar(
             modifier = Modifier.fillMaxWidth(),
             backgroundColor = MaterialTheme.colors.background,
@@ -133,9 +173,9 @@ fun SignUpScreen(
             )
             Spacer(modifier = Modifier.height(43.dp))
             TextField(
-                value = valueTextFieldUserName,
+                value = usernameValue,
                 onValueChange = { value ->
-                    valueTextFieldUserName = value
+                    usernameValue = value
                 },
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
@@ -165,9 +205,9 @@ fun SignUpScreen(
             )
             Box {
                 TextField(
-                    value = valueTextFieldPassword,
+                    value = passwordValue,
                     onValueChange = { value ->
-                        valueTextFieldPassword = value
+                        passwordValue = value
                     },
                     shape = MaterialTheme.shapes.medium,
                     modifier = Modifier
@@ -213,9 +253,9 @@ fun SignUpScreen(
             }
             Box {
                 TextField(
-                    value = valueTextFieldPasswordCheck,
+                    value = passwordConfirmationValue,
                     onValueChange = { value ->
-                        valueTextFieldPasswordCheck = value
+                        passwordConfirmationValue = value
                     },
                     shape = MaterialTheme.shapes.medium,
                     modifier = Modifier
@@ -259,26 +299,32 @@ fun SignUpScreen(
                 }
             }
             Button(
-                enabled = isPasswordValid && valueTextFieldPassword == valueTextFieldPasswordCheck && isUsernameValid,
+                enabled = isPasswordValid && passwordValue == passwordConfirmationValue && isUsernameValid,
                 onClick = {
-                    val body = SignUpBody(
-                        username = valueTextFieldUserName,
-                        password = valueTextFieldPassword
+                    val body = RegisterBody(
+                        username = usernameValue,
+                        password = passwordValue
                     )
                     viewModel.postUserSignUp(body)
-                    navigateToProfileLogin()
-                    saveUserName(valueTextFieldUserName)
-                    isLogin(true)
                 },
                 modifier = Modifier.fillMaxWidth(),
                 shape = MaterialTheme.shapes.medium
 
             ) {
-                Text(
-                    text = stringResource(id = R.string.confirm),
-                    style = MaterialTheme.typography.button,
-                    color = MaterialTheme.colors.onBackground
-                )
+                Box(contentAlignment = Alignment.Center) {
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            color = MaterialTheme.colors.onBackground
+                        )
+                    } else {
+                        Text(
+                            text = stringResource(id = R.string.confirm),
+                            style = MaterialTheme.typography.button,
+                            color = MaterialTheme.colors.onBackground
+                        )
+                    }
+                }
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -302,14 +348,4 @@ fun SignUpScreen(
             }
         }
     }
-}
-
-fun isValidPassword(password: String): Boolean {
-    val passwordRegex = Regex("^(?=.*[a-z])(?=.*[A-Z]).{8,}$")
-    return passwordRegex.matches(password)
-}
-
-fun isValidUser(userName: String): Boolean {
-    val userNameRegex = Regex("^.{4,}$")
-    return userNameRegex.matches(userName)
 }

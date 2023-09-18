@@ -60,11 +60,14 @@
     <string name="min">دقیقه</string>
     <string name="what_should_i_cook_result">نتایج چی بپزم</string>
     <string name="what_are_you_looking_for">دنبال چی میگردی؟</string>
-    <string name="write_here">اینجا بنویسید...</string>
-    <string name="oops_no_results">اوپس... چیزی پیدا نشد!</string>
+    <string name="write_here">اینجا بنویسید…</string>
+    <string name="oops_no_results">اوپس… چیزی پیدا نشد!</string>
     <string name="reportTitle">گزارش دستور به عنوان نامناسب</string>
     <string name="show_food_by_attribute">نمایش با اتریبیون</string>
     <string name="cook_in_minutes">تو %1$s چی میشه پخت؟</string>
     <string name="report">گزارش</string>
     <string name="send">ارسال</string>
+    <string name="the_username_or_password_is_incorrect">نام کاربری یا رمز عبور اشتباه است</string>
+    <string name="oops_something_went_wrong">اووپس… مشکلی پیش آمد!</string>
+    <string name="there_is_user_with_this_name">کاربری با این نام وجود دارد</string>
 </resources>

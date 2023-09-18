@@ -7,12 +7,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.isActive
-import retrofit2.Response
 import mobin.shabanifar.foodpart.data.models.Result
+import retrofit2.Response
+
 
 suspend fun <T> safeApi(
     call: suspend () -> Response<T>,
-    onDataReady: (T) -> Unit
+    onDataReady: (T) -> Unit,
 ): Flow<Result> {
     return flow {
         emit(Result.Loading)
@@ -27,13 +28,14 @@ suspend fun <T> safeApi(
                     }
                     emit(Result.Success)
                 } else {
-                    emit(Result.Error("whoops body was empty"))
+                    emit(Result.Error(response.code(), "whoops body was empty"))
                 }
             } else {
-                emit(Result.Error("whoops: got ${response.code()} code!"))
+                emit(Result.Error(response.code(), "whoops: got ${response.code()} code!"))
             }
         } catch (t: Throwable) {
-            emit(Result.Error("whoops: ${t.message}"))
+            emit(Result.Error(500, "whoops: ${t.message}"))
         }
     }.cancellable()
 }
+
