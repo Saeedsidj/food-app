@@ -61,7 +61,6 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
-                var userName by rememberSaveable { mutableStateOf("مهمان") }
                 var isLogin by rememberSaveable { mutableStateOf(false) }
                 Scaffold(bottomBar = {
                     if (currentDestination?.route in mainRoute) {
@@ -182,14 +181,11 @@ class MainActivity : ComponentActivity() {
                             })
                         }
                         composable(NavigationBottom.Profile.route) {
-                            ProfileScreen(usernameSave = userName,
-                                isLogin = isLogin,
+                            ProfileScreen(
                                 navigateToProfileSignIn = {
                                     navController.navigate(NavigationBottom.SignUp.route)
-                                },
-                                changeLoginState = {
-                                    isLogin = !isLogin
-                                })
+                                }
+                            )
                         }
                         composable(NavigationBottom.SignUp.route) {
                             SignUpScreen(navigateToProfile = {
@@ -220,14 +216,15 @@ class MainActivity : ComponentActivity() {
                             })
                         ) { backStackEntry ->
                             val whatDoYouHave =
-                                backStackEntry.arguments?.getString(WHAT_DO_YOU_HAVE)
-                                    ?: throw IllegalStateException("authorId was null")
+                                backStackEntry.arguments?.getString(WHAT_DO_YOU_HAVE) ?: ""
+
                             val howMuchTimeHave =
-                                backStackEntry.arguments?.getString(HOW_MUCH_TIME_HAVE)
-                                    ?: throw IllegalStateException("authorId was null")
-                            val level = backStackEntry.arguments?.getString(LEVEL)
-                                ?: throw IllegalStateException("authorId was null")
-                            WhatToCookListScreen(whatDoYouHave,
+                                backStackEntry.arguments?.getString(HOW_MUCH_TIME_HAVE) ?: ""
+
+                            val level = backStackEntry.arguments?.getString(LEVEL) ?: ""
+
+                            WhatToCookListScreen(
+                                whatDoYouHave,
                                 howMuchTimeHave,
                                 level,
                                 navToDetail = { degree: Int, name: String, time: Int, image: Int ->

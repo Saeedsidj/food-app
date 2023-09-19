@@ -11,6 +11,12 @@ const val WHAT_DO_YOU_HAVE = "whatDoYouHave"
 const val HOW_MUCH_TIME_HAVE = "howMuchTimeHave"
 const val LEVEL = "level"
 
+//Auth
+const val AUTHORIZATION = "authorization"
+const val BEARER = "Bearer"
+const val ACCEPT = "accept"
+const val APPLICATION_JSON = "application/json"
+
 //api
 const val INGREDIENTS = "ingredients"
 const val DIFFICULTY = "difficulty"

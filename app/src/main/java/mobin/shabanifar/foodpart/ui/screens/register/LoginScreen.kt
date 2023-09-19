@@ -56,7 +56,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.drop
 import mobin.shabanifar.foodpart.R
 import mobin.shabanifar.foodpart.data.models.Result
-import mobin.shabanifar.foodpart.data.models.sign_up.RegisterBody
+import mobin.shabanifar.foodpart.data.models.sign_up.SignUpBody
 import mobin.shabanifar.foodpart.ui.screens.foodDetail.CustomSnackbarHost
 import mobin.shabanifar.foodpart.ui.theme.blue
 import mobin.shabanifar.foodpart.utils.isValidPassword
@@ -259,7 +259,7 @@ fun LoginScreen(
             Button(
                 enabled = isPasswordValid && isUsernameValid,
                 onClick = {
-                    val body = RegisterBody(
+                    val body = SignUpBody(
                         username = usernameValue, password = passwordValue
                     )
                     viewModel.postUserLogin(body)

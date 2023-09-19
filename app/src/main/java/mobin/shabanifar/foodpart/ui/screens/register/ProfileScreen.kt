@@ -21,6 +21,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,20 +30,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import coil.decode.SvgDecoder
+import coil.request.ImageRequest
 import mobin.shabanifar.foodpart.R
+import mobin.shabanifar.foodpart.viewmodel.ProfileViewModel
 
 @Composable
 fun ProfileScreen(
     navigateToProfileSignIn: () -> Unit, // Callback for navigating to profile sign-in screen
-    changeLoginState: () -> Unit, // Callback for change the login status
-    usernameSave: String, // Callback for get the username
-    isLogin: Boolean, // Callback for indicating login status
+    viewModel: ProfileViewModel = hiltViewModel()// ProfileViewModel
 ) {
+    val editUserResponse by viewModel.editUserResponse.collectAsState()
+    val userName = viewModel.getUserName().orEmpty()
     var showDialogState by remember { mutableStateOf(false) }
 
     Scaffold(topBar = {
@@ -72,24 +78,32 @@ fun ProfileScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
-                Image(
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(viewModel.getUserImage())
+                        .decoderFactory(SvgDecoder.Factory())
+                        .build(),
+                    contentDescription ="",
+                    modifier = Modifier
+                        .clip(shape = RoundedCornerShape(80.dp))
+                        .size(64.dp)
+                )
+                /*Image(
                     painter = painterResource(id = R.drawable.place_holder_avatar),
                     contentDescription = "",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .clip(shape = RoundedCornerShape(80.dp))
                         .size(64.dp)
-                )
+                )*/
                 Spacer(modifier = Modifier.size(16.dp))
                 Text(
-                    text = if (usernameSave.isEmpty()
-                            .not() && isLogin
-                    ) usernameSave else stringResource(id = R.string.guest),
+                    text = userName.ifEmpty { stringResource(id = R.string.guest) },
                     style = MaterialTheme.typography.body2,
                     color = MaterialTheme.colors.onBackground
                 )
                 Spacer(modifier = Modifier.weight(1f))
-                if (isLogin) {
+                if (userName.isNotEmpty()) {
                     Image(painter = painterResource(
                         id = R.drawable.ic_logout
                     ), contentDescription = "", modifier = Modifier.clickable {
@@ -101,10 +115,10 @@ fun ProfileScreen(
             Button(
                 shape = MaterialTheme.shapes.medium, onClick = {
                     navigateToProfileSignIn()
-                }, modifier = Modifier.fillMaxWidth(), enabled = !isLogin
+                }, modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = stringResource(id = if (!isLogin) R.string.enter_to else R.string.confirm),
+                    text = stringResource(id = if (userName.isEmpty()) R.string.enter_to else R.string.confirm),
                     style = MaterialTheme.typography.button,
                     color = MaterialTheme.colors.onBackground
                 )
@@ -135,7 +149,7 @@ fun ProfileScreen(
                             Button(
                                 onClick = {
                                     showDialogState = false
-                                    changeLoginState()
+                                    viewModel.clearUserInfo()
                                 },
                                 Modifier
                                     .weight(1f)

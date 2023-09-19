@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import mobin.shabanifar.foodpart.data.models.Result
 import mobin.shabanifar.foodpart.data.models.login_response.LoginResponse
-import mobin.shabanifar.foodpart.data.models.sign_up.RegisterBody
+import mobin.shabanifar.foodpart.data.models.sign_up.SignUpBody
 import mobin.shabanifar.foodpart.data.network.LoginApi
 import mobin.shabanifar.foodpart.data.stored.UserSessionManager
 import mobin.shabanifar.foodpart.utils.safeApi
@@ -32,10 +32,10 @@ class LoginViewModel @Inject constructor(
     )
     val loginResponse: StateFlow<LoginResponse> = _loginResponse.asStateFlow()
 
-    fun postUserLogin(registerBody: RegisterBody) {
+    fun postUserLogin(signUpBody: SignUpBody) {
         viewModelScope.launch(Dispatchers.IO) {
             safeApi(call = {
-                loginApi.postUserLogin(registerBody)
+                loginApi.postUserLogin(signUpBody)
             }, onDataReady = {
                 _loginResponse.value = it
             }).collect(_loginResult)
