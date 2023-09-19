@@ -76,7 +76,7 @@ fun DividerOrLoading(foodResult: Result, categoryResult: Result) = when (foodRes
 
 @Composable
 fun CategoryScreen(
-    navToDetail: (Int, String, Int, Int) -> Unit, viewModel: CategoryViewModel = hiltViewModel()
+    navToDetail: (String) -> Unit, viewModel: CategoryViewModel = hiltViewModel()
 ) {
     val categoryResult by viewModel.categoryResult.collectAsState(Result.Idle)
     val subCategoryList by viewModel.subCategoryList.collectAsState()
@@ -270,7 +270,7 @@ fun SubCategory(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FoodItems(
-    navToDetail: (Int, String, Int, Int) -> Unit,
+    navToDetail: (String) -> Unit,
     viewModel: CategoryViewModel = hiltViewModel()
 ) {
     val foodData by viewModel.foodData.collectAsState()
@@ -287,7 +287,7 @@ fun FoodItems(
                 .padding(bottom = 24.dp)
                 .clip(MaterialTheme.shapes.medium)
                 .clickable {
-                    //navToDetail(it.degree, it.name, it.time, it.image)
+                    navToDetail(it.id)
                 }) {
 
                 AsyncImage(
@@ -300,7 +300,6 @@ fun FoodItems(
                         .clip(MaterialTheme.shapes.medium)
                         .size(width = 240.dp, height = 85.dp)
                 )
-
                 Text(
                     text = it.name,
                     style = MaterialTheme.typography.body1,
