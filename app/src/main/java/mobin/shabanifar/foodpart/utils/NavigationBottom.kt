@@ -11,14 +11,16 @@ sealed class NavigationBottom(
     object Search : NavigationBottom(R.string.search, "search", R.drawable.search)
     object Cook : NavigationBottom(R.string.what_should_i_cook, "cook", R.drawable.restaurant_menu)
     object Category : NavigationBottom(R.string.grouping, "category", R.drawable.restaurant)
-    object FoodDetail : NavigationBottom(R.string.food_info, "foodDetail/{degree}/{name}/{time}/{image}", null)
-
-    object FoodPhoto : NavigationBottom(R.string.photo, "photo", null)
-    /*object WhatToCook : NavigationBottom(
-        R.string.what_should_i_cook,
-        "whatToCookList?whatDoYouHave={whatDoYouHave}&howMuchTimeHave={howMuchTimeHave}&level={level}",
-        null
-    )*/
+    object FoodDetail : NavigationBottom(R.string.food_info, "foodDetail?foodId={foodId}", null){
+        fun creteRout(foodId:String):String{
+            return "foodDetail?foodId=$foodId"
+        }
+    }
+    object FoodPhoto : NavigationBottom(R.string.photo, "photo?id={imageUrl}", null){
+        fun creteRout(imageUrl:String):String{
+            return "photo?id=$imageUrl"
+        }
+    }
     object WhatToCook : NavigationBottom(name =R.string.what_should_i_cook ,route = "whatToCookList?whatDoYouHave={whatDoYouHave}&howMuchTimeHave={howMuchTimeHave}&level={level}", icon = null) {
         fun createRoute(whatDoYouHave: String, howMuchTimeHave: String,level :String): String {
             return "whatToCookList?whatDoYouHave=$whatDoYouHave&howMuchTimeHave=$howMuchTimeHave&level=$level"

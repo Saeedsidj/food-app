@@ -35,10 +35,6 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,6 +44,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import mobin.shabanifar.foodpart.R
 import mobin.shabanifar.foodpart.data.models.Result
 import mobin.shabanifar.foodpart.viewmodel.CategoryViewModel
@@ -77,7 +75,7 @@ fun DividerOrLoading(foodResult: Result, categoryResult: Result) = when (foodRes
 
 @Composable
 fun CategoryScreen(
-    navToDetail: (Int, String, Int, Int) -> Unit, viewModel: CategoryViewModel = hiltViewModel()
+    navToDetail: (String) -> Unit, viewModel: CategoryViewModel = hiltViewModel()
 ) {
     val categoryResult by viewModel.categoryResult.collectAsState(Result.Idle)
     val subCategoryList by viewModel.subCategoryList.collectAsState()
@@ -269,7 +267,7 @@ fun SubCategory(
 
 @Composable
 fun FoodItems(
-    navToDetail: (Int, String, Int, Int) -> Unit,
+    navToDetail: (String) -> Unit,
     viewModel: CategoryViewModel = hiltViewModel()
 ) {
     val foodData by viewModel.foodData.collectAsState()
@@ -286,7 +284,7 @@ fun FoodItems(
                 .padding(bottom = 24.dp)
                 .clip(MaterialTheme.shapes.medium)
                 .clickable {
-                    //navToDetail(it.degree, it.name, it.time, it.image)
+                    navToDetail(it.id)
                 }) {
 
                 AsyncImage(
@@ -299,7 +297,6 @@ fun FoodItems(
                         .clip(MaterialTheme.shapes.medium)
                         .size(width = 240.dp, height = 85.dp)
                 )
-
                 Text(
                     text = it.name,
                     style = MaterialTheme.typography.body1,
