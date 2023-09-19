@@ -169,7 +169,6 @@ class MainActivity : ComponentActivity() {
                                         whatDoYouHave, howMuchTimeHave, level
                                     )
                                 )
-                                //navController.navigate("whatToCookList?whatDoYouHave=$whatDoYouHave&howMuchTimeHave=$howMuchTimeHave&level=$level")
                             })
                         }
                         composable(NavigationBottom.Search.route) {
@@ -191,16 +190,11 @@ class MainActivity : ComponentActivity() {
                                 })
                         }
                         composable(NavigationBottom.SignUp.route) {
-                            SignUpScreen(isLogin = { result ->
-                                isLogin = result
-                            }, saveUserName = { username ->
-                                userName = username
-                            }, navigateToProfile = {
+                            SignUpScreen(navigateToProfile = {
                                 navController.popBackStack()
                             }, navigateToProfileLogin = {
                                 navController.navigate(NavigationBottom.Login.route)
-                            }
-                            )
+                            })
                         }
                         composable(NavigationBottom.Login.route) {
                             LoginScreen(navigateToProfileSignIn = {
@@ -208,11 +202,7 @@ class MainActivity : ComponentActivity() {
                                     popUpTo(NavigationBottom.Profile.route)
                                 }
                             }, navigateToProfile = {
-                                navController.popBackStack()
-                            }, saveUserName = { username ->
-                                userName = username
-                            }, isLogin = { result ->
-                                isLogin = result
+                                navController.navigate(NavigationBottom.Profile.route)
                             })
                         }
                         composable(route = NavigationBottom.WhatToCook.route,
