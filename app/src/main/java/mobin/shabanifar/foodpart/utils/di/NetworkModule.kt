@@ -1,11 +1,16 @@
 package mobin.shabanifar.foodpart.utils.di
 
+import android.util.Log
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.runBlocking
+import mobin.shabanifar.foodpart.data.stored.UserSessionManager
+import mobin.shabanifar.foodpart.utils.AUTHORIZATION
 import mobin.shabanifar.foodpart.utils.BASE_URL
+import mobin.shabanifar.foodpart.utils.BEARER
 import mobin.shabanifar.foodpart.utils.CONNECTION_TIME
 import mobin.shabanifar.foodpart.utils.NAMED_PING
 import mobin.shabanifar.foodpart.utils.PING_INTERVAL
@@ -39,12 +44,27 @@ class NetworkModule {
     fun provideOkHttpClient(
         timeout: Long,
         @Named(NAMED_PING) pingInterval: Long,
+        session: UserSessionManager,
         httpLoggingInterceptor: HttpLoggingInterceptor
     ): OkHttpClient {
-        return OkHttpClient.Builder().addNetworkInterceptor(httpLoggingInterceptor)
-            .writeTimeout(timeout, TimeUnit.SECONDS).readTimeout(timeout, TimeUnit.SECONDS)
-            .connectTimeout(timeout, TimeUnit.SECONDS).retryOnConnectionFailure(true)
-            .pingInterval(pingInterval, TimeUnit.SECONDS).build()
+        return OkHttpClient.Builder()
+            .addNetworkInterceptor { chain ->
+                val token = runBlocking {
+                    session.getToken().toString()
+                }
+                chain.proceed(chain.request().newBuilder().also {
+                    it.addHeader(AUTHORIZATION, "$BEARER $token")
+                    Log.d("TAGGG", token)
+                }.build())
+            }.also { client ->
+                client.addInterceptor(httpLoggingInterceptor)
+            }
+            .writeTimeout(timeout, TimeUnit.SECONDS)
+            .readTimeout(timeout, TimeUnit.SECONDS)
+            .connectTimeout(timeout, TimeUnit.SECONDS)
+            .retryOnConnectionFailure(true)
+            .pingInterval(pingInterval, TimeUnit.SECONDS)
+            .build()
     }
 
     @Provides

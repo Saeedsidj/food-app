@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import mobin.shabanifar.foodpart.data.models.Result
-import mobin.shabanifar.foodpart.data.models.sign_up.RegisterBody
+import mobin.shabanifar.foodpart.data.models.sign_up.SignUpBody
 import mobin.shabanifar.foodpart.data.models.sign_up.SignUpResponse
 import mobin.shabanifar.foodpart.data.network.SignUpApi
 import mobin.shabanifar.foodpart.utils.safeApi
@@ -31,15 +31,15 @@ class SignUpViewModel @Inject constructor(
     val signUpResponse: StateFlow<SignUpResponse.Data> = _signUpResponse.asStateFlow()
 
 
-    private val _registerBody = MutableStateFlow<RegisterBody>(RegisterBody("", ""))
-    val registerBody: StateFlow<RegisterBody> = _registerBody.asStateFlow()
+    private val _signUpBody = MutableStateFlow<SignUpBody>(SignUpBody("", ""))
+    val signUpBody: StateFlow<SignUpBody> = _signUpBody.asStateFlow()
 
 
-    fun postUserSignUp(registerBody: RegisterBody) {
+    fun postUserSignUp(signUpBody: SignUpBody) {
         viewModelScope.launch(Dispatchers.IO) {
             safeApi(
                 call = {
-                    signUpApi.postUserSignUp(registerBody)
+                    signUpApi.postUserSignUp(signUpBody)
                 },
                 onDataReady = {
                     _signUpResponse.value = it.data
