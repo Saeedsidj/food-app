@@ -39,9 +39,10 @@
     <string name="change_username">تغییر نام کاربری</string>
     <string name="new_username">نام کاربری جدید</string>
     <string name="change_password">تغییر رمز عبور</string>
-    <string name="current_password">رمز عبور فعلی</string>
+    <string name="current_password">رمز فعلی</string>
+    <string name="repeat_new_password">تکرار رمز جدید</string>
     <string name="repeat_password">تکرار رمز عبور</string>
-    <string name="new_password">رمز عبور جدید</string>
+    <string name="new_password">رمز جدید</string>
     <string name="confirm_new_password">تکرار رمز عبور جدید</string>
     <string name="confirm">تایید</string>
     <string name="exit">خروج</string>
@@ -71,5 +72,12 @@
     <string name="the_username_or_password_is_incorrect">نام کاربری یا رمز عبور اشتباه است</string>
     <string name="oops_something_went_wrong">اووپس… مشکلی پیش آمد!</string>
     <string name="there_is_user_with_this_name">کاربری با این نام وجود دارد</string>
+    <string name="enter_new_password">رمز عبور جدید را وارد کنید</string>
+    <string name="new_password_has_not_entered_correctly">رمز عبور جدید بدرستی وارد نشده است</string>
+    <string name="enter_the_current_password">رمز عبور فعلی را وارد کنید</string>
+    <string name="new_password_does_not_match_the_password">رمز عبور جدید با تکرار آن همخوانی ندارد</string>
+    <string name="current_password_is_not_entered_correctly">رمز عبور فعلی بدرستی وارد نشده است</string>
+    <string name="username_must_be_at_least_four_character_long">نام کاربری حداقل باید چهار حرف باشد</string>
+    <string name="change_at_least_one_field">حداقل یک فیلد را تغییر دهید</string>
     <string name="MorefoodByThisCategory">بیشتر از این دسته بندی</string>
 </resources>
