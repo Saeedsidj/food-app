@@ -52,6 +52,7 @@ class NetworkModule {
                 val token = runBlocking {
                     session.getToken().toString()
                 }
+                Log.d("TAGGG","token "+token)
                 chain.proceed(chain.request().newBuilder().also {
                     it.addHeader(AUTHORIZATION, "$BEARER $token")
                     Log.d("TAGGG", token)

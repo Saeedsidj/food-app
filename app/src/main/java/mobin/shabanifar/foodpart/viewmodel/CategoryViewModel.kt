@@ -101,38 +101,36 @@ class CategoryViewModel @Inject constructor(
     private fun getCategoryApi() {
         viewModelScope.launch(Dispatchers.IO) {
             safeApi(
-                call = { categoryApi.getCategory() },
-                onDataReady = { category ->
+                call = { categoryApi.getCategory() }
+            ) { category ->
 
-                    val categoryEntity = category.data.map { categoryData ->
-                        categoryData.toCategoryEntity()
-                    }
-                    storedCategory(categoryEntity)
-                   // _firstCategory.value = categoryEntity.firstOrNull()
-
-                    val subCategoryEntity = category.data.flatMap { categoryData ->
-                        categoryData.subCategories?.map { subCategory ->
-                            subCategory.toSubCategoryEntity(categoryData.id)
-                        } ?: emptyList()
-                    }
-                    storedSubCategory(subCategoryEntity)
-
+                val categoryEntity = category.data.map { categoryData ->
+                    categoryData.toCategoryEntity()
                 }
-            ).collect(_categoryResult)
+                storedCategory(categoryEntity)
+                // _firstCategory.value = categoryEntity.firstOrNull()
+
+                val subCategoryEntity = category.data.flatMap { categoryData ->
+                    categoryData.subCategories?.map { subCategory ->
+                        subCategory.toSubCategoryEntity(categoryData.id)
+                    } ?: emptyList()
+                }
+                storedSubCategory(subCategoryEntity)
+
+            }.collect(_categoryResult)
         }
     }
 
     fun getFoodApi(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             safeApi(
-                call = { categoryApi.getFood(subOrCategoryId = id) },
-                onDataReady = { foodResponse ->
-                    val foodEntity = foodResponse.data.map { foodData ->
-                        foodData.toFoodEntity()
-                    }
-                    storedFood(foodEntity)
+                call = { categoryApi.getFood(subOrCategoryId = id) }
+            ) { foodResponse ->
+                val foodEntity = foodResponse.data.map { foodData ->
+                    foodData.toFoodEntity()
                 }
-            ).collect(_foodResult)
+                storedFood(foodEntity)
+            }.collect(_foodResult)
         }
     }
 
