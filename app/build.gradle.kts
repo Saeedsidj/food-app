@@ -83,6 +83,7 @@ dependencies {
     implementation("com.squareup.moshi:moshi:1.14.0")
 
     implementation ("androidx.room:room-runtime:2.5.2")
+    //implementation ("com.github.pwittchen:reactivenetwork-rx3:3.0.2")
     implementation ("androidx.room:room-ktx:2.5.2")
     kapt ("androidx.room:room-compiler:2.5.2")
 

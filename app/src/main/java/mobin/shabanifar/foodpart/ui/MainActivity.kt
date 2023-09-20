@@ -1,6 +1,7 @@
 package mobin.shabanifar.foodpart.ui
 
 import android.annotation.SuppressLint
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -50,9 +51,14 @@ import mobin.shabanifar.foodpart.utils.NavigationBottom
 import mobin.shabanifar.foodpart.utils.WHAT_DO_YOU_HAVE
 import mobin.shabanifar.foodpart.utils.items
 import mobin.shabanifar.foodpart.utils.mainRoute
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var connectivityManager: ConnectivityManager
+
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -122,33 +128,36 @@ class MainActivity : ComponentActivity() {
                         composable(
                             route = NavigationBottom.FoodPhoto.route,
                             arguments = listOf(
-                                navArgument("imageUrl"){
-                                    type= NavType.StringType
+                                navArgument("imageUrl") {
+                                    type = NavType.StringType
                                 }
                             )
-                        ) {navBackStackEntry->
-                           val imageUrl= navBackStackEntry.arguments?.getString("imageUrl")
-                            ShowPhoto(imageUrl?:""){
+                        ) { navBackStackEntry ->
+                            val imageUrl = navBackStackEntry.arguments?.getString("imageUrl")
+                            ShowPhoto(imageUrl ?: "") {
                                 navController.navigateUp()
                             }
-                            Log.d("APi",imageUrl?:"")
+                            Log.d("APi", imageUrl ?: "")
                         }
                         composable(
                             NavigationBottom.Category.route
                         ) {
-                            CategoryScreen(navToDetail = { id:String ->
-                                navController.navigate(
-                                    NavigationBottom.FoodDetail.creteRout(id)
-                                )
-                            })
+                            CategoryScreen(
+                                navToDetail = { id: String ->
+                                    navController.navigate(
+                                        NavigationBottom.FoodDetail.creteRout(id)
+                                    )
+                                },
+                                connectivityManager = connectivityManager
+                            )
                         }
                         composable(
                             route = NavigationBottom.FoodDetail.route,
                             arguments = listOf(
-                                navArgument("foodId"){
-                                    type= NavType.StringType
-                                    defaultValue=""
-                                    nullable=false
+                                navArgument("foodId") {
+                                    type = NavType.StringType
+                                    defaultValue = ""
+                                    nullable = false
                                 }
                             )
                             ){
@@ -171,19 +180,16 @@ class MainActivity : ComponentActivity() {
                         composable(NavigationBottom.Cook.route) {
                             WhatToCookFormScreen(
                                 navigateToWTCList = { whatDoYouHave, howMuchTimeHave, level ->
-                                navController.navigate(
-                                    NavigationBottom.WhatToCook.createRoute(
-                                        whatDoYouHave, howMuchTimeHave, level
+                                    navController.navigate(
+                                        NavigationBottom.WhatToCook.createRoute(
+                                            whatDoYouHave, howMuchTimeHave, level
+                                        )
                                     )
-                                )
-                            })
+                                })
                         }
                         composable(NavigationBottom.Search.route) {
-                            SearchScreen(navToDetail = { degree: Int, name: String, time: Int, image: Int ->
-                                navController.navigate("foodDetail/$degree/$name/$time/$image") {
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
+                            SearchScreen(navToDetail = { foodId:String->
+                                navController.navigate(NavigationBottom.FoodDetail.creteRout(foodId))
                             })
                         }
                         composable(NavigationBottom.Profile.route) {
@@ -209,7 +215,8 @@ class MainActivity : ComponentActivity() {
                                 navController.navigate(NavigationBottom.Profile.route)
                             })
                         }
-                        composable(route = NavigationBottom.WhatToCook.route,
+                        composable(
+                            route = NavigationBottom.WhatToCook.route,
                             arguments = listOf(navArgument(WHAT_DO_YOU_HAVE) {
                                 type = NavType.StringType
                                 nullable = true

@@ -1,4 +1,4 @@
-package mobin.shabanifar.foodpart.data.database.category.dao
+package mobin.shabanifar.foodpart.data.database.food
 
 import androidx.room.Dao
 import androidx.room.Insert

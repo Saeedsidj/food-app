@@ -72,6 +72,7 @@
     <string name="the_username_or_password_is_incorrect">نام کاربری یا رمز عبور اشتباه است</string>
     <string name="oops_something_went_wrong">اووپس… مشکلی پیش آمد!</string>
     <string name="there_is_user_with_this_name">کاربری با این نام وجود دارد</string>
+    <string name="check_internet">اتصال اینترنت را چک کنید.</string>
     <string name="enter_new_password">رمز عبور جدید را وارد کنید</string>
     <string name="new_password_has_not_entered_correctly">رمز عبور جدید بدرستی وارد نشده است</string>
     <string name="enter_the_current_password">رمز عبور فعلی را وارد کنید</string>
