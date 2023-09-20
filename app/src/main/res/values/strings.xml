@@ -79,4 +79,5 @@
     <string name="current_password_is_not_entered_correctly">رمز عبور فعلی بدرستی وارد نشده است</string>
     <string name="username_must_be_at_least_four_character_long">نام کاربری حداقل باید چهار حرف باشد</string>
     <string name="change_at_least_one_field">حداقل یک فیلد را تغییر دهید</string>
+    <string name="MorefoodByThisCategory">بیشتر از این دسته بندی</string>
 </resources>

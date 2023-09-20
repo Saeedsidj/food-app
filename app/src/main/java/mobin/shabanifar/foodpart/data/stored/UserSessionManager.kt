@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import mobin.shabanifar.foodpart.utils.SESSION_AUTH_DATA
 import mobin.shabanifar.foodpart.utils.USER_ID_DATA
 import mobin.shabanifar.foodpart.utils.USER_IMAGE_DATA
@@ -17,7 +18,7 @@ class UserSessionManager @Inject constructor(@ApplicationContext private val con
         context.getSharedPreferences(SESSION_AUTH_DATA, Context.MODE_PRIVATE)
     }
     private val _tokenFlow: MutableStateFlow<String?> = MutableStateFlow(getToken())
-    val tokenFlow: Flow<String?> = _tokenFlow
+    val tokenFlow: Flow<String?> = _tokenFlow.asStateFlow()
 
     private val _userNameFlow: MutableStateFlow<String?> = MutableStateFlow(getUserName())
     val userNameFlow: Flow<String?> = _userNameFlow

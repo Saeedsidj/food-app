@@ -152,13 +152,21 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                             ){
-                            FoodDetail(){imageUrl->
-                                navController.navigate(
-                                    NavigationBottom.FoodPhoto.creteRout(imageUrl)
-                                )
-                                NavigationBottom.FoodPhoto.creteRout(imageUrl)
-                                Log.d("API",imageUrl)
-                            }
+                            FoodDetail(
+                                navToImage = {imageUrl->
+                                    navController.navigate(NavigationBottom.FoodPhoto.creteRout(imageUrl))
+                                },
+                                navToDetail = {foodId->
+                                    navController.navigate(NavigationBottom.FoodDetail.creteRout(foodId))
+                                },
+                                navigateUp = {
+                                    navController.navigateUp()
+                                },
+                                navToFoodsByMeals = {mealId->
+                                    navController.navigate(NavigationBottom.ShowFoodByAttributes.createRoute(mealId))
+                                }
+
+                            )
                         }
                         composable(NavigationBottom.Cook.route) {
                             WhatToCookFormScreen(
@@ -241,18 +249,15 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(
                             route = NavigationBottom.ShowFoodByAttributes.route,
-                            arguments = listOf(navArgument("title") {
+                            arguments = listOf(
+                                navArgument("mealId") {
                                 type = NavType.StringType
                             })
-                        ) { entry ->
-                            val topTitle = entry.arguments?.getString("title")!!
-                            ShowFoodByAttributesScreen(topTitle = topTitle,
+                        ) {
+                            ShowFoodByAttributesScreen(
                                 navController = navController,
-                                navToDetail = { degree: Int, name: String, time: Int, image: Int ->
-                                    navController.navigate("foodDetail/$degree/$name/$time/$image") {
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
+                                navToDetail = { foodId ->
+                                    navController.navigate(NavigationBottom.FoodDetail.creteRout(foodId))
                                 })
                         }
                     }

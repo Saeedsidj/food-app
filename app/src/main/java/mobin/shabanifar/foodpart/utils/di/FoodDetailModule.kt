@@ -4,7 +4,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import mobin.shabanifar.foodpart.data.network.CategoryApi
 import mobin.shabanifar.foodpart.data.network.FoodDetailAPI
 import retrofit2.Retrofit
 
