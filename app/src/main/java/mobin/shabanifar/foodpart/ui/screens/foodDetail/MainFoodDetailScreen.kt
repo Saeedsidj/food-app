@@ -66,7 +66,8 @@ fun MainScreen(
     it: PaddingValues,
     coroutineScope: CoroutineScope,
     navToImage: (imageUrl: String) -> Unit,
-    navToDetail:(id:String)->Unit
+    navToDetail: (id: String) -> Unit,
+    navToFoodsByMeals: (mealId: String) -> Unit
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -78,7 +79,7 @@ fun MainScreen(
         horizontalAlignment = Alignment.Start
     ) {
         ImageFood(navToImage = navToImage)
-        AttributeRow()
+        AttributeRow(navToFoodsByMeals = navToFoodsByMeals)
         TabRowDescription(coroutineScope)
         LazyRowForMoreFood(navToDetail)
     }
@@ -109,6 +110,7 @@ private fun ImageFood(
 @Composable
 private fun AttributeRow(
     foodDetailViewModel: FoodDetailViewModel = hiltViewModel(),
+    navToFoodsByMeals: (mealId: String) -> Unit
 ) {
     val foodDetailData by foodDetailViewModel.foodDetailData.collectAsState()
     val totalTime = (foodDetailData?.data?.readyTime ?: 0) + (foodDetailData?.data?.cookTime ?: 0)
@@ -166,7 +168,9 @@ private fun AttributeRow(
         LazyRow() {
             items(mealsList) {
                 Chip(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        navToFoodsByMeals(it.id)
+                    },
                     Modifier.width(80.dp),
                     colors = ChipDefaults.chipColors(
                         backgroundColor = MaterialTheme.colors.surface,
@@ -279,7 +283,7 @@ private fun TabRowDescription(
 
 @Composable
 private fun LazyRowForMoreFood(
-    navToDetail:(id:String)->Unit,
+    navToDetail: (id: String) -> Unit,
     foodDetailViewModel: FoodDetailViewModel = hiltViewModel()
 ) {
     val moreFoodDetailData by foodDetailViewModel.moreFood.collectAsState()
@@ -319,10 +323,10 @@ private fun LazyRowForMoreFood(
                     )
                     if ((it.cookTime?.plus(it.readyTime ?: 0) ?: 0) > 0)
                         Text(
-                        text = "${it.readyTime?.plus(it.cookTime?:0)} دقیقه",
-                        style = MaterialTheme.typography.caption,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
+                            text = "${it.readyTime?.plus(it.cookTime ?: 0)} دقیقه",
+                            style = MaterialTheme.typography.caption,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
                 }
             }
             item {

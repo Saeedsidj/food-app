@@ -15,17 +15,22 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import mobin.shabanifar.foodpart.R
+import mobin.shabanifar.foodpart.data.database.bookMark.BookMarkEntity
+import mobin.shabanifar.foodpart.data.database.bookMark.dao.BookMarkDao
 import mobin.shabanifar.foodpart.data.models.Result
 import mobin.shabanifar.foodpart.data.models.food_Detail.FoodDetailResponse
 import mobin.shabanifar.foodpart.data.models.food_Detail.Meal
+import mobin.shabanifar.foodpart.data.models.food_Detail.ReportBody
 import mobin.shabanifar.foodpart.data.models.food_Detail.moreFoodById.Data
 import mobin.shabanifar.foodpart.data.models.food_Detail.moreFoodById.MoreFoodById
 import mobin.shabanifar.foodpart.data.models.food_response.FoodData
 import mobin.shabanifar.foodpart.data.models.food_response.FoodResponse
 import mobin.shabanifar.foodpart.data.network.FoodDetailAPI
+import mobin.shabanifar.foodpart.data.stored.UserSessionManager
 import mobin.shabanifar.foodpart.ui.theme.green
 import mobin.shabanifar.foodpart.ui.theme.red
 import mobin.shabanifar.foodpart.ui.theme.yellow
@@ -35,7 +40,9 @@ import javax.inject.Inject
 @HiltViewModel
 class FoodDetailViewModel @Inject constructor(
     private val foodDetailAPI: FoodDetailAPI,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    private val userSessionManager: UserSessionManager,
+    private val bookMarkDao: BookMarkDao
 ):ViewModel(){
 
     private val _foodDetailData=MutableStateFlow<FoodDetailResponse?>(null)
@@ -44,6 +51,10 @@ class FoodDetailViewModel @Inject constructor(
     private val _moreFood= MutableStateFlow<MoreFoodById?>(null)
     val moreFood =_moreFood.asStateFlow()
 
+    private val _foodsByMeal = MutableStateFlow<MoreFoodById?>(null)
+    val foodsByMeal= _foodsByMeal.asStateFlow()
+
+    val isLoggedIn=userSessionManager.tokenFlow
 
     private val _foodDetailResult=MutableStateFlow<Result>(Result.Idle)
     val foodDetailResult : SharedFlow<Result> = _foodDetailResult.asSharedFlow()
@@ -51,10 +62,12 @@ class FoodDetailViewModel @Inject constructor(
     private val _mealsList=MutableStateFlow<Meal?>(null)
     val mealsList:StateFlow<Meal?> = _mealsList.asStateFlow()
 
-    private val foodId:String get() = savedStateHandle.get<String>("foodId").orEmpty()
+   val foodId:String get() = savedStateHandle.get<String>("foodId").orEmpty()
+    val mealId:String get()=savedStateHandle.get<String>("mealId").orEmpty()
     init {
         getFoodDetailApi(foodId)
         getTabTitle()
+        getFoodsByMeal(mealId)
     }
      private fun getFoodDetailApi(foodId:String){
         viewModelScope.launch(Dispatchers.IO) {
@@ -79,8 +92,19 @@ class FoodDetailViewModel @Inject constructor(
             ).collect(_foodDetailResult)
         }
     }
+    private fun getFoodsByMeal(mealId:String){
+        viewModelScope.launch(Dispatchers.IO) {
+            safeApi(
+                call = { foodDetailAPI.getFoodsByMeal(mealId)},
+                onDataReady = {
+                    _foodsByMeal.value=it
+                }
+            ).collect(_foodDetailResult)
+        }
+    }
     fun getMeals(): List<Meal> {
        return _foodDetailData.value?.additionalInfo?.meals ?: emptyList()
+
     }
     fun getDifficultyColor():Color{
         return when(_foodDetailData.value?.data?.difficulty){
@@ -106,5 +130,22 @@ class FoodDetailViewModel @Inject constructor(
 
     fun getCount():String{
         return foodDetailData.value?.data?.count ?: ""
+    }
+    fun postReport(id:String,txtReport:String){
+        viewModelScope.launch(Dispatchers.IO) {
+            safeApi(
+                call = {
+                       foodDetailAPI.postReport(id, ReportBody(txtReport))
+                },
+                onDataReady = {
+                    Log.d("API","its Sent")
+                }
+            ).collect(_foodDetailResult)
+        }
+    }
+    fun addToBookMark(id: String,token: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            bookMarkDao.insert(BookMarkEntity(foodId = id, token =token))
+        }
     }
 }

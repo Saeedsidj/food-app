@@ -28,8 +28,11 @@ sealed class NavigationBottom(
     }
     object SignUp : NavigationBottom(R.string.register, "sign_up", null)
     object Login : NavigationBottom(R.string.login, "login", null)
-    object ShowFoodByAttributes :
-        NavigationBottom(R.string.show_food_by_attribute, "showFoodByAttributes/{title}", null)
+    object ShowFoodByAttributes : NavigationBottom(R.string.show_food_by_attribute, "showFoodByAttributes?mealId={mealId}", null){
+        fun createRoute(mealId: String):String{
+            return "showFoodByAttributes?mealId=$mealId"
+        }
+    }
 
 }
 

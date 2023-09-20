@@ -1,9 +1,11 @@
 package mobin.shabanifar.foodpart.ui.screens.foodDetail
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -61,19 +63,21 @@ import mobin.shabanifar.foodpart.viewmodel.FoodDetailViewModel
 fun FoodDetail(
     foodDetailViewModel: FoodDetailViewModel = hiltViewModel(),
     navToImage: (imageUrl: String) -> Unit,
-    navToDetail:(id:String)->Unit,
-    navigateUp:()->Unit
+    navToDetail: (id: String) -> Unit,
+    navigateUp: () -> Unit,
+    navToFoodsByMeals:(mealId:String)->Unit
 ) {
+    val foodId = foodDetailViewModel.foodId
     val foodResult by foodDetailViewModel.foodDetailResult.collectAsState(Result.Idle)
-    val modalSheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden
-    )
+    val modalSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val isLoggedIn by foodDetailViewModel.isLoggedIn.collectAsState(initial = "")
     val scaffoldState = rememberScaffoldState()
     var showMenu by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     var textReportState by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
+    Log.d("API", isLoggedIn.toString())
     ModalBottomSheetLayout(
         sheetBackgroundColor = MaterialTheme.colors.secondary,
         sheetState = modalSheetState,
@@ -135,6 +139,7 @@ fun FoodDetail(
                 Button(
                     modifier = Modifier.fillMaxWidth(), onClick = {
                         coroutineScope.launch {
+                            foodDetailViewModel.postReport(foodId, textReportState)
                             textReportState = ""
                             modalSheetState.hide()
                             Toast.makeText(context, "گزارش شما ثبت شد", Toast.LENGTH_SHORT).show()
@@ -190,25 +195,35 @@ fun FoodDetail(
                             contentDescription = "",
                             tint = MaterialTheme.colors.onBackground
                         )
-                        /* DropDownMenu(
-                             showMenu, isLogin, coroutineScope, modalSheetState, snackbarHostState
-                         ) {
-                             showMenu = it
-                         }*/
+                        DropDownMenu(
+                            showMenu = showMenu,
+                            isLoggedIn = isLoggedIn,
+                            coroutineScope = coroutineScope,
+                            modalSheetState = modalSheetState,
+                            snackbarHostState = snackbarHostState,
+                            foodDetailViewModel = foodDetailViewModel
+                        ) {
+                            showMenu = it
+                        }
                     }
                 }
             }) {
                 if (foodResult == Result.Loading) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colors.primary,
-                        modifier = Modifier.fillMaxSize()
-                    )
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(
+                            color = MaterialTheme.colors.primary,
+                        )
+                    }
                 } else if (foodResult == Result.Success) {
                     MainScreen(
                         it = it,
                         coroutineScope = coroutineScope,
                         navToImage = navToImage,
-                        navToDetail = navToDetail
+                        navToDetail = navToDetail,
+                        navToFoodsByMeals = navToFoodsByMeals
                     )
                 }
             }
