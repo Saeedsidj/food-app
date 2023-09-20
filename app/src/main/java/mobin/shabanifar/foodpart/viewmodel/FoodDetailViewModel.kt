@@ -1,12 +1,8 @@
 package mobin.shabanifar.foodpart.viewmodel
 
-import android.util.Log
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -15,16 +11,11 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
-import mobin.shabanifar.foodpart.R
 import mobin.shabanifar.foodpart.data.models.Result
 import mobin.shabanifar.foodpart.data.models.food_Detail.FoodDetailResponse
 import mobin.shabanifar.foodpart.data.models.food_Detail.Meal
-import mobin.shabanifar.foodpart.data.models.food_Detail.moreFoodById.Data
 import mobin.shabanifar.foodpart.data.models.food_Detail.moreFoodById.MoreFoodById
-import mobin.shabanifar.foodpart.data.models.food_response.FoodData
-import mobin.shabanifar.foodpart.data.models.food_response.FoodResponse
 import mobin.shabanifar.foodpart.data.network.FoodDetailAPI
 import mobin.shabanifar.foodpart.ui.theme.green
 import mobin.shabanifar.foodpart.ui.theme.red
@@ -60,22 +51,20 @@ class FoodDetailViewModel @Inject constructor(
             safeApi(
                 call = {
                     foodDetailAPI.getFoodDetail(foodId)
-                       },
-                onDataReady = {
-                    _foodDetailData.value=it
-                    getMoreFood(it.additionalInfo.similarFoods?.joinToString(",") ?: "")
                 }
-            ).collect(_foodDetailResult)
+            ) {
+                _foodDetailData.value = it
+                getMoreFood(it.additionalInfo.similarFoods?.joinToString(",") ?: "")
+            }.collect(_foodDetailResult)
         }
     }
     private fun getMoreFood(ids:String){
         viewModelScope.launch(Dispatchers.IO) {
             safeApi(
-                call = { foodDetailAPI.getMoreFood(ids) },
-                onDataReady ={
-                    _moreFood.value=it
-                }
-            ).collect(_foodDetailResult)
+                call = { foodDetailAPI.getMoreFood(ids) }
+            ) {
+                _moreFood.value = it
+            }.collect(_foodDetailResult)
         }
     }
     fun getMeals(): List<Meal> {

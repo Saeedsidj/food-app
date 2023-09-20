@@ -15,6 +15,7 @@ import mobin.shabanifar.foodpart.data.models.Result
 import mobin.shabanifar.foodpart.data.models.edit_profile.EditUserBody
 import mobin.shabanifar.foodpart.data.models.edit_profile.EditUserResponse
 import mobin.shabanifar.foodpart.data.network.EditUserApi
+import mobin.shabanifar.foodpart.data.network.LogoutApi
 import mobin.shabanifar.foodpart.data.stored.UserSessionManager
 import mobin.shabanifar.foodpart.utils.safeApi
 import javax.inject.Inject
@@ -22,11 +23,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val editUserApi: EditUserApi, val userSessionManager: UserSessionManager
+    private val editUserApi: EditUserApi, private val logoutApi: LogoutApi, val userSessionManager: UserSessionManager
 ) : ViewModel() {
 
     private val _editUserResult = MutableStateFlow<Result>(Result.Idle)
     val editUserResult: SharedFlow<Result> = _editUserResult.asSharedFlow()
+
+     private val _logoutUserResult = MutableStateFlow<Result>(Result.Idle)
+    val logoutUserResult: SharedFlow<Result> = _logoutUserResult.asSharedFlow()
 
     private val _editUserResponse = MutableStateFlow(EditUserResponse(EditUserResponse.AdditionalInfo(""),"" ))
     val editUserResponse: StateFlow<EditUserResponse> = _editUserResponse.asStateFlow()
@@ -35,10 +39,18 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             safeApi(call = {
                 editUserApi.postEditUser(editUserBody)
-            }, onDataReady = {
+            }) {
                 _editUserResponse.value = it
                 Log.d("TAGGG", _editUserResponse.value.additionalInfo?.token.toString())
-            }).collect(_editUserResult)
+            }.collect(_editUserResult)
+        }
+    }
+    fun logoutUser() {
+        viewModelScope.launch(Dispatchers.IO) {
+            safeApi(call = {
+                logoutApi.getLogOutUser()
+            }) {
+            }.collect(_logoutUserResult)
         }
     }
 

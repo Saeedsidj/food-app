@@ -36,9 +36,9 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             safeApi(call = {
                 loginApi.postUserLogin(signUpBody)
-            }, onDataReady = {
+            }) {
                 _loginResponse.value = it
-            }).collect(_loginResult)
+            }.collect(_loginResult)
         }
     }
 

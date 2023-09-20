@@ -72,11 +72,10 @@ class WhatToCookListViewModel @Inject constructor(
             safeApi(
                 call = {
                     whatToCookApi.getWhatToCook(queries)
-                },
-                onDataReady = {
-                    _whatToCookResponse.value = it.data
                 }
-            ).collect(_whatToCookResult)
+            ) {
+                _whatToCookResponse.value = it.data
+            }.collect(_whatToCookResult)
         }
     }
 
