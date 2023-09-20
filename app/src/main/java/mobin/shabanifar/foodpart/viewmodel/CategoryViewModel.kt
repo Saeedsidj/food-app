@@ -1,5 +1,6 @@
 package mobin.shabanifar.foodpart.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,12 +11,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import mobin.shabanifar.foodpart.data.database.category.CategoryEntity
+import mobin.shabanifar.foodpart.data.database.category.SubCategoryEntity
+import mobin.shabanifar.foodpart.data.database.category.dao.CategoryDao
+import mobin.shabanifar.foodpart.data.database.category.dao.FoodDao
+import mobin.shabanifar.foodpart.data.database.category.dao.SubCategoryDao
+import mobin.shabanifar.foodpart.data.database.food.FoodEntity
 import mobin.shabanifar.foodpart.data.models.Result
-import mobin.shabanifar.foodpart.data.models.category_response.CategoryData
-import mobin.shabanifar.foodpart.data.models.category_response.CategoryResponse
-import mobin.shabanifar.foodpart.data.models.category_response.SubCategory
-import mobin.shabanifar.foodpart.data.models.food_response.FoodData
-import mobin.shabanifar.foodpart.data.models.food_response.FoodResponse
 import mobin.shabanifar.foodpart.data.network.CategoryApi
 import mobin.shabanifar.foodpart.utils.safeApi
 import javax.inject.Inject
@@ -23,22 +25,25 @@ import javax.inject.Inject
 @HiltViewModel
 class CategoryViewModel @Inject constructor(
     private val categoryApi: CategoryApi,
+    private val categoryDao: CategoryDao,
+    private val subCategoryDao: SubCategoryDao,
+    private val foodDao: FoodDao
 ) : ViewModel() {
-
-    private val _categoryResult = MutableStateFlow<Result>(Result.Idle)
-    val categoryResult: SharedFlow<Result> = _categoryResult.asSharedFlow()
 
     private val _foodResult = MutableStateFlow<Result>(Result.Idle)
     val foodResult: SharedFlow<Result> = _foodResult.asSharedFlow()
 
-    private val _foodData = MutableStateFlow<FoodResponse?>(null)
-    val foodData: StateFlow<FoodResponse?> = _foodData.asStateFlow()
+    //private val _foodData = MutableStateFlow<FoodResponse?>(null)
+    //val foodData: StateFlow<FoodResponse?> = _foodData.asStateFlow()
 
-    private val _categoryData = MutableStateFlow<CategoryResponse?>(null)
-    val categoryData: StateFlow<CategoryResponse?> = _categoryData.asStateFlow()
+    private val _categoryResult = MutableStateFlow<Result>(Result.Idle)
+    val categoryResult: SharedFlow<Result> = _categoryResult.asSharedFlow()
 
-    private val _subCategoryList = MutableStateFlow<List<SubCategory>?>(emptyList())
-    val subCategoryList: StateFlow<List<SubCategory>?> = _subCategoryList.asStateFlow()
+    //private val _categoryData = MutableStateFlow<CategoryResponse?>(null)
+    //val categoryData: StateFlow<CategoryResponse?> = _categoryData.asStateFlow()
+
+    //private val _subCategoryList = MutableStateFlow<List<SubCategory>?>(emptyList())
+    //val subCategoryList: StateFlow<List<SubCategory>?> = _subCategoryList.asStateFlow()
 
     private val _selectedCategoryId = MutableStateFlow("")
     val selectedCategoryId: StateFlow<String> = _selectedCategoryId.asStateFlow()
@@ -46,54 +51,138 @@ class CategoryViewModel @Inject constructor(
     private val _selectedSubCategoryId = MutableStateFlow("")
     val selectedSubCategoryId: StateFlow<String> = _selectedSubCategoryId.asStateFlow()
 
+    //////////////////////////////////////////////////////////////////////
+    private val _categoryList = MutableStateFlow<List<CategoryEntity>?>(emptyList())
+    val categoryList: StateFlow<List<CategoryEntity>?> = _categoryList.asStateFlow()
+
+    private val _subList = MutableStateFlow<List<SubCategoryEntity>?>(emptyList())
+    val subList: StateFlow<List<SubCategoryEntity>?> = _subList.asStateFlow()
+
+    private val _foodList = MutableStateFlow<List<FoodEntity>?>(emptyList())
+    val foodList: StateFlow<List<FoodEntity>?> = _foodList.asStateFlow()
+
+    //////////////////////////////////////////////////////////////////////
+
     init {
+        observeCategory()
         getCategoryApi()
+        Log.d("debugMode", "init ")
+        Log.d("debugMode", "${_categoryResult.value} ")
+    }
+
+
+    private fun observeCategory() {
+        viewModelScope.launch {
+            categoryDao.observeAllCategory().collect {
+                _categoryList.emit(it)
+                Log.d("debugMode", "observeCategory ")
+            }
+        }
+    }
+
+    fun observeSubCategoryByCategoryId(categoryId: String) {
+        viewModelScope.launch {
+            subCategoryDao.getSubCategoriesByCategoryId(categoryId).collect {
+                _subList.emit(it)
+                Log.d("debugMode", "observeSubCategory ")
+            }
+        }
+    }
+
+    fun observeFoodByCategoryId(categoryId: String) {
+        viewModelScope.launch {
+            foodDao.observeFoodsWithCategory(categoryId).collect {foods->
+                _foodList.emit(foods)
+                Log.d("debugMode", "${_foodList.value} ")
+            }
+        }
     }
 
     private fun getCategoryApi() {
         viewModelScope.launch(Dispatchers.IO) {
             safeApi(
                 call = { categoryApi.getCategory() },
-                onDataReady = { _categoryData.value = it }
+                onDataReady = { category ->
+
+                    val categoryEntity = category.data.map { categoryData ->
+                        categoryData.toCategoryEntity()
+                    }
+                    storedCategory(categoryEntity)
+                   // _firstCategory.value = categoryEntity.firstOrNull()
+
+                    val subCategoryEntity = category.data.flatMap { categoryData ->
+                        categoryData.subCategories?.map { subCategory ->
+                            subCategory.toSubCategoryEntity(categoryData.id)
+                        } ?: emptyList()
+                    }
+                    storedSubCategory(subCategoryEntity)
+
+                }
             ).collect(_categoryResult)
         }
-    }
-
-
-    fun getCategoryItems(categoryData: CategoryResponse?): List<CategoryData> {
-        return categoryData?.data ?: emptyList()
-    }
-
-    fun getSubCategoryItems(subCategoryList: List<SubCategory>?): List<SubCategory> {
-        return subCategoryList ?: emptyList()
     }
 
     fun getFoodApi(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             safeApi(
                 call = { categoryApi.getFood(subOrCategoryId = id) },
-                onDataReady = { _foodData.value = it }
+                onDataReady = { foodResponse ->
+                    val foodEntity = foodResponse.data.map { foodData ->
+                        foodData.toFoodEntity()
+                    }
+                    storedFood(foodEntity)
+                }
             ).collect(_foodResult)
         }
     }
 
-    fun getFoodItems(foodData: FoodResponse?): List<FoodData> {
+    private fun storedCategory(categoryList: List<CategoryEntity>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            categoryDao.insertAllCategory(categoryList)
+            Log.d("debugMode", "storedCategory ")
+        }
+    }
+
+    private fun storedSubCategory(subCategoryList: List<SubCategoryEntity>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            subCategoryDao.insertAllSubCategory(subCategoryList)
+            Log.d("debugMode", "storedSubCategory ")
+        }
+    }
+
+
+    private fun storedFood(foodList: List<FoodEntity>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            foodDao.insertAllFood(foodList)
+            Log.d("debugMode", "storedFood ")
+        }
+    }
+
+    /*fun getCategoryItems(categoryData: CategoryResponse?): List<CategoryData> {
+        return categoryData?.data ?: emptyList()
+    }*/
+
+    /*fun getSubCategoryItems(subCategoryList: List<SubCategory>?): List<SubCategory> {
+        return subCategoryList ?: emptyList()
+    }*/
+
+    /*fun getFoodItems(foodData: FoodResponse?): List<FoodData> {
         return foodData?.data ?: emptyList()
-    }
+    }*/
 
-    fun isFoodFound(foodData: FoodResponse?): Boolean {
+    /*fun isFoodFound(foodData: FoodResponse?): Boolean {
         return getFoodItems(foodData).isNotEmpty()
-    }
+    }*/
 
 
-    fun setDataOfSelectedCategory(categoryId: String) {
+    /*fun setDataOfSelectedCategory(categoryId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val categoryById = _categoryData.value?.data?.find {
                 it.id == categoryId
             }
             _subCategoryList.emit(categoryById?.subCategories)
         }
-    }
+    }*/
 
     fun updateCategorySelectedId(id: String) {
         viewModelScope.launch(Dispatchers.IO) {

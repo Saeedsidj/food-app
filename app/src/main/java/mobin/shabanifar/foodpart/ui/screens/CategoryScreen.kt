@@ -48,29 +48,55 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import mobin.shabanifar.foodpart.R
+import mobin.shabanifar.foodpart.data.database.category.CategoryEntity
+import mobin.shabanifar.foodpart.data.database.food.FoodEntity
 import mobin.shabanifar.foodpart.data.models.Result
 import mobin.shabanifar.foodpart.viewmodel.CategoryViewModel
 
 @Composable
-fun DividerOrLoading(foodResult: Result, categoryResult: Result) = when (foodResult) {
+fun DividerOrLoading(
+    foodResult: Result,
+    categoryResult: Result,
+    categoryList: List<CategoryEntity>?,
+    foodList: List<FoodEntity>?
+) = when (foodResult) {
     Result.Loading -> {
-        Spacer(modifier = Modifier.height(8.dp))
-        LinearProgressIndicator(
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
-
-    else -> {
-        if (categoryResult == Result.Success) {
+        if (foodList.isNullOrEmpty()) {
+            Spacer(modifier = Modifier.height(8.dp))
+            LinearProgressIndicator(
+                modifier = Modifier
+                    .height(0.5.dp)
+                    .fillMaxWidth()
+            )
+        } else {
             Divider(
                 modifier = Modifier
-                    .padding(start = 16.dp, end = 16.dp, top = 8.dp)
-                    .height(0.5.dp),
-                thickness = 1.dp,
+                    .padding(start = 16.dp, end = 16.dp, top = 8.dp),
+                thickness = 0.5.dp,
+                color = MaterialTheme.colors.onSurface
+            )
+        }
+    }
+
+    Result.Success -> {
+        if (!categoryList.isNullOrEmpty()) {
+            Divider(
+                modifier = Modifier
+                    .padding(start = 16.dp, end = 16.dp, top = 8.dp),
+                thickness = 0.5.dp,
                 color = MaterialTheme.colors.onSurface
             )
         } else {
         }
+    }
+
+    else -> {
+        Divider(
+            modifier = Modifier
+                .padding(start = 16.dp, end = 16.dp, top = 8.dp),
+            thickness = 0.5.dp,
+            color = MaterialTheme.colors.onSurface
+        )
     }
 }
 
@@ -79,9 +105,13 @@ fun CategoryScreen(
     navToDetail: (String) -> Unit, viewModel: CategoryViewModel = hiltViewModel()
 ) {
     val categoryResult by viewModel.categoryResult.collectAsState(Result.Idle)
-    val subCategoryList by viewModel.subCategoryList.collectAsState()
-    val foodData by viewModel.foodData.collectAsState()
     val foodResult by viewModel.foodResult.collectAsState(Result.Idle)
+    val categoryList by viewModel.categoryList.collectAsState()
+    val subList by viewModel.subList.collectAsState()
+    val foodList by viewModel.foodList.collectAsState()
+
+
+
     Scaffold(topBar = {
         TopAppBar(
             title = {
@@ -96,44 +126,42 @@ fun CategoryScreen(
             modifier = Modifier.padding(it)
         ) {
             Spacer(modifier = Modifier.height(16.dp))
-            if (categoryResult == Result.Loading) {
+            if (categoryResult == Result.Loading && categoryList.isNullOrEmpty()) {
                 LinearProgressIndicator(
                     modifier = Modifier.fillMaxWidth()
                 )
-            } else if (categoryResult == Result.Success) {
+            } else if (categoryResult == Result.Success || !categoryList.isNullOrEmpty()) {
 
                 // نمایش آیتم ها در بالا صفحه
                 CategoryItems()
 
                 // ایجاد فاصله بین اسم کتگوری و خط جدا کننده اول
                 Spacer(modifier = Modifier.height(8.dp))
-
-
-            }
-
-            if (viewModel.getSubCategoryItems(subCategoryList).isNotEmpty()) {
-
                 //خط جدا کننده اول
                 Divider(
                     modifier = Modifier
-                        .padding(start = 16.dp, end = 16.dp)
-                        .height(0.5.dp),
-                    thickness = 1.dp,
+                        .padding(start = 16.dp, end = 16.dp),
+                    thickness = 0.5.dp,
                     color = MaterialTheme.colors.onSurface
                 )
+
+            }
+            if (!subList.isNullOrEmpty()) {
 
                 //ساب کتگوری ها
                 SubCategory()
 
-                DividerOrLoading(foodResult, categoryResult)
+                DividerOrLoading(foodResult, categoryResult, categoryList, foodList)
 
-            } else {
-                DividerOrLoading(foodResult, categoryResult)
             }
-            if (viewModel.isFoodFound(foodData)) {
+
+
+            if (!foodList.isNullOrEmpty() || foodResult == Result.Success) {
                 FoodItems(navToDetail)
-            } else {
-                if (foodResult == Result.Success) NoFoodFound()
+            } else if (foodList.isNullOrEmpty() || foodResult == Result.Success){
+                //if (foodResult == Result.Success) {
+                    NoFoodFound()
+                //}
             }
         }
     }
@@ -146,7 +174,7 @@ fun CategoryItems(
     viewModel: CategoryViewModel = hiltViewModel()
 ) {
     val selectedCategoryId by viewModel.selectedCategoryId.collectAsState()
-    val categoryData by viewModel.categoryData.collectAsState()
+    val categoryList by viewModel.categoryList.collectAsState()
 
     // نمایش لیست کتگوری ها
     LazyRow(
@@ -154,18 +182,22 @@ fun CategoryItems(
         contentPadding = PaddingValues(horizontal = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        itemsIndexed(viewModel.getCategoryItems(categoryData)) { index, it ->
-            Column(horizontalAlignment = Alignment.CenterHorizontally,
+        /*viewModel.getCategoryItems(categoryData)*/
+        itemsIndexed(categoryList ?: emptyList()) { index, it ->
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .width(64.dp)
                     .clip(MaterialTheme.shapes.medium)
                     .clickable {
                         viewModel.updateCategorySelectedId(it.id)
-                        viewModel.setDataOfSelectedCategory(it.id)
-                        if (categoryData?.data?.get(index)?.subCategories.isNullOrEmpty()) viewModel.getFoodApi(
-                            it.id
-                        )
-                        //viewModel.updateSubCategorySelectedId(0)
+                        //viewModel.setDataOfSelectedCategory(it.id)
+                        //if (categoryData?.data?.get(index)?.subCategories.isNullOrEmpty()) {
+                        viewModel.getFoodApi(it.id)
+                        viewModel.observeSubCategoryByCategoryId(it.id)
+                        viewModel.observeFoodByCategoryId(it.id)
+                        //}
+
                     }) {
                 // نمایش آیتمی که کلیکشده بصورت رنگی
                 val categoryImageModifier = if (it.id == selectedCategoryId) {
@@ -220,16 +252,18 @@ fun SubCategory(
     viewModel: CategoryViewModel = hiltViewModel()
 ) {
     // ذخیره ایندکسی که کلیک شده برای رنگی کردن آن
-    val subCategoryList by viewModel.subCategoryList.collectAsState()
+    //val subCategoryList by viewModel.subCategoryList.collectAsState()
     val selectedSubCategoryId by viewModel.selectedSubCategoryId.collectAsState()
-
+    //val selectedCategoryId by viewModel.selectedCategoryId.collectAsState()
+    //val catWithSub by viewModel.catWithSub.collectAsState()
+    val subList by viewModel.subList.collectAsState()
 
     LazyRow(
         modifier = Modifier.padding(top = 8.dp),
         contentPadding = PaddingValues(horizontal = 16.dp), // پدینگ ساب کتگوری از کنار صفحه
         horizontalArrangement = Arrangement.spacedBy(8.dp) // پدینگ بین ساب کتگوری ها
     ) {
-        items(viewModel.getSubCategoryItems(subCategoryList)) { item ->
+        items(subList ?: emptyList()) { item ->
             Chip(border = if (selectedSubCategoryId == item.id) {
                 BorderStroke(1.dp, MaterialTheme.colors.primary)
             } else {
@@ -247,6 +281,7 @@ fun SubCategory(
                 onClick = {
                     viewModel.updateSubCategorySelectedId(item.id)
                     viewModel.getFoodApi(item.id)
+                    viewModel.observeFoodByCategoryId(item.id)
                 }) {
                 val subTextColor = if (item.id == selectedSubCategoryId) {
                     MaterialTheme.colors.primary
@@ -273,7 +308,8 @@ fun FoodItems(
     navToDetail: (String) -> Unit,
     viewModel: CategoryViewModel = hiltViewModel()
 ) {
-    val foodData by viewModel.foodData.collectAsState()
+    val foodList by viewModel.foodList.collectAsState()
+
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
         columns = GridCells.Fixed(2),
@@ -282,7 +318,7 @@ fun FoodItems(
             vertical = 16.dp, horizontal = 40.dp
         ) // پدینگ آیتم ها با حاشیه = horizontal
     ) {
-        items(viewModel.getFoodItems(foodData)) {
+        items(foodList ?: emptyList()) {
             Column(modifier = Modifier
                 .padding(bottom = 24.dp)
                 .clip(MaterialTheme.shapes.medium)
