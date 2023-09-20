@@ -1,5 +1,6 @@
 package mobin.shabanifar.foodpart.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val editUserApi: EditUserApi, private val userSessionManager: UserSessionManager
+    private val editUserApi: EditUserApi, val userSessionManager: UserSessionManager
 ) : ViewModel() {
 
     private val _editUserResult = MutableStateFlow<Result>(Result.Idle)
@@ -36,23 +37,22 @@ class ProfileViewModel @Inject constructor(
                 editUserApi.postEditUser(editUserBody)
             }, onDataReady = {
                 _editUserResponse.value = it
+                Log.d("TAGGG", _editUserResponse.value.additionalInfo?.token.toString())
             }).collect(_editUserResult)
         }
     }
 
     // fun for save data from saveUserInfo
-    fun saveUserInfo(token: String, userName: String, userImage: String) {
+    fun editUserToken(token: String) {
         viewModelScope.launch {
-            userSessionManager.saveUserInfo(token, userName, userImage)
+            userSessionManager.editUserToken(token)
         }
     }
 
-    fun getUserName():String? {
-        return userSessionManager.getUserName()
-    }
-
-    fun getUserImage():String? {
-        return userSessionManager.getUserImage()
+    fun editUsername(userName: String) {
+        viewModelScope.launch {
+            userSessionManager.editUsername(userName)
+        }
     }
 
     fun clearUserInfo() {

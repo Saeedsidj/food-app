@@ -7,9 +7,9 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class EditUserBody(
     @Json(name = "newpassword")
-    val newpassword: String, // 123456Sss
+    val newpassword: String?, // 123456Sss
     @Json(name = "oldPassword")
-    val oldPassword: String, // 123456Ss
+    val oldPassword: String?, // 123456Ss
     @Json(name = "username")
-    val username: String // mobin
+    val username: String? // mobin
 )

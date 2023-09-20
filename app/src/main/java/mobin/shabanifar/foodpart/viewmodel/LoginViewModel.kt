@@ -43,9 +43,9 @@ class LoginViewModel @Inject constructor(
     }
 
     // fun for save data from saveUserInfo
-    fun saveUserInfo(token: String, userName: String, userImage: String) {
+    fun saveUserInfo(token: String, userName: String, userImage: String, userId: String) {
         viewModelScope.launch {
-            userSessionManager.saveUserInfo(token, userName, userImage)
+            userSessionManager.saveUserInfo(token, userName, userImage,userId)
         }
     }
 }

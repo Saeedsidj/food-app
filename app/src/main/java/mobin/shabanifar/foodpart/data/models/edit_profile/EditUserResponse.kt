@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class EditUserResponse(
     @Json(name = "additionalInfo")
-    val additionalInfo: AdditionalInfo,
+    val additionalInfo: AdditionalInfo?,
     @Json(name = "data")
     val data: String // success
 ) {

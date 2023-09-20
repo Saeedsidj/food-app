@@ -42,7 +42,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -79,25 +78,13 @@ fun LoginScreen(
 
     val isPasswordValid = passwordValue.trim().isValidPassword()
     val isUsernameValid = usernameValue.trim().isValidUser()
-    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         viewModel.loginResult.drop(1).collectLatest { result ->
             when (result) {
                 is Result.Error -> {
                     isLoading = false
-                    when (result.code) {
-                        400 -> snackbarHostState.showSnackbar(
-                            message = context.resources.getString(
-                                R.string.the_username_or_password_is_incorrect
-                            )
-                        )
-                        else -> snackbarHostState.showSnackbar(
-                            message = context.resources.getString(
-                                R.string.oops_something_went_wrong
-                            )
-                        )
-                    }
+                    snackbarHostState.showSnackbar(message = result.message)
                 }
 
                 Result.Idle, Result.Loading -> {
@@ -111,6 +98,7 @@ fun LoginScreen(
                         token = loginResponse.data.token,
                         userName = loginResponse.data.user.username,
                         userImage = loginResponse.data.user.avatar,
+                        userId = loginResponse.data.user.id,
                     )
                 }
             }
