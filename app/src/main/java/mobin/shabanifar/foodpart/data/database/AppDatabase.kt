@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import mobin.shabanifar.foodpart.data.database.category.CategoryEntity
 import mobin.shabanifar.foodpart.data.database.category.SubCategoryEntity
 import mobin.shabanifar.foodpart.data.database.category.dao.CategoryDao
-import mobin.shabanifar.foodpart.data.database.category.dao.FoodDao
+import mobin.shabanifar.foodpart.data.database.food.FoodDao
 import mobin.shabanifar.foodpart.data.database.category.dao.SubCategoryDao
 import mobin.shabanifar.foodpart.data.database.food.FoodEntity
 

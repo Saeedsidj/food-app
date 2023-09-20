@@ -1,9 +1,12 @@
 package mobin.shabanifar.foodpart.utils.di
 
+import android.content.Context
+import android.net.ConnectivityManager
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import mobin.shabanifar.foodpart.utils.BASE_URL
 import mobin.shabanifar.foodpart.utils.CONNECTION_TIME
@@ -72,4 +75,10 @@ class NetworkModule {
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
     }
+
+    @Provides
+    fun provideConnectivityManager(@ApplicationContext context: Context): ConnectivityManager {
+        return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    }
+
 }

@@ -5,7 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import mobin.shabanifar.foodpart.data.database.AppDatabase
-import mobin.shabanifar.foodpart.data.database.category.dao.FoodDao
+import mobin.shabanifar.foodpart.data.database.food.FoodDao
 
 @Module
 @InstallIn(SingletonComponent::class)

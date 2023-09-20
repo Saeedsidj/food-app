@@ -5,6 +5,7 @@ import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -54,7 +55,7 @@ import mobin.shabanifar.foodpart.viewmodel.SearchViewModel
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchScreen(
-    navToDetail: (Int, String, Int, Int) -> Unit,
+    navToDetail: (String) -> Unit,
     viewModel: SearchViewModel = hiltViewModel()
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -64,14 +65,6 @@ fun SearchScreen(
     val foundItems = searchedFood?.data ?: emptyList()
     val isFoodFound by viewModel.isFoodFound.collectAsState()
     val searchResult by viewModel.searchResult.collectAsState(Result.Idle)
-
-    /*LaunchedEffect(Unit){
-        launch(Dispatchers.IO) {
-            if (searchResult == Result.Success){
-                viewModel.isFoodFound(searchedFood)
-            }
-        }
-    }*/
 
     Scaffold(
         topBar = {
@@ -140,8 +133,6 @@ fun SearchScreen(
                     // این شرط باعث میشه وقتی متن تکست فیلد خالی بشه خودکار سرچ ریست بشه و تکست فیلد برگرده به حالت اول
                     if (newTextValue == "") {
                         searchText = ""
-
-                        //isSearchSuccessful = null
                     }
                 },
                 trailingIcon = {
@@ -150,7 +141,6 @@ fun SearchScreen(
                             onClick = {
                                 textField = ""
                                 searchText = ""
-                                //isSearchSuccessful = null
                                 viewModel.resetIsFoodFound()
                                 viewModel.isFoodFound(searchedFood)
                             }
@@ -165,23 +155,16 @@ fun SearchScreen(
                 }
             )
             if (searchResult == Result.Loading) {
-                //Spacer(modifier = Modifier.height(8.dp))
-                CircularProgressIndicator(
+                Box(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(150.dp)
-                        .padding(top = 70.dp)
-                )
-                /*if (searchText != ""*//* && isFoodFound == true*//*) {
-                    Text(
-                        modifier = Modifier.padding(start = 16.dp),
-                        text = stringResource(R.string.search_result, searchText),
-                        style = MaterialTheme.typography.body1,
-                        color = MaterialTheme.colors.onBackground
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colors.primary
                     )
-                }*/
-            }
-            if (searchResult == Result.Success) {
+                }
+            } else if (searchResult == Result.Success) {
                 if (searchText != "" && isFoodFound == true) {
                     Text(
                         modifier = Modifier.padding(start = 16.dp),
@@ -206,10 +189,8 @@ fun SearchScreen(
 @Composable
 fun SearchedItems(
     foundItems: List<SearchedFood>,
-    navToDetail: (Int, String, Int, Int) -> Unit,
+    navToDetail: (String) -> Unit,
 ) {
-    //val searchedFood by viewModel.searchedFood.collectAsState()
-    //val foundItems = searchedFood?.data?: emptyList()
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
         columns = GridCells.Fixed(2),
@@ -225,7 +206,7 @@ fun SearchedItems(
                     .padding(bottom = 24.dp)
                     .clip(MaterialTheme.shapes.medium)
                     .clickable {
-                        //navToDetail(it.degree, it.name, it.time, it.image)
+                        navToDetail(it.id)
                     }
             ) {
                 AsyncImage(
