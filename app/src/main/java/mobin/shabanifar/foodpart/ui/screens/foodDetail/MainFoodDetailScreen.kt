@@ -1,11 +1,13 @@
 package mobin.shabanifar.foodpart.ui.screens.foodDetail
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,15 +17,22 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Chip
+import androidx.compose.material.ChipDefaults
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Tab
@@ -31,6 +40,8 @@ import androidx.compose.material.TabRow
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,189 +49,160 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import mobin.shabanifar.foodpart.utils.NavigationBottom
 import mobin.shabanifar.foodpart.R
 import mobin.shabanifar.foodpart.data.detailList
-import mobin.shabanifar.foodpart.data.fakeFoods
-import mobin.shabanifar.foodpart.ui.theme.green
-import mobin.shabanifar.foodpart.ui.theme.red
-import mobin.shabanifar.foodpart.ui.theme.yellow
+import mobin.shabanifar.foodpart.data.tabData
+import mobin.shabanifar.foodpart.ui.theme.lightRed
+import mobin.shabanifar.foodpart.viewmodel.FoodDetailViewModel
 
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainScreen(
-    toAttributesScreen: (String) -> Unit,
     it: PaddingValues,
-    scrollState: ScrollState,
-    navController: NavHostController,
-    tabIndex: Int,
-    pagerState: PagerState,
-    tabData: List<String>,
     coroutineScope: CoroutineScope,
-    degree: Int,
-    name: String,
-    time: Int,
-    image: Int
+    navToImage: (imageUrl:String) -> Unit,
 ) {
+    val scrollState = rememberScrollState()
     Column(
         Modifier
+            .padding(it)
             .fillMaxSize()
             .verticalScroll(state = scrollState),
-        verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically),
+        verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
         horizontalAlignment = Alignment.Start
     ) {
-        ImageFood(navController, image)
-        AttributeRow(navController, toAttributesScreen = toAttributesScreen, degree, name, time)
-        TabRowDescription(tabIndex, pagerState, tabData, coroutineScope)
-        LazyRowForMoreFood(
-            navToDetail = { degree: Int, name: String, time: Int, image: Int ->
-                navController.navigate("foodDetail/$degree/$name/$time/$image")
-            }, toAttributesScreen = toAttributesScreen
-        )
+        ImageFood(navToImage = navToImage)
+        AttributeRow()
+        TabRowDescription(coroutineScope)
+        LazyRowForMoreFood()
     }
 }
 
 @Composable
-private fun ImageFood(navController: NavHostController, image: Int) {
-    Image(
-        painterResource(image),
+private fun ImageFood(
+    navToImage: (imageUrl:String) -> Unit,
+    foodDetailViewModel: FoodDetailViewModel = hiltViewModel()
+) {
+    val foodDetail=foodDetailViewModel.foodDetailData.collectAsState()
+    val imageUrl=foodDetail.value?.data?.image
+    AsyncImage(
+        model = imageUrl,
         contentDescription = "",
         modifier = Modifier
             .padding(horizontal = 16.dp)
             .height(244.dp)
-            .fillMaxWidth()
             .clip(shape = RoundedCornerShape(16.dp))
             .clickable {
-                navController.navigate(NavigationBottom.FoodPhoto.route)
+                navToImage(imageUrl ?: "")
             },
-        contentScale = ContentScale.Crop,
+        contentScale = ContentScale.Crop
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 private fun AttributeRow(
-    navController: NavHostController,
-    toAttributesScreen: (String) -> Unit,
-    degree: Int,
-    name: String,
-    time: Int,
+    foodDetailViewModel: FoodDetailViewModel = hiltViewModel(),
 ) {
+    val foodDetailData by foodDetailViewModel.foodDetailData.collectAsState()
+    val totalTime = (foodDetailData?.data?.readyTime ?: 0) + (foodDetailData?.data?.cookTime ?: 0)
+    val mealsList = foodDetailViewModel.getMeals()
+    val difficultyName = foodDetailViewModel.getDifficultyName()
+    val difficultyColor = foodDetailViewModel.getDifficultyColor()
+    val count = foodDetailViewModel.getCount()
     Row(
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start,
         modifier = Modifier
             .fillMaxWidth()
+            .height(40.dp)
             .padding(horizontal = 16.dp),
 
         ) {
         Text(
-            text = name,
+            text = foodDetailData?.data?.name ?: "",
             style = MaterialTheme.typography.h1,
-            textAlign = TextAlign.End,
+            textAlign = TextAlign.Start,
+            modifier = Modifier
+                .fillMaxWidth(0.5f)
+                .basicMarquee()
+                .padding(start = 16.dp),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
         Spacer(modifier = Modifier.weight(1f))
-        Text(
-            text = "برای 4 نفر",
+        if (count.isNotEmpty())
+            Text(
+            text = stringResource(id = R.string.count).plus(count),
             style = MaterialTheme.typography.caption,
             modifier = Modifier.padding(start = 10.dp, end = 10.dp)
         )
-        Row(horizontalArrangement = Arrangement.spacedBy(
-            10.dp, Alignment.CenterHorizontally
-        ),
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .clip(RoundedCornerShape(16.dp))
-                .width(86.dp)
-                .height(32.dp)
-                .background(
-                    color = Color(0x1AFF6262),
+        if (totalTime > 0) {
+            Chip(
+                onClick = { },
+                colors = ChipDefaults.chipColors(
+                    backgroundColor = lightRed,
+                    contentColor = MaterialTheme.colors.onBackground,
                 )
-                .clickable {
-                    toAttributesScreen("$time دقیقه")
-                }) {
-            Image(painterResource(R.drawable.time), contentDescription = "")
-            Text(text = "$time دقیقه", style = MaterialTheme.typography.caption)
+            ) {
+                Image(painterResource(R.drawable.time), contentDescription = "")
+                Spacer(modifier = Modifier.padding(5.dp))
+                Text(text = "$totalTime دقیقه", style = MaterialTheme.typography.caption)
+            }
+
         }
     }
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(5.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
         modifier = Modifier.padding(horizontal = 16.dp)
     ) {
-        Text(text = "صبحانه",
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .clip(RoundedCornerShape(16.dp))
-                .width(80.dp)
-                .height(32.dp)
-                .background(
-                    color = Color(0xFF222228)
-                )
-                .clickable {}
-                .padding(5.dp),
-            style = MaterialTheme.typography.caption)
-        Text(text = "نهار",
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .clip(RoundedCornerShape(26.dp))
-                .width(80.dp)
-                .height(32.dp)
-                .background(
-                    color = Color(0xFF222228),
-                )
-                .clickable {}
-                .padding(5.dp),
-            style = MaterialTheme.typography.caption)
+        LazyRow() {
+            items(mealsList) {
+                Chip(
+                    onClick = { /*TODO*/ },
+                    Modifier.width(80.dp),
+                    colors = ChipDefaults.chipColors(
+                        backgroundColor = MaterialTheme.colors.surface,
+                        contentColor = MaterialTheme.colors.onBackground,
+                    )
+                ) {
+                    Text(
+                        text = it.name,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.caption,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                Spacer(modifier = Modifier.padding(5.dp))
+            }
+        }
+
         Spacer(modifier = Modifier.weight(1f))
-        Row(verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(
-                10.dp, Alignment.CenterHorizontally
+        Chip(
+            onClick ={ },
+            colors = ChipDefaults.chipColors(
+                backgroundColor = difficultyColor.copy(alpha = 0.1f),
+                contentColor = MaterialTheme.colors.onBackground,
             ),
-            modifier = Modifier
-                .clip(RoundedCornerShape(16.dp))
-                .border(
-                    1.dp, color = when (degree) {
-                        1 -> red
-                        2 -> yellow
-                        3 -> green
-                        else -> Color.Transparent
-                    }, shape = MaterialTheme.shapes.medium
-                )
-                .width(80.dp)
-                .height(32.dp)
-                .background(
-                    color = when (degree) {
-                        1 -> Color(0x1AFF4444)
-                        2 -> Color(0x26FFE100)
-                        3 -> Color(0x1A00FF67)
-                        else -> Color.Transparent
-                    }
-                )
-                .clickable {}
-                .padding(5.dp)) {
+            border = BorderStroke(1.dp, difficultyColor)
+        ) {
             Icon(
-                painterResource(id = R.drawable.level),
+                painterResource(R.drawable.level),
                 contentDescription = "",
-                tint = when (degree) {
-                    1 -> red
-                    2 -> yellow
-                    3 -> green
-                    else -> Color.Transparent
-                }
+                tint = difficultyColor
             )
-            Text(
-                text = when (degree) {
-                    1 -> "دوشوار"
-                    2 -> "متوسط"
-                    3 -> "آسان"
-                    else -> ""
-                }
-            )
+            Spacer(modifier = Modifier.padding(5.dp))
+            Text(text = difficultyName)
         }
     }
 }
@@ -228,8 +210,13 @@ private fun AttributeRow(
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 private fun TabRowDescription(
-    tabIndex: Int, pagerState: PagerState, tabData: List<String>, coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
+    foodDetailViewModel: FoodDetailViewModel = hiltViewModel()
 ) {
+    val foodDetailData by foodDetailViewModel.foodDetailData.collectAsState()
+    val tabData2 = foodDetailViewModel.getTabTitle()
+    val pagerState = rememberPagerState { tabData2.size  }
+    val tabIndex = pagerState.currentPage
     TabRow(modifier = Modifier
         .padding(horizontal = 16.dp)
         .height(40.dp)
@@ -245,7 +232,7 @@ private fun TabRowDescription(
             )
         },
         divider = {}) {
-        tabData.forEachIndexed { index, text ->
+        tabData2.forEachIndexed { index, text ->
             Tab(
                 selectedContentColor = MaterialTheme.colors.primary,
                 unselectedContentColor = MaterialTheme.colors.onBackground,
@@ -267,14 +254,17 @@ private fun TabRowDescription(
         }
     }
     HorizontalPager(
+        pageSpacing = 10.dp,
+        userScrollEnabled = true,
         modifier = Modifier
-            .padding(horizontal = 16.dp), state = pagerState, verticalAlignment = Alignment.Top
+            .padding(horizontal = 16.dp)
+        , state = pagerState, verticalAlignment = Alignment.Top
     ) { index ->
         Text(
             text = when (index) {
-                0 -> detailList.map { it.material }.joinToString { it }
-                1 -> detailList.map { it.recipie }.joinToString { it }
-                2 -> detailList.map { it.moreInfo }.joinToString { it }
+                0 -> detailList.map { foodDetailData?.data?.ingredients }.joinToString { it ?: "" }
+                1 -> detailList.map { foodDetailData?.data?.recipe }.joinToString { it ?: "" }
+                2 -> detailList.map { foodDetailData?.data?.point }.joinToString { it ?: "" }
                 else -> ""
             },
             style = MaterialTheme.typography.body1,
@@ -283,27 +273,29 @@ private fun TabRowDescription(
                 .background(
                     Color(0xFF222228), shape = RoundedCornerShape(16.dp)
                 )
-                .height(230.dp)
                 .padding(10.dp)
                 .fillMaxWidth()
+                .heightIn( min = 250.dp, max = 250.dp),
+
         )
     }
 }
 
 @Composable
 private fun LazyRowForMoreFood(
-    navToDetail: (Int, String, Int, Int) -> Unit, toAttributesScreen: (String) -> Unit
+    foodDetailViewModel: FoodDetailViewModel = hiltViewModel()
 ) {
+    val foodDetailData by foodDetailViewModel.moreFood.collectAsState()
     Text(
         text = "بیشتر از این دسته بندی",
         style = MaterialTheme.typography.h3,
         color = MaterialTheme.colors.onBackground,
+        modifier = Modifier.padding(start = 16.dp)
     )
-    val fakeFoodsFiveItem = fakeFoods.subList(fromIndex = 0, toIndex = 4)
     LazyRow(
         contentPadding = PaddingValues(horizontal = 10.dp),
         content = {
-            items(fakeFoodsFiveItem) {
+            items(foodDetailData?.data ?: emptyList()) {
                 Column(verticalArrangement = Arrangement.spacedBy(3.dp),
                     horizontalAlignment = Alignment.Start,
                     modifier = Modifier
@@ -311,24 +303,24 @@ private fun LazyRowForMoreFood(
                         .width(136.dp)
                         .height(136.dp)
                         .clickable {
-                            navToDetail(it.degree, it.name, it.time, it.image)
-                        }) {
-                    Image(
-                        painterResource(it.image),
-                        contentDescription = "",
+
+                        }
+                ) {
+                    AsyncImage(
+                        model = it.image,
+                        contentDescription = it.name,
+                        contentScale = ContentScale.FillBounds,
                         modifier = Modifier
-                            .width(136.dp)
-                            .height(80.dp)
-                            .clip(shape = MaterialTheme.shapes.medium),
-                        contentScale = ContentScale.Crop
+                            .clip(MaterialTheme.shapes.medium)
+                            .size(width = 136.dp, height = 75.dp)
                     )
                     Text(
-                        text = "${it.name}",
+                        text = it.name,
                         style = MaterialTheme.typography.body1,
                         modifier = Modifier.padding(start = 8.dp)
                     )
                     Text(
-                        text = "${it.time} دقیقه",
+                        text = "${it.readyTime} دقیقه",
                         style = MaterialTheme.typography.caption,
                         modifier = Modifier.padding(start = 8.dp)
                     )
@@ -354,7 +346,7 @@ private fun LazyRowForMoreFood(
                                 color = Color(0x4D747474),
                             )
                             .clickable {
-                                toAttributesScreen("بیشتر از این دسته")
+
                             }) {
                         Text(text = "بیشتر", style = MaterialTheme.typography.body1)
                         Icon(
@@ -372,3 +364,4 @@ private fun LazyRowForMoreFood(
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     )
 }
+

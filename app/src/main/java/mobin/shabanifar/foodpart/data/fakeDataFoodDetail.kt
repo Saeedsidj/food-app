@@ -1,5 +1,7 @@
 package mobin.shabanifar.foodpart.data
 
+import android.graphics.Point
+
 data class foodDetail(
     val material: String, val recipie: String, val moreInfo: String
 )
@@ -9,5 +11,5 @@ val detailList = listOf<foodDetail>(
 )
 
 val tabData = listOf(
-    "مواد اولیه", "طرز تهیه", "اطلاعات بیشتر"
+    "مواد اولیه", "طرز تهیه","اطلاعات بیشتر"
 )

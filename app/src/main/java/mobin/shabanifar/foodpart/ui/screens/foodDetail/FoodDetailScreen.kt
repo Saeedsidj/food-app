@@ -7,14 +7,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -30,6 +30,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,36 +47,29 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.launch
 import mobin.shabanifar.foodpart.R
-import mobin.shabanifar.foodpart.data.tabData
+import mobin.shabanifar.foodpart.data.models.Result
 import mobin.shabanifar.foodpart.ui.theme.FoodPartTheme
 import mobin.shabanifar.foodpart.ui.theme.shapes
+import mobin.shabanifar.foodpart.viewmodel.FoodDetailViewModel
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun FoodDetail(
-    degree: Int,
-    name: String,
-    time: Int,
-    image: Int,
-    navController: NavHostController,
-    isLogin: Boolean,
-    toAttributesScreen: (String) -> Unit
+    foodDetailViewModel: FoodDetailViewModel = hiltViewModel(),
+    navToImage: (imageUrl: String) -> Unit,
 ) {
-
+    val foodResult by foodDetailViewModel.foodDetailResult.collectAsState(Result.Idle)
     val modalSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden
     )
     val scaffoldState = rememberScaffoldState()
     var showMenu by remember { mutableStateOf(false) }
-    val pagerState = rememberPagerState { tabData.size }
-    val tabIndex = pagerState.currentPage
-    val snackbarHostState = remember { SnackbarHostState() }
-    val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
     var textReportState by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
     ModalBottomSheetLayout(
@@ -174,7 +168,7 @@ fun FoodDetail(
                     elevation = 0.dp
                 ) {
                     IconButton(onClick = {
-                        navController.navigateUp()
+
                     }) {
                         Icon(
                             painterResource(R.drawable.ic_back),
@@ -194,28 +188,26 @@ fun FoodDetail(
                             contentDescription = "",
                             tint = MaterialTheme.colors.onBackground
                         )
-                        DropDownMenu(
-                            showMenu, isLogin, coroutineScope, modalSheetState, snackbarHostState
-                        ) {
-                            showMenu = it
-                        }
+                        /* DropDownMenu(
+                             showMenu, isLogin, coroutineScope, modalSheetState, snackbarHostState
+                         ) {
+                             showMenu = it
+                         }*/
                     }
                 }
             }) {
-                MainScreen(
-                    toAttributesScreen = toAttributesScreen,
-                    it,
-                    scrollState,
-                    navController,
-                    tabIndex,
-                    pagerState,
-                    tabData,
-                    coroutineScope,
-                    degree,
-                    name,
-                    time,
-                    image
-                )
+                if (foodResult == Result.Loading) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colors.primary,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else if (foodResult == Result.Success) {
+                    MainScreen(
+                        it = it,
+                        coroutineScope = coroutineScope,
+                        navToImage = navToImage,
+                    )
+                }
             }
 
         }

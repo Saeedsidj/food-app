@@ -2,6 +2,7 @@ package mobin.shabanifar.foodpart.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.height
@@ -111,7 +112,6 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                         }
-
                     }
                 }) {
                     NavHost(
@@ -119,48 +119,46 @@ class MainActivity : ComponentActivity() {
                         startDestination = NavigationBottom.Category.route,
                         Modifier.padding(it)
                     ) {
-                        composable(NavigationBottom.FoodPhoto.route) {
-                            ShowPhoto(navController = navController)
-                        }
                         composable(
-                            NavigationBottom.FoodDetail.route,
-                            arguments = listOf(navArgument("degree") {
-                                type = NavType.IntType
-                            }, navArgument("name") {
-                                type = NavType.StringType
-                            }, navArgument("time") {
-                                type = NavType.IntType
-                            }, navArgument("image") {
-                                type = NavType.IntType
-                            })
-                        ) { entry ->
-                            val degree = entry.arguments?.getInt("degree")!!
-                            val name = entry.arguments?.getString("name")!!
-                            val time = entry.arguments?.getInt("time")!!
-                            val image = entry.arguments?.getInt("image")!!
-
-                            FoodDetail(degree,
-                                name,
-                                time,
-                                image,
-                                navController,
-                                isLogin,
-                                toAttributesScreen = { title: String ->
-                                    navController.navigate("showFoodByAttributes/$title") {
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                })
+                            route = NavigationBottom.FoodPhoto.route,
+                            arguments = listOf(
+                                navArgument("imageUrl"){
+                                    type= NavType.StringType
+                                }
+                            )
+                        ) {navBackStackEntry->
+                           val imageUrl= navBackStackEntry.arguments?.getString("imageUrl")
+                            ShowPhoto(imageUrl?:""){
+                                navController.navigateUp()
+                            }
+                            Log.d("APi",imageUrl?:"")
                         }
                         composable(
                             NavigationBottom.Category.route
                         ) {
-                            CategoryScreen(navToDetail = { degree: Int, name: String, time: Int, image: Int ->
-                                navController.navigate("foodDetail/$degree/$name/$time/$image") {
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
+                            CategoryScreen(navToDetail = { id:String ->
+                                navController.navigate(
+                                    NavigationBottom.FoodDetail.creteRout(id)
+                                )
                             })
+                        }
+                        composable(
+                            route = NavigationBottom.FoodDetail.route,
+                            arguments = listOf(
+                                navArgument("foodId"){
+                                    type= NavType.StringType
+                                    defaultValue=""
+                                    nullable=false
+                                }
+                            )
+                            ){
+                            FoodDetail(){imageUrl->
+                                navController.navigate(
+                                    NavigationBottom.FoodPhoto.creteRout(imageUrl)
+                                )
+                                NavigationBottom.FoodPhoto.creteRout(imageUrl)
+                                Log.d("API",imageUrl)
+                            }
                         }
                         composable(NavigationBottom.Cook.route) {
                             WhatToCookFormScreen(
