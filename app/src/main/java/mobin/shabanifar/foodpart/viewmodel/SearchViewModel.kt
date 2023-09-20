@@ -33,9 +33,8 @@ class SearchViewModel @Inject constructor(
     fun doSearch(searchedText: String) {
         viewModelScope.launch(Dispatchers.IO) {
             safeApi(
-                call = { searchApi.getSearchedFoods(searchedText) },
-                onDataReady = { _searchedFood.value = it }
-            ).collect(_searchResult)
+                call = { searchApi.getSearchedFoods(searchedText) }
+            ) { _searchedFood.value = it }.collect(_searchResult)
         }
     }
 

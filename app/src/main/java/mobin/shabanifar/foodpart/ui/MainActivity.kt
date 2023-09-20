@@ -68,7 +68,6 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
-                var userName by rememberSaveable { mutableStateOf("مهمان") }
                 var isLogin by rememberSaveable { mutableStateOf(false) }
                 Scaffold(bottomBar = {
                     if (currentDestination?.route in mainRoute) {
@@ -161,14 +160,22 @@ class MainActivity : ComponentActivity() {
                                     nullable = false
                                 }
                             )
-                        ) {
-                            FoodDetail() { imageUrl ->
-                                navController.navigate(
-                                    NavigationBottom.FoodPhoto.creteRout(imageUrl)
-                                )
-                                NavigationBottom.FoodPhoto.creteRout(imageUrl)
-                                Log.d("API", imageUrl)
-                            }
+                            ){
+                            FoodDetail(
+                                navToImage = {imageUrl->
+                                    navController.navigate(NavigationBottom.FoodPhoto.creteRout(imageUrl))
+                                },
+                                navToDetail = {foodId->
+                                    navController.navigate(NavigationBottom.FoodDetail.creteRout(foodId))
+                                },
+                                navigateUp = {
+                                    navController.navigateUp()
+                                },
+                                navToFoodsByMeals = {mealId->
+                                    navController.navigate(NavigationBottom.ShowFoodByAttributes.createRoute(mealId))
+                                }
+
+                            )
                         }
                         composable(NavigationBottom.Cook.route) {
                             WhatToCookFormScreen(
@@ -186,14 +193,11 @@ class MainActivity : ComponentActivity() {
                             })
                         }
                         composable(NavigationBottom.Profile.route) {
-                            ProfileScreen(usernameSave = userName,
-                                isLogin = isLogin,
+                            ProfileScreen(
                                 navigateToProfileSignIn = {
                                     navController.navigate(NavigationBottom.SignUp.route)
-                                },
-                                changeLoginState = {
-                                    isLogin = !isLogin
-                                })
+                                }
+                            )
                         }
                         composable(NavigationBottom.SignUp.route) {
                             SignUpScreen(navigateToProfile = {
@@ -225,14 +229,15 @@ class MainActivity : ComponentActivity() {
                             })
                         ) { backStackEntry ->
                             val whatDoYouHave =
-                                backStackEntry.arguments?.getString(WHAT_DO_YOU_HAVE)
-                                    ?: throw IllegalStateException("authorId was null")
+                                backStackEntry.arguments?.getString(WHAT_DO_YOU_HAVE) ?: ""
+
                             val howMuchTimeHave =
-                                backStackEntry.arguments?.getString(HOW_MUCH_TIME_HAVE)
-                                    ?: throw IllegalStateException("authorId was null")
-                            val level = backStackEntry.arguments?.getString(LEVEL)
-                                ?: throw IllegalStateException("authorId was null")
-                            WhatToCookListScreen(whatDoYouHave,
+                                backStackEntry.arguments?.getString(HOW_MUCH_TIME_HAVE) ?: ""
+
+                            val level = backStackEntry.arguments?.getString(LEVEL) ?: ""
+
+                            WhatToCookListScreen(
+                                whatDoYouHave,
                                 howMuchTimeHave,
                                 level,
                                 navToDetail = { degree: Int, name: String, time: Int, image: Int ->
@@ -251,18 +256,15 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(
                             route = NavigationBottom.ShowFoodByAttributes.route,
-                            arguments = listOf(navArgument("title") {
+                            arguments = listOf(
+                                navArgument("mealId") {
                                 type = NavType.StringType
                             })
-                        ) { entry ->
-                            val topTitle = entry.arguments?.getString("title")!!
-                            ShowFoodByAttributesScreen(topTitle = topTitle,
+                        ) {
+                            ShowFoodByAttributesScreen(
                                 navController = navController,
-                                navToDetail = { degree: Int, name: String, time: Int, image: Int ->
-                                    navController.navigate("foodDetail/$degree/$name/$time/$image") {
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
+                                navToDetail = { foodId ->
+                                    navController.navigate(NavigationBottom.FoodDetail.creteRout(foodId))
                                 })
                         }
                     }

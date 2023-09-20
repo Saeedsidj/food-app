@@ -4,14 +4,15 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import mobin.shabanifar.foodpart.data.network.FoodDetailAPI
+import mobin.shabanifar.foodpart.data.network.LogoutApi
 import retrofit2.Retrofit
 
 @Module
 @InstallIn(SingletonComponent::class)
-object FoodDetailModule {
+object LogoutModule {
     @Provides
-    fun provideFoodDetailApi(retrofit: Retrofit): FoodDetailAPI {
-        return retrofit.create(FoodDetailAPI::class.java)
+    fun provideLogoutApi(retrofit: Retrofit): LogoutApi {
+        return retrofit.create(LogoutApi::class.java)
     }
+
 }

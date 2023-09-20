@@ -88,4 +88,6 @@ dependencies {
     kapt ("androidx.room:room-compiler:2.5.2")
 
     implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("io.coil-kt:coil-svg:2.4.0")
+
 }

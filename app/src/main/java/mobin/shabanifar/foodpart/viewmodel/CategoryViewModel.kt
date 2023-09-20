@@ -30,8 +30,6 @@ class CategoryViewModel @Inject constructor(
     private val foodDao: FoodDao
 ) : ViewModel() {
 
-
-
     private val _foodResult = MutableStateFlow<Result>(Result.Idle)
     val foodResult: SharedFlow<Result> = _foodResult.asSharedFlow()
 
@@ -57,12 +55,12 @@ class CategoryViewModel @Inject constructor(
     //////////////////////////////////////////////////////////////////////
 
     init {
-
         observeCategory()
         getCategoryApi()
         Log.d("checkTimeDo", "init ")
         Log.d("checkTimeDo", "${_categoryResult.value} ")
     }
+
 
     private fun observeCategory() {
         viewModelScope.launch(Dispatchers.IO) {

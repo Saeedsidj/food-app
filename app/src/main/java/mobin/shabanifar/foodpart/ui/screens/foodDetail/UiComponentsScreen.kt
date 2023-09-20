@@ -1,8 +1,10 @@
 package mobin.shabanifar.foodpart.ui.screens.foodDetail
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.DropdownMenu
@@ -19,32 +21,37 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import mobin.shabanifar.foodpart.R
+import mobin.shabanifar.foodpart.viewmodel.FoodDetailViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun DropDownMenu(
     showMenu: Boolean,
-    isLogin: Boolean,
+    isLoggedIn: String?,
     coroutineScope: CoroutineScope,
     modalSheetState: ModalBottomSheetState,
     snackbarHostState: SnackbarHostState,
-    showMenuFalse: (Boolean) -> Unit
+    foodDetailViewModel: FoodDetailViewModel,
+    showMenuFalse: (Boolean) -> Unit,
 ) {
     DropdownMenu(
         expanded = showMenu, onDismissRequest = {
             showMenuFalse(false)
-        }, modifier = Modifier.background(
+        }, modifier = Modifier
+            .background(
                 color = MaterialTheme.colors.surface
             )
     ) {
-        if (isLogin) {
+        if (!isLoggedIn.isNullOrEmpty()) {
             DropdownMenuItem(
                 onClick = {
                     coroutineScope.launch {
@@ -69,6 +76,7 @@ fun DropDownMenu(
             DropdownMenuItem(
                 onClick = {
                     coroutineScope.launch {
+                        foodDetailViewModel.addToBookMark(foodDetailViewModel.foodId,isLoggedIn)
                         val snackbarResult = snackbarHostState.showSnackbar(
                             message = "دستور به علاقه مندی ها اضافه شد",
                             actionLabel = "ذخیره شده ها",
@@ -97,7 +105,6 @@ fun DropDownMenu(
         }
     }
 }
-
 @Composable
 fun CustomSnackbarHost(
     modifier: Modifier = Modifier,
