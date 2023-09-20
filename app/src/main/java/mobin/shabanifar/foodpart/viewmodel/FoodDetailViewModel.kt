@@ -44,6 +44,7 @@ class FoodDetailViewModel @Inject constructor(
     private val _moreFood= MutableStateFlow<MoreFoodById?>(null)
     val moreFood =_moreFood.asStateFlow()
 
+
     private val _foodDetailResult=MutableStateFlow<Result>(Result.Idle)
     val foodDetailResult : SharedFlow<Result> = _foodDetailResult.asSharedFlow()
 

@@ -3,11 +3,9 @@ package mobin.shabanifar.foodpart.ui.screens.foodDetail
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,7 +23,6 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -59,7 +56,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import mobin.shabanifar.foodpart.R
 import mobin.shabanifar.foodpart.data.detailList
-import mobin.shabanifar.foodpart.data.tabData
 import mobin.shabanifar.foodpart.ui.theme.lightRed
 import mobin.shabanifar.foodpart.viewmodel.FoodDetailViewModel
 
@@ -69,7 +65,8 @@ import mobin.shabanifar.foodpart.viewmodel.FoodDetailViewModel
 fun MainScreen(
     it: PaddingValues,
     coroutineScope: CoroutineScope,
-    navToImage: (imageUrl:String) -> Unit,
+    navToImage: (imageUrl: String) -> Unit,
+    navToDetail:(id:String)->Unit
 ) {
     val scrollState = rememberScrollState()
     Column(
@@ -83,17 +80,17 @@ fun MainScreen(
         ImageFood(navToImage = navToImage)
         AttributeRow()
         TabRowDescription(coroutineScope)
-        LazyRowForMoreFood()
+        LazyRowForMoreFood(navToDetail)
     }
 }
 
 @Composable
 private fun ImageFood(
-    navToImage: (imageUrl:String) -> Unit,
+    navToImage: (imageUrl: String) -> Unit,
     foodDetailViewModel: FoodDetailViewModel = hiltViewModel()
 ) {
-    val foodDetail=foodDetailViewModel.foodDetailData.collectAsState()
-    val imageUrl=foodDetail.value?.data?.image
+    val foodDetail = foodDetailViewModel.foodDetailData.collectAsState()
+    val imageUrl = foodDetail.value?.data?.image
     AsyncImage(
         model = imageUrl,
         contentDescription = "",
@@ -142,10 +139,10 @@ private fun AttributeRow(
         Spacer(modifier = Modifier.weight(1f))
         if (count.isNotEmpty())
             Text(
-            text = stringResource(id = R.string.count).plus(count),
-            style = MaterialTheme.typography.caption,
-            modifier = Modifier.padding(start = 10.dp, end = 10.dp)
-        )
+                text = stringResource(id = R.string.count).plus(count),
+                style = MaterialTheme.typography.caption,
+                modifier = Modifier.padding(start = 10.dp, end = 10.dp)
+            )
         if (totalTime > 0) {
             Chip(
                 onClick = { },
@@ -189,7 +186,7 @@ private fun AttributeRow(
 
         Spacer(modifier = Modifier.weight(1f))
         Chip(
-            onClick ={ },
+            onClick = { },
             colors = ChipDefaults.chipColors(
                 backgroundColor = difficultyColor.copy(alpha = 0.1f),
                 contentColor = MaterialTheme.colors.onBackground,
@@ -215,7 +212,7 @@ private fun TabRowDescription(
 ) {
     val foodDetailData by foodDetailViewModel.foodDetailData.collectAsState()
     val tabData2 = foodDetailViewModel.getTabTitle()
-    val pagerState = rememberPagerState { tabData2.size  }
+    val pagerState = rememberPagerState { tabData2.size }
     val tabIndex = pagerState.currentPage
     TabRow(modifier = Modifier
         .padding(horizontal = 16.dp)
@@ -257,8 +254,7 @@ private fun TabRowDescription(
         pageSpacing = 10.dp,
         userScrollEnabled = true,
         modifier = Modifier
-            .padding(horizontal = 16.dp)
-        , state = pagerState, verticalAlignment = Alignment.Top
+            .padding(horizontal = 16.dp), state = pagerState, verticalAlignment = Alignment.Top
     ) { index ->
         Text(
             text = when (index) {
@@ -275,19 +271,21 @@ private fun TabRowDescription(
                 )
                 .padding(10.dp)
                 .fillMaxWidth()
-                .heightIn( min = 250.dp, max = 250.dp),
+                .heightIn(min = 250.dp, max = 250.dp),
 
-        )
+            )
     }
 }
 
 @Composable
 private fun LazyRowForMoreFood(
+    navToDetail:(id:String)->Unit,
     foodDetailViewModel: FoodDetailViewModel = hiltViewModel()
 ) {
-    val foodDetailData by foodDetailViewModel.moreFood.collectAsState()
+    val moreFoodDetailData by foodDetailViewModel.moreFood.collectAsState()
+
     Text(
-        text = "بیشتر از این دسته بندی",
+        text = stringResource(R.string.MorefoodByThisCategory),
         style = MaterialTheme.typography.h3,
         color = MaterialTheme.colors.onBackground,
         modifier = Modifier.padding(start = 16.dp)
@@ -295,7 +293,7 @@ private fun LazyRowForMoreFood(
     LazyRow(
         contentPadding = PaddingValues(horizontal = 10.dp),
         content = {
-            items(foodDetailData?.data ?: emptyList()) {
+            items(moreFoodDetailData?.data ?: emptyList()) {
                 Column(verticalArrangement = Arrangement.spacedBy(3.dp),
                     horizontalAlignment = Alignment.Start,
                     modifier = Modifier
@@ -303,7 +301,7 @@ private fun LazyRowForMoreFood(
                         .width(136.dp)
                         .height(136.dp)
                         .clickable {
-
+                            navToDetail(it.id)
                         }
                 ) {
                     AsyncImage(
@@ -319,8 +317,9 @@ private fun LazyRowForMoreFood(
                         style = MaterialTheme.typography.body1,
                         modifier = Modifier.padding(start = 8.dp)
                     )
-                    Text(
-                        text = "${it.readyTime} دقیقه",
+                    if ((it.cookTime?.plus(it.readyTime ?: 0) ?: 0) > 0)
+                        Text(
+                        text = "${it.readyTime?.plus(it.cookTime?:0)} دقیقه",
                         style = MaterialTheme.typography.caption,
                         modifier = Modifier.padding(start = 8.dp)
                     )

@@ -153,13 +153,18 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                             ){
-                            FoodDetail(){imageUrl->
-                                navController.navigate(
-                                    NavigationBottom.FoodPhoto.creteRout(imageUrl)
-                                )
-                                NavigationBottom.FoodPhoto.creteRout(imageUrl)
-                                Log.d("API",imageUrl)
-                            }
+                            FoodDetail(
+                                navToImage = {imageUrl->
+                                    navController.navigate(NavigationBottom.FoodPhoto.creteRout(imageUrl))
+                                },
+                                navToDetail = {foodId->
+                                    navController.navigate(NavigationBottom.FoodDetail.creteRout(foodId))
+                                },
+                                navigateUp = {
+                                    navController.navigateUp()
+                                }
+
+                            )
                         }
                         composable(NavigationBottom.Cook.route) {
                             WhatToCookFormScreen(

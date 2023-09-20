@@ -61,6 +61,8 @@ import mobin.shabanifar.foodpart.viewmodel.FoodDetailViewModel
 fun FoodDetail(
     foodDetailViewModel: FoodDetailViewModel = hiltViewModel(),
     navToImage: (imageUrl: String) -> Unit,
+    navToDetail:(id:String)->Unit,
+    navigateUp:()->Unit
 ) {
     val foodResult by foodDetailViewModel.foodDetailResult.collectAsState(Result.Idle)
     val modalSheetState = rememberModalBottomSheetState(
@@ -168,7 +170,7 @@ fun FoodDetail(
                     elevation = 0.dp
                 ) {
                     IconButton(onClick = {
-
+                        navigateUp()
                     }) {
                         Icon(
                             painterResource(R.drawable.ic_back),
@@ -206,6 +208,7 @@ fun FoodDetail(
                         it = it,
                         coroutineScope = coroutineScope,
                         navToImage = navToImage,
+                        navToDetail = navToDetail
                     )
                 }
             }
